@@ -100,12 +100,13 @@ public class Robot extends SampleRobot {
 		CameraServer.getInstance().startAutomaticCapture(camera);
 	}
 
-	private void drive(double distance, double max_speed, AutonomousTimer timer) {
+	private void drive(double distance, double max_speed, double direction, AutonomousTimer timer) {
 		//distance in feet
 //		SmartDashboard.putNumber("acceleration", .75);
 //		SmartDashboard.putNumber("max speed", .75);
 //		SmartDashboard.putNumber("distance", .75);
 //		SmartDashboard.putNumber("friction", .05);
+		
 		double friction = 0; //SmartDashboard.getNumber("friction", .05);
 		double acceleration = 0.75; //SmartDashboard.getNumber("acceleration", .75);
 //		max_speed = 0.5; //SmartDashboard.getNumber("max speed", .75); // max_speed must be less than 1 - friction
@@ -151,12 +152,12 @@ public class Robot extends SampleRobot {
 			} else {
 				velocity = acceleration * (total_time - diff);
 			}
-			driveTrain.drive((velocity + friction) * k);
+			driveTrain.drive(direction * (velocity + friction) * k);
 
 			SmartDashboard.putNumber("velocity", velocity);
 			SmartDashboard.putNumber("time", diff);
 
-//			timer.delay(5);
+			timer.delay(5);
 		}
 		driveTrain.drive(0);
 
@@ -175,7 +176,7 @@ public class Robot extends SampleRobot {
 		double turn_friction = SmartDashboard.getNumber("turn friction", .05);
 		double acceleration = SmartDashboard.getNumber("turn acceleration", .75);
 		double max_speed = SmartDashboard.getNumber("max turn speed", .75); // max_speed must be less than 1 - friction
-		radians = SmartDashboard.getNumber("radians", Math.PI/2);
+		//radians = SmartDashboard.getNumber("radians", Math.PI/2);
 		System.out.println(robot_radius);
 		System.out.println(turn_friction);
 		System.out.println(acceleration);
@@ -234,54 +235,89 @@ public class Robot extends SampleRobot {
 		System.out.println("Running  " + defense + " at position " + position);
 
 		AutonomousSchedule schedule;
-
+double drive_distance = (20 + 1/6);
 		switch (defense) {
 		case chillyFries:
 			schedule = new AutonomousSchedule(timer -> {
-				driveTrain.drive(.3);
+				double distance_to_cheval = 10;
+			/*	driveTrain.drive(.3);
 				timer.delay(1500);
 				driveTrain.drive(0);
 				lowArm.lower();
 				timer.delay(1800);
 				driveTrain.drive(.3);
 				timer.delay(1200);
-				driveTrain.drive(0);
+				driveTrain.drive(0); */
+				drive(distance_to_cheval, 0.5, 1, timer);
+				lowArm.lower();
+				timer.delay(1800);
+				drive(drive_distance - distance_to_cheval, 0.5, 1, timer);
 			});
 			break;
 		case portcullis:
 			schedule = new AutonomousSchedule(timer -> {
+				double distance_to_portcullis = 10;
 				lowArm.lower();
 				timer.delay(1800);
-				driveTrain.drive(.3);
+			/*	driveTrain.drive(.3);
 				timer.delay(3000);
-				driveTrain.drive(.1);
+				driveTrain.drive(.1); */
+				drive(distance_to_portcullis, 0.5, 1, timer);
 				lowArm.raise();
 				timer.delay(1800);
-				driveTrain.drive(.5);
+			/*	driveTrain.drive(.5);
 				timer.delay(1200);
-				driveTrain.drive(0);
+				driveTrain.drive(0); */
+				drive(drive_distance - distance_to_portcullis, 0.5, 1, timer);
 				lowArm.lower();
 			});
 			break;
 		case lowBar:
 			schedule = new AutonomousSchedule(timer -> {
-				/*
+				double distance1 = drive_distance;
+				distance1 = SmartDashboard.getNumber("distance 1", distance1);
+				double distance2 = (6 + 7/12);
+				distance2 = SmartDashboard.getNumber("distance 2", distance2);
+				double distance3 = 1 + 7/12;
+				distance3 = SmartDashboard.getNumber("distance 3", distance3);
+				double turnradians = Math.PI/4;
+				turnradians = SmartDashboard.getNumber("turn radians", turnradians);
 				lowArm.lower();
 				timer.delay(1800);
 				//drive((20 - 1/6), 0.5, timer);
-				drive((20 + 1/6), 0.5, timer);
-				turn(Math.PI/24, -1, timer); //pi/12 == 90 degrees?? // change to radians/=2 in turn function
-				*/
+				drive( distance1, 0.5, 1, timer);
+				turn(turnradians, -1, timer); //pi/12 == 90 degrees?? // change to radians/=2 in turn function
+				
+				//did not work because update is called constantly in teleop
+				//but not in auton except when timer.delay is called?
+				//possible test: use arm without timer.delay 
 				shooter.shoot(5 * 12);
+				
 				//drive((6 + 7/12), 0.5, timer);
-				drive((5), 0.5, timer); /*
+				drive(distance2, 0.5, 1, timer); 
 				lowArm.raise();
 				timer.delay(800);
 				lowArm.stop();
 				//drive(1, 0.5, timer);
-				drive(1 + 7/12, 0.5, timer);
-				//shooter.shoot(5 * 12); */
+				drive(distance3, 0.5, 1, timer);
+				//shooter.shoot(5 * 12);
 				shooter.launch();
+				//while (isAutonomous() && isEnabled()){timer.delay(5);} //might fix the problem
+				//or use
+				timer.delay(1010); //intake has duration of 1 second when launching the ball
+				/*
+				 * in teleop, there is the code:
+				 * for (IterativeSystem system : systems)
+				 system.update();
+				 * this calls the update function
+				 * however, update is not called in autonomous unless timer.delay is used.
+				*/
+				//robot drives back to where it started:
+				drive(distance3 + distance2, 0.5, -1, timer);
+				lowArm.lower();
+				timer.delay(800);
+				turn(turnradians, 1, timer);
+				drive( distance1, 0.5, -1, timer);
 				//shooter.launching = true;
 				/*lowArm.lower();
 				timer.delay(1800);
@@ -300,16 +336,16 @@ public class Robot extends SampleRobot {
 		case test:
 			schedule = new AutonomousSchedule(timer -> {
 				//drive(1/3, 0.5, timer);
-				drive((1 + 1/3), 0.5, timer);
+				drive((1 + 1/3), 0.5, 1, timer);
 			});
 			break;
 		case test_turn:
 			schedule = new AutonomousSchedule(timer -> {
 				//lowArm.lower();
 				//timer.delay(1800);
-				drive((20 - 1/6), 0.5, timer);
+				drive((20 - 1/6), 0.5, 1, timer);
 				turn(Math.PI/24, -1, timer); //pi/12 == 90 degrees?? // change to radians/=2 in turn function
-				drive((6 + 7/12), 0.5, timer);
+				drive((6 + 7/12), 0.5, 1, timer);
 			});
 			break;
 		default:
