@@ -54,7 +54,7 @@ public class Shooter implements IterativeSystem {
 	public void launch() {
 		shootEnd = System.currentTimeMillis() + SHOOT_INTAKE_DURATION;
 		launching = true;
-		System.out.println(launching);
+		//System.out.println(launching);
 	}
 	
 
@@ -79,7 +79,7 @@ public class Shooter implements IterativeSystem {
 	 */
 	@Override
 	public void update() {
-		System.out.println(launching);
+		//System.out.println(launching);
 		double intakeSpeed = 0, shooterSpeed = 0;
 
 		long shootRemaining = shootEnd - System.currentTimeMillis();

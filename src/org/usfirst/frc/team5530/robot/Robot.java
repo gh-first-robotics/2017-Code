@@ -173,7 +173,7 @@ public class Robot extends SampleRobot {
 //		double robot_radius = SmartDashboard.getNumber("robot_radius", 0.5);
 		double robot_radius = 0.5;
 		double distance = robot_radius * radians;
-		double turn_friction = SmartDashboard.getNumber("turn friction", .05);
+		double turn_friction = SmartDashboard.getNumber("turn friction", 0);
 		double acceleration = SmartDashboard.getNumber("turn acceleration", .75);
 		double max_speed = SmartDashboard.getNumber("max turn speed", .75); // max_speed must be less than 1 - friction
 		//radians = SmartDashboard.getNumber("radians", Math.PI/2);
@@ -189,7 +189,7 @@ public class Robot extends SampleRobot {
 		double d1 = (max_speed * max_speed) / (2 * acceleration);
 		
 		if (d1 > distance / 2) {
-			System.out.println("ERROR: d1 > distance / 2");
+			System.out.println("ERROR: d1 > distance / 2 turn");
 			// acceleration_distance = target_distance / 2;
 			// max_speed = Math.sqrt(target_distance * acceleration);
 			// time_to_reach_max_speed = max_speed / acceleration;
@@ -239,7 +239,9 @@ double drive_distance = (20 + 1/6);
 		switch (defense) {
 		case chillyFries:
 			schedule = new AutonomousSchedule(timer -> {
-				double distance_to_cheval = 10;
+				double distance_to_cheval = 5;
+				//SmartDashboard.putNumber("distance_to_cheval", distance_to_cheval);
+				distance_to_cheval = SmartDashboard.getNumber("distance_to_cheval", distance_to_cheval);
 			/*	driveTrain.drive(.3);
 				timer.delay(1500);
 				driveTrain.drive(0);
@@ -275,13 +277,21 @@ double drive_distance = (20 + 1/6);
 		case lowBar:
 			schedule = new AutonomousSchedule(timer -> {
 				double distance1 = drive_distance;
-				distance1 = SmartDashboard.getNumber("distance 1", distance1);
+				//distance1 = SmartDashboard.getNumber("distance 1", distance1);
 				double distance2 = (6 + 7/12);
-				distance2 = SmartDashboard.getNumber("distance 2", distance2);
+				//distance2 = SmartDashboard.getNumber("distance 2", distance2);
 				double distance3 = 1 + 7/12;
-				distance3 = SmartDashboard.getNumber("distance 3", distance3);
-				double turnradians = Math.PI/4;
+				//distance3 = SmartDashboard.getNumber("distance 3", distance3);
+				double turnradians = Math.PI/12;
+				//SmartDashboard.putNumber("turn radians", turnradians);
 				turnradians = SmartDashboard.getNumber("turn radians", turnradians);
+				//turnradians = 0.075;
+				double secondturnradians = Math.PI/10;
+				//SmartDashboard.putNumber("second turn radians", secondturnradians);
+				//secondturnradians = SmartDashboard.getNumber("second turn radians", secondturnradians);
+				secondturnradians = 0.05;
+				System.out.println("turn radians " + turnradians); //0.1
+				System.out.println("second turn radians " + secondturnradians); //0.2
 				lowArm.lower();
 				timer.delay(1800);
 				//drive((20 - 1/6), 0.5, timer);
@@ -291,8 +301,9 @@ double drive_distance = (20 + 1/6);
 				//did not work because update is called constantly in teleop
 				//but not in auton except when timer.delay is called?
 				//possible test: use arm without timer.delay 
+				if (position == "1"){
 				shooter.shoot(5 * 12);
-				
+				}
 				//drive((6 + 7/12), 0.5, timer);
 				drive(distance2, 0.5, 1, timer); 
 				lowArm.raise();
@@ -301,6 +312,7 @@ double drive_distance = (20 + 1/6);
 				//drive(1, 0.5, timer);
 				drive(distance3, 0.5, 1, timer);
 				//shooter.shoot(5 * 12);
+				if (position == "1"){
 				shooter.launch();
 				//while (isAutonomous() && isEnabled()){timer.delay(5);} //might fix the problem
 				//or use
@@ -313,17 +325,19 @@ double drive_distance = (20 + 1/6);
 				 * however, update is not called in autonomous unless timer.delay is used.
 				*/
 				//robot drives back to where it started:
-				drive(distance3 + distance2, 0.5, -1, timer);
+				drive(distance3, 0.5, -1, timer);
+				drive(distance2, 0.5, -1, timer);
 				lowArm.lower();
 				timer.delay(800);
-				turn(turnradians, 1, timer);
-				drive( distance1, 0.5, -1, timer);
+				turn(secondturnradians, 1, timer);
+				drive( distance1 - 1, 0.5, -1, timer);
 				//shooter.launching = true;
 				/*lowArm.lower();
 				timer.delay(1800);
 				driveTrain.drive(.3);
 				timer.delay(4200);
 				driveTrain.drive(0);*/
+				}
 			});
 			break;
 		case other:
