@@ -10,6 +10,7 @@ import org.usfirst.frc.team5530.robot.system.Scaler;
 import org.usfirst.frc.team5530.robot.system.Shooter;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.vision.USBCamera;
@@ -98,6 +100,13 @@ public class Robot extends SampleRobot {
 		camera = new USBCamera("cam0");
 		CameraServer.getInstance().setQuality(20);
 		CameraServer.getInstance().startAutomaticCapture(camera);
+		
+	/*	Accelerometer accel;
+		accel = new BuiltInAccelerometer(); 
+		accel = new BuiltInAccelerometer(Accelerometer.Range.k4G); 
+		double xVal = accel.getX();
+		double yVal = accel.getY();
+		double zVal = accel.getZ(); */
 	}
 
 	private void drive(double distance, double max_speed, double direction, AutonomousTimer timer) {
@@ -163,6 +172,93 @@ public class Robot extends SampleRobot {
 
 	};
 	
+	private void driveA(double distance, double direction, AutonomousTimer timer) { //direction = 1: turn left //direction = -1: turn right
+		Accelerometer accel;
+		//accel = new BuiltInAccelerometer(); 
+		accel = new BuiltInAccelerometer(Accelerometer.Range.k4G); 
+		double xVal = accel.getX();
+		//double yVal = accel.getY();
+		double zVal = accel.getZ();
+		double zValFeet = zVal * 32.2;
+		double zVelocity = 0;
+		double zPosition = 0;
+		double zChange;
+		double xValFeet = xVal * 32.2;
+		double xVelocity = 0;
+		double xPosition = 0;
+		
+		double accelerometer_error = 0.01;
+				//double turn_friction = SmartDashboard.getNumber("turn friction", 0);
+		SmartDashboard.putNumber("drive a acceleration", .75);
+		SmartDashboard.putNumber("max drive a speed", .75);
+		SmartDashboard.putNumber("min drive a speed", .2);
+		double acceleration = SmartDashboard.getNumber("drive a acceleration", .75);
+		double min_speed    = SmartDashboard.getNumber("min drive a speed", .2);
+		double max_speed    = SmartDashboard.getNumber("max drive a speed", .75);// max_speed must be less than 1 - friction
+	
+		System.out.println(acceleration);
+		System.out.println(max_speed);
+		System.out.println(distance);
+	
+		double distance_traveled = 0;
+		double deceleration_time;
+		double total_time = 0;
+
+		double velocity;
+		
+		long time = System.currentTimeMillis();
+		double diff;
+		
+        double deltatime;
+        long lasttime = System.currentTimeMillis();
+		while (distance_traveled < distance) {
+			 diff = (System.currentTimeMillis() - time) / 1000.0;
+			 deltatime = (System.currentTimeMillis() - lasttime)/1000.0;
+			 lasttime = System.currentTimeMillis();
+			 xVal = accel.getX();
+			 //yVal = accel.getY();
+			 zVal = accel.getZ();
+			 zValFeet = zVal * 32.2;
+			 zVelocity += zValFeet * deltatime;
+			 zPosition += zVelocity * deltatime;
+			 zChange = zPosition * (distance_traveled/distance);
+			 if (zChange > 1 - max_speed){
+				 zChange = 1 - max_speed;
+			     }
+			 if (zChange < max_speed - 1){
+				 zChange = max_speed - 1;
+			     }
+			 if (Math.abs(zChange) < accelerometer_error){
+				 zChange = 0;
+			     }
+			 xValFeet = xVal * 32.2;
+			 xVelocity += xValFeet * deltatime;
+			 xPosition += xVelocity * deltatime;
+			 distance_traveled = Math.abs(xPosition);
+			if (distance_traveled < distance/2) {
+				velocity = acceleration * diff;
+				deceleration_time = diff;
+				total_time = deceleration_time * 2;
+			} else {
+				velocity = acceleration * (total_time - diff);
+			}
+			if (velocity > max_speed){
+				velocity = max_speed;
+				}
+			if (velocity < min_speed){
+				velocity = min_speed;
+				}
+			driveTrain.tankDrive((direction * velocity) + zChange, (direction * velocity) - zChange);
+
+			SmartDashboard.putNumber("velocity", velocity);
+			SmartDashboard.putNumber("time", diff);
+
+			timer.delay(5);
+		}
+		driveTrain.drive(0);
+
+	};
+	
 	private void turn(double radians, double direction, AutonomousTimer timer) { //direction = 1: turn left //direction = -1: turn right
 //currently set up for low bar... Do NOT change anything about this
 		//		SmartDashboard.putNumber("acceleration", .75);
@@ -171,6 +267,7 @@ public class Robot extends SampleRobot {
 //		SmartDashboard.putNumber("robot_radius", 2);
 //		SmartDashboard.putNumber("turn_friction", .05);
 //		double robot_radius = SmartDashboard.getNumber("robot_radius", 0.5);
+		
 		double robot_radius = 0.5;
 		double distance = robot_radius * radians;
 		double turn_friction = SmartDashboard.getNumber("turn friction", 0);
@@ -225,6 +322,101 @@ public class Robot extends SampleRobot {
 
 	};
 
+	private void turnA(double radians, double direction, AutonomousTimer timer) { //direction = 1: turn left //direction = -1: turn right
+		Accelerometer accel;
+		System.out.println("turnA");
+		//accel = new BuiltInAccelerometer(); 
+		accel = new BuiltInAccelerometer(Accelerometer.Range.k4G); 
+		//double xVal = accel.getX();
+		//double yVal = accel.getY();
+		double zVal = accel.getZ();
+		double zValFeet = zVal * 32.2;
+		double zVelocity = 0;
+		double zPosition = 0;
+		//double degrees_traveled; //= Math.acos(zVal);
+		double accelerometerturnradius = 0.66; // in feet
+		double distance = accelerometerturnradius * radians;
+		//double test = (8 + 3/8)/12;
+		//distance = accelerometerturnradius;
+		//double turn_friction = SmartDashboard.getNumber("turn friction", 0);
+		double acceleration = SmartDashboard.getNumber("turn acceleration", .75);
+		double max_speed = SmartDashboard.getNumber("max turn speed", .75);// max_speed must be less than 1 - friction
+		double min_speed = SmartDashboard.getNumber("min turn speed", .2);
+		//radians = SmartDashboard.getNumber("radians", Math.PI/2);
+		//System.out.println(robot_radius);
+		//System.out.println(turn_friction);
+		//System.out.println(acceleration);
+	//	System.out.println(max_speed);
+		//System.out.println(radians);
+		//System.out.println(distance);
+		//double k = 1; // / (14 + 1/6); // ft/unit convert between distance robot travels in 1
+								// second at highest speed and feet
+			//double time_to_reach_max_speed = max_speed / acceleration;
+			//double d1 = (max_speed * max_speed) / (2 * acceleration);
+			double distance_traveled = 0;
+			double deceleration_time;
+			double total_time = 0;
+			//if (d1 > distance / 2) {
+			//	System.out.println("ERROR: d1 > distance / 2 turnA");
+				// acceleration_distance = target_distance / 2;
+				// max_speed = Math.sqrt(target_distance * acceleration);
+				// time_to_reach_max_speed = max_speed / acceleration;
+				// SmartDashboard.putNumber("new max_speed", max_speed);
+		//	}
+			//if (max_speed > 1 - turn_friction){
+			//	System.out.println("ERROR: max_speed > 1 - friction");
+			//}
+
+			double velocity;
+			//double total_time = (2 * time_to_reach_max_speed) + ((distance - (2 * d1)) / max_speed);
+			// double time;
+			long time = System.currentTimeMillis();
+			double diff;
+			
+            double deltatime;
+            System.out.println("distance " + distance);
+            System.out.println("distance traveled " + distance_traveled);
+            long lasttime = System.currentTimeMillis();
+			while (distance_traveled < distance) {
+				System.out.println("distance_traveled " + distance_traveled);
+				System.out.println("distance " + distance);
+				diff	  = (System.currentTimeMillis() - time) / 1000.0;
+				deltatime = (System.currentTimeMillis() - lasttime)/1000.0;
+				lasttime  =  System.currentTimeMillis();
+				// xVal = accel.getX();
+				//yVal = accel.getY();
+				zVal = accel.getZ();
+				if (Math.abs(zVal) < 0.1){zVal = 0;}
+				zValFeet = zVal * 32.2;
+				zVelocity += zValFeet * deltatime;
+				zPosition += zVelocity * deltatime;
+				distance_traveled = Math.abs(zPosition);
+				if (distance_traveled < distance/2) {
+					velocity = acceleration * diff;
+					deceleration_time = diff;
+					total_time = deceleration_time * 2;
+				} else {
+					velocity = acceleration * (total_time - diff);
+				}
+				if (velocity > max_speed){
+					velocity = max_speed;
+					}
+				if (velocity < min_speed){
+					velocity = min_speed;
+					}
+				driveTrain.tankDrive(direction * velocity, -direction * velocity);
+
+				SmartDashboard.putNumber("velocity", velocity);
+				SmartDashboard.putNumber("zVal", zVal);
+				SmartDashboard.putNumber("time", diff);
+
+				timer.delay(5);
+			}
+			driveTrain.drive(0);
+
+		};
+
+	
 	@Override
 	public void autonomous() {
 		start("Autonomous");
@@ -239,9 +431,10 @@ double drive_distance = (20 + 1/6);
 		switch (defense) {
 		case chillyFries:
 			schedule = new AutonomousSchedule(timer -> {
-				double distance_to_cheval = 5;
+				double distance3 = 1 + 7/12;
+				double distance_to_cheval = 6.2;
 				//SmartDashboard.putNumber("distance_to_cheval", distance_to_cheval);
-				distance_to_cheval = SmartDashboard.getNumber("distance_to_cheval", distance_to_cheval);
+				//distance_to_cheval = SmartDashboard.getNumber("distance_to_cheval", distance_to_cheval);
 			/*	driveTrain.drive(.3);
 				timer.delay(1500);
 				driveTrain.drive(0);
@@ -250,10 +443,25 @@ double drive_distance = (20 + 1/6);
 				driveTrain.drive(.3);
 				timer.delay(1200);
 				driveTrain.drive(0); */
+				lowArm.lower();
+				timer.delay(400);
+				lowArm.stop();
 				drive(distance_to_cheval, 0.5, 1, timer);
 				lowArm.lower();
-				timer.delay(1800);
+				driveTrain.drive(0.03);
+				timer.delay(1400);
 				drive(drive_distance - distance_to_cheval, 0.5, 1, timer);
+				if (position == "1"){
+					shooter.shoot(5 * 12);
+					}
+				lowArm.raise();
+				timer.delay(800);
+				lowArm.stop();
+				drive(distance3, 0.5, 1, timer);
+				if (position == "1"){
+					shooter.launch();
+					timer.delay(1010);
+					}
 			});
 			break;
 		case portcullis:
@@ -284,8 +492,8 @@ double drive_distance = (20 + 1/6);
 				//distance3 = SmartDashboard.getNumber("distance 3", distance3);
 				double turnradians = Math.PI/12;
 				//SmartDashboard.putNumber("turn radians", turnradians);
-				turnradians = SmartDashboard.getNumber("turn radians", turnradians);
-				//turnradians = 0.075;
+				//turnradians = SmartDashboard.getNumber("turn radians", turnradians);
+				turnradians = 0.13;
 				double secondturnradians = Math.PI/10;
 				//SmartDashboard.putNumber("second turn radians", secondturnradians);
 				//secondturnradians = SmartDashboard.getNumber("second turn radians", secondturnradians);
@@ -350,16 +558,73 @@ double drive_distance = (20 + 1/6);
 		case test:
 			schedule = new AutonomousSchedule(timer -> {
 				//drive(1/3, 0.5, timer);
-				drive((1 + 1/3), 0.5, 1, timer);
+				driveA(5, 1, timer);
 			});
 			break;
 		case test_turn:
 			schedule = new AutonomousSchedule(timer -> {
-				//lowArm.lower();
-				//timer.delay(1800);
-				drive((20 - 1/6), 0.5, 1, timer);
-				turn(Math.PI/24, -1, timer); //pi/12 == 90 degrees?? // change to radians/=2 in turn function
-				drive((6 + 7/12), 0.5, 1, timer);
+				double distance1 = drive_distance;
+				//distance1 = SmartDashboard.getNumber("distance 1", distance1);
+				double distance2 = (6 + 7/12);
+				//distance2 = SmartDashboard.getNumber("distance 2", distance2);
+				double distance3 = 1 + 7/12;
+				//distance3 = SmartDashboard.getNumber("distance 3", distance3);
+				double turnradians = Math.PI/3;
+				//SmartDashboard.putNumber("turn radians", turnradians);
+				//turnradians = SmartDashboard.getNumber("turn radians", turnradians);
+				//turnradians = 0.075;
+				
+				//SmartDashboard.putNumber("second turn radians", secondturnradians);
+				//secondturnradians = SmartDashboard.getNumber("second turn radians", secondturnradians);
+				//secondturnradians = 0.05;
+				System.out.println("turn radians " + turnradians); //0.1
+				//System.out.println("second turn radians " + secondturnradians); //0.2
+				lowArm.lower();
+				timer.delay(1800);
+				//drive((20 - 1/6), 0.5, timer);
+				drive( distance1, 0.5, 1, timer);
+				turnA(turnradians, -1, timer); //pi/12 == 90 degrees?? // change to radians/=2 in turn function
+				
+				//did not work because update is called constantly in teleop
+				//but not in auton except when timer.delay is called?
+				//possible test: use arm without timer.delay 
+				if (position == "1"){
+				shooter.shoot(5 * 12);
+				}
+				//drive((6 + 7/12), 0.5, timer);
+				drive(distance2, 0.5, 1, timer); 
+				lowArm.raise();
+				timer.delay(800);
+				lowArm.stop();
+				//drive(1, 0.5, timer);
+				drive(distance3, 0.5, 1, timer);
+				//shooter.shoot(5 * 12);
+				if (position == "1"){
+				shooter.launch();
+				//while (isAutonomous() && isEnabled()){timer.delay(5);} //might fix the problem
+				//or use
+				timer.delay(1010); //intake has duration of 1 second when launching the ball
+				/*
+				 * in teleop, there is the code:
+				 * for (IterativeSystem system : systems)
+				 system.update();
+				 * this calls the update function
+				 * however, update is not called in autonomous unless timer.delay is used.
+				*/
+				//robot drives back to where it started:
+				drive(distance3, 0.5, -1, timer);
+				drive(distance2, 0.5, -1, timer);
+				lowArm.lower();
+				timer.delay(800);
+				turnA(turnradians, 1, timer);
+				drive( distance1 - 1, 0.5, -1, timer);
+				//shooter.launching = true;
+				/*lowArm.lower();
+				timer.delay(1800);
+				driveTrain.drive(.3);
+				timer.delay(4200);
+				driveTrain.drive(0);*/
+				}
 			});
 			break;
 		default:
