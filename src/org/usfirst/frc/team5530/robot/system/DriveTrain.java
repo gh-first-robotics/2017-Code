@@ -1,10 +1,10 @@
 package org.usfirst.frc.team5530.robot.system;
 
-import org.usfirst.frc.team5530.robot.Vector2;
+import org.usfirst.frc.team5530.robot.input.Vector2;
 
 import edu.wpi.first.wpilibj.CANTalon;
 
-public class DriveTrain {
+public class DriveTrain implements RobotSystem {
 	private CANTalon[] talons;
 
 	public DriveTrain(CANTalon l1, CANTalon l2, CANTalon r1, CANTalon r2) {
@@ -71,4 +71,6 @@ public class DriveTrain {
 	private static double clamp(double val, double min, double max) {
 		return Math.min(max, Math.max(val, val));
 	}
+	
+	public void update() { }
 }

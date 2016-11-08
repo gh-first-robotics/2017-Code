@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.CANTalon;
 
-public class LowArm implements IterativeSystem {
+public class LowArm implements RobotSystem {
 	private CANTalon talon;
 	private AnalogPotentiometer potentiometer;
 	private int control;

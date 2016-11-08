@@ -1,4 +1,4 @@
-package org.usfirst.frc.team5530.robot;
+package org.usfirst.frc.team5530.robot.input;
 
 public class Vector2 {
   public final double x, y;

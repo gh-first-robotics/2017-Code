@@ -1,11 +1,11 @@
 package org.usfirst.frc.team5530.robot.system;
 
-import org.usfirst.frc.team5530.robot.Vector2;
+import org.usfirst.frc.team5530.robot.input.Vector2;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Servo;
 
-public class Scaler {
+public class Scaler implements RobotSystem {
 	private CANTalon talon;
 	private Servo lock;
 
@@ -37,4 +37,6 @@ public class Scaler {
 	public void unlock() {
 		lock.setAngle(-15);
 	}
+
+	public void update() {}
 }
