@@ -1,4 +1,4 @@
-package org.usfirst.frc.team5530.robot.input;
+package org.usfirst.frc.team5530.robot.teleop;
 
 import java.util.HashMap;
 import java.util.Map.Entry;

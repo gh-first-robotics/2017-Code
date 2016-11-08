@@ -1,6 +1,6 @@
 package org.usfirst.frc.team5530.robot.system;
 
-import org.usfirst.frc.team5530.robot.input.Vector2;
+import org.usfirst.frc.team5530.robot.teleop.Vector2;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Servo;

@@ -1,4 +1,4 @@
-package org.usfirst.frc.team5530.robot.input;
+package org.usfirst.frc.team5530.robot.teleop;
 
 public enum InputButton {
     Raise_Arm(0, 1),

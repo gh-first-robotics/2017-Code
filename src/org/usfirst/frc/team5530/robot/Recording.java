@@ -10,9 +10,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import org.usfirst.frc.team5530.robot.input.ControlState;
-import org.usfirst.frc.team5530.robot.input.InputButton;
-import org.usfirst.frc.team5530.robot.input.Vector2;
+import org.usfirst.frc.team5530.robot.teleop.ControlState;
+import org.usfirst.frc.team5530.robot.teleop.InputButton;
+import org.usfirst.frc.team5530.robot.teleop.Vector2;
 
 import edu.wpi.first.wpilibj.Timer;
 
