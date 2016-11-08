@@ -48,14 +48,10 @@ public class Robot extends SampleRobot {
 
 	private USBCamera camera;
 	private Operator teleop;
-
-	private static final String chillyFries = "Cheval de Frise";
-	private static final String portcullis = "Portcullis";
-	private static final String lowBar = "Low Bar";
-	private static final String other = "Default";
+	
+	private static final AutoProgram[] autons = { new ChillyFries(), new Porticullis(), new LowBar(), new Other() };
 	private SendableChooser defenseChooser;
 
-	private static final String[] defenses = { other, lowBar, portcullis, chillyFries };
 	private static final String[] positions = { "1", "2", "3", "4", "5" };
 	private SendableChooser positionChooser;
 
@@ -84,12 +80,12 @@ public class Robot extends SampleRobot {
 
 		positionChooser.addDefault(positions[0], positions[0]);
 		for (int i = 1; i < positions.length; i++)
-			positionChooser.addObject(positions[i], positions[i]);
+			positionChooser.addObject(positions[i], i);
 		SmartDashboard.putData("Starting Position", positionChooser);
 
-		defenseChooser.addDefault(defenses[0], defenses[0]);
-		for (int i = 1; i < defenses.length; i++)
-			defenseChooser.addObject(defenses[i], defenses[i]);
+		defenseChooser.addDefault(autons[0].getName(), autons[0]);
+		for (int i = 1; i < autons.length; i++)
+			defenseChooser.addObject(autons[i].getName(), i);
 		SmartDashboard.putData("Starting Defense", defenseChooser);
 
 		camera = new USBCamera("cam0");
@@ -107,30 +103,11 @@ public class Robot extends SampleRobot {
 	public void autonomous() {
 		start("Autonomous");
 
-		String defense = (String) defenseChooser.getSelected();
-		String position = (String) positionChooser.getSelected();
+		AutoProgram program = (AutoProgram) defenseChooser.getSelected();
+		int position = (int) positionChooser.getSelected();
 
-		System.out.println("Running  " + defense + " at position " + position);
-
-		AutoProgram program;
-		switch (defense) {
-		case chillyFries:
-			program = new ChillyFries(position.equals("1"));
-			break;
-		case portcullis:
-			program = new Porticullis();
-			break;
-		case lowBar:
-			program = new LowBar(position.equals("1"));
-			break;
-		case other:
-			program = new Other();
-			break;
-		default:
-			return;
-		}
-
-		program.start(this);
+		System.out.println("Running  " + program.getName() + " at position " + position);
+		program.run(this, Integer.parseInt((String) positionChooser.getSelected()));
 	}
 
 	@Override

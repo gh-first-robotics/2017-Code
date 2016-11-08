@@ -7,22 +7,18 @@ import org.usfirst.frc.team5530.robot.system.DriveTrain;
 import org.usfirst.frc.team5530.robot.system.LowArm;
 import org.usfirst.frc.team5530.robot.system.Shooter;
 
-public class ChillyFries extends AutoProgram {
+public class ChillyFries implements AutoProgram {
 	private static final double distance3 = 1 + 7.0 / 12;
 	private static final double distanceToCheval = 6.2;
 	private static final double driveDistance = 20 + 1.0 / 6;
 
-	private boolean shoot;
-
-	public ChillyFries(boolean shoot) {
-		this.shoot = shoot;
-	}
-
 	@Override
-	void run(Robot rob) {
+	public void run(Robot rob, int position) {
 		DriveTrain driveTrain = rob.getSystem(DriveTrain.class);
 		Shooter shooter = rob.getSystem(Shooter.class);
 		LowArm lowArm = rob.getSystem(LowArm.class);
+		
+		boolean shoot = position == 1;
 
 		lowArm.lower();
 		rob.sleep(400);
@@ -36,7 +32,7 @@ public class ChillyFries extends AutoProgram {
 
 		rob.execute(new DriveMacro(driveDistance - distanceToCheval));
 
-		if (this.shoot) {
+		if (shoot) {
 			rob.execute(new ShootMacro(5 * 12));
 		}
 
@@ -46,9 +42,14 @@ public class ChillyFries extends AutoProgram {
 
 		rob.execute(new DriveMacro(distance3));
 
-		if (this.shoot) {
+		if (shoot) {
 			shooter.launch();
 			rob.sleep(1010);
 		}
+	}
+
+	@Override
+	public String getName() {
+		return "Cheval de Frise";
 	}
 }
