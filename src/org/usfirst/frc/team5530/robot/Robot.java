@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.vision.USBCamera;
@@ -54,14 +55,7 @@ public class Robot extends SampleRobot {
 
 	private static final String[] positions = { "1", "2", "3", "4", "5" };
 	private SendableChooser positionChooser;
-
-	public Robot() {
-		Joystick stick1 = new Joystick(0);
-		Joystick stick2 = new Joystick(1);
-
-		teleop = new Operator(this, stick1, stick2);
-	}
-
+	
 	@Override
 	public void robotInit() {
 		// Left, Left, Right, Right
@@ -91,6 +85,12 @@ public class Robot extends SampleRobot {
 		camera = new USBCamera("cam0");
 		CameraServer.getInstance().setQuality(20);
 		CameraServer.getInstance().startAutomaticCapture(camera);
+
+
+		Joystick stick1 = new Joystick(0);
+		Joystick stick2 = new Joystick(1);
+
+		teleop = new Operator(this, stick1, stick2);
 
 		/*
 		 * Accelerometer accel; accel = new BuiltInAccelerometer(); accel = new
@@ -123,6 +123,16 @@ public class Robot extends SampleRobot {
 	@Override
 	public void disabled() {
 		start("Disabled");
+
+		NetworkTable table = NetworkTable.getTable("GRIP/myContoursReport");
+		
+		while (isDisabled()) {
+			double[] areas = table.getNumberArray("area", new double[0]);
+			System.out.println(table.isConnected());
+			System.out.println(areas.length);
+			
+			Timer.delay(.5);
+		}
 	}
 
 	@Override
