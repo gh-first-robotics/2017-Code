@@ -123,13 +123,27 @@ public class Robot extends SampleRobot {
 	@Override
 	public void disabled() {
 		start("Disabled");
-
+		NetworkTable.setClientMode(); //I think this might fix the problem
+		NetworkTable.setIPAddress("10.55.30.200"); //might cause an error
+		NetworkTable.setPort(5000); //NetworkTables host should be 10.55.30.200:5000 (set on drive computer)
+									//unless it's localhost:5000 ????
 		NetworkTable table = NetworkTable.getTable("GRIP/myContoursReport");
 		
+		
 		while (isDisabled()) {
+			//testing...
+			//double[] testarray = new double[10];
+			//testarray[0] = 1;
+			//actual code
 			double[] areas = table.getNumberArray("area", new double[0]);
-			System.out.println(table.isConnected());
-			System.out.println(areas.length);
+			//test
+			//double[] testarray2 = table.getNumberArray("test", new double[0]);
+			//table.putNumberArray("test", testarray);
+			//actual code
+			System.out.println(table.isConnected()); //prints true
+			System.out.println(areas.length); //prints 0
+			//test
+			//System.out.println(testarray2.length);
 			
 			Timer.delay(.5);
 		}
