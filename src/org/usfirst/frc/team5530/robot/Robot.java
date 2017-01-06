@@ -1,4 +1,4 @@
-
+//TODO: Update GRIP!!!!
 package org.usfirst.frc.team5530.robot;
 
 import org.usfirst.frc.team5530.robot.autonomous.AutoProgram;
@@ -115,13 +115,13 @@ public class Robot extends SampleRobot {
 		start("Teleoperation");
 		while (isOperatorControl() && isEnabled()) {
 			teleop.tick();
-
+			printTargetInformation();
 			sleep(5);
 		}
 	}
 	static double bestWHratio = 1; //figure out what this is
 	//largest area is best???
-	int bestTargetIndex;
+	public int bestTargetIndex;
 	int bestTarget(double[] widths, double[] heights/*, double[] areas*/){
 		if (widths.length == 0){
 			return -1;
@@ -137,32 +137,38 @@ public class Robot extends SampleRobot {
 			return bestTargetIndex;
 		}
 	}
+	public int getbestTargetIndex(){
+		return bestTargetIndex;
+	}
 	static double k = 6032; //is this the correct number?
 	double distanceToTarget(double width){ //TODO: change to use height in calculations as well
 		return k/width;
 	}
 	
+	NetworkTable table = NetworkTable.getTable("GRIP/myContoursReport");
+	public void printTargetInformation(){		
+		double[] areas = table.getNumberArray("area", new double[0]);
+		double[] widths = table.getNumberArray("width", new double[0]);
+		double[] heights = table.getNumberArray("height", new double[0]);
+		double[] centerXs = table.getNumberArray("centerX", new double[0]);
+		double[] centerYs = table.getNumberArray("centerY", new double[0]);
+		double[] solidities = table.getNumberArray("solidity", new double[0]);
+		System.out.println(table.isConnected()); //prints true
+		System.out.println(areas.length); //prints number of targets found
+		if (areas.length != 0){
+			System.out.println("index of best target: "+bestTarget(widths, heights));
+			table.putNumber("bestTargetIndex", bestTargetIndex);
+			System.out.println("distance to target: "+distanceToTarget(widths[bestTargetIndex]));
+			table.putNumber("indexOfBestTargetdistanceToTarget", distanceToTarget(widths[bestTargetIndex]));
+			System.out.println("center X of best target: "+distanceToTarget(centerXs[bestTargetIndex]));
+		}
+	}
+	
 	@Override
 	public void disabled() {
-		start("Disabled");
-		
-		NetworkTable table = NetworkTable.getTable("GRIP/myContoursReport");
-		
-		
+		start("Disabled");				
 		while (isDisabled()) {
-			double[] areas = table.getNumberArray("area", new double[0]);
-			double[] widths = table.getNumberArray("width", new double[0]);
-			double[] heights = table.getNumberArray("height", new double[0]);
-			double[] centerXs = table.getNumberArray("centerX", new double[0]);
-			double[] centerYs = table.getNumberArray("centerY", new double[0]);
-			double[] solidities = table.getNumberArray("solidity", new double[0]);
-			System.out.println(table.isConnected()); //prints true
-			System.out.println(areas.length); //prints number of targets found
-			if (areas.length != 0){
-				System.out.println("index of best target: "+bestTarget(widths, heights));
-				System.out.println("distance to target: "+distanceToTarget(widths[bestTargetIndex]));
-				System.out.println("center X of best target: "+distanceToTarget(centerXs[bestTargetIndex]));
-			}
+			printTargetInformation();
 			Timer.delay(.5);
 		}
 	}
