@@ -50,7 +50,10 @@ public class Operator {
 			lowArm.stop();
 
 		if (state.isNewlyPressed(InputButton.Reverse_Steering, previousState))
-			reverseDriving = !reverseDriving;
+			reverseDriving = !reverseDriving;	
+
+		if (state.isNewlyPressed(InputButton.Shoot_Auto, previousState))
+			driveTrain.turnTowardsTarget();
 
 		if (state.isNewlyPressed(InputButton.Intake, previousState))
 			shooter.toggleIntake();
