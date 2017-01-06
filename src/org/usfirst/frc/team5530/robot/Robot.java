@@ -119,32 +119,50 @@ public class Robot extends SampleRobot {
 			sleep(5);
 		}
 	}
-
+	static double bestWHratio = 1; //figure out what this is
+	//largest area is best???
+	int bestTargetIndex;
+	int bestTarget(double[] widths, double[] heights/*, double[] areas*/){
+		if (widths.length == 0){
+			return -1;
+		}
+		else{
+			bestTargetIndex=0;
+			for (int i=0; i<widths.length; i++){
+				if (Math.abs(widths[i]/heights[i] - bestWHratio)<Math.abs(widths[bestTargetIndex]/heights[bestTargetIndex] - bestWHratio)){
+					bestTargetIndex=i;
+				}
+				//add something to include area
+			}
+			return bestTargetIndex;
+		}
+	}
+	static double k = 6032; //is this the correct number?
+	double distanceToTarget(double width){ //TODO: change to use height in calculations as well
+		return k/width;
+	}
+	
 	@Override
 	public void disabled() {
 		start("Disabled");
-		NetworkTable.setClientMode(); //I think this might fix the problem
-		NetworkTable.setIPAddress("10.55.30.200"); //might cause an error
-		NetworkTable.setPort(5000); //NetworkTables host should be 10.55.30.200:5000 (set on drive computer)
-									//unless it's localhost:5000 ????
+		
 		NetworkTable table = NetworkTable.getTable("GRIP/myContoursReport");
 		
 		
 		while (isDisabled()) {
-			//testing...
-			//double[] testarray = new double[10];
-			//testarray[0] = 1;
-			//actual code
 			double[] areas = table.getNumberArray("area", new double[0]);
-			//test
-			//double[] testarray2 = table.getNumberArray("test", new double[0]);
-			//table.putNumberArray("test", testarray);
-			//actual code
+			double[] widths = table.getNumberArray("width", new double[0]);
+			double[] heights = table.getNumberArray("height", new double[0]);
+			double[] centerXs = table.getNumberArray("centerX", new double[0]);
+			double[] centerYs = table.getNumberArray("centerY", new double[0]);
+			double[] solidities = table.getNumberArray("solidity", new double[0]);
 			System.out.println(table.isConnected()); //prints true
-			System.out.println(areas.length); //prints 0
-			//test
-			//System.out.println(testarray2.length);
-			
+			System.out.println(areas.length); //prints number of targets found
+			if (areas.length != 0){
+				System.out.println("index of best target: "+bestTarget(widths, heights));
+				System.out.println("distance to target: "+distanceToTarget(widths[bestTargetIndex]));
+				System.out.println("center X of best target: "+distanceToTarget(centerXs[bestTargetIndex]));
+			}
 			Timer.delay(.5);
 		}
 	}
