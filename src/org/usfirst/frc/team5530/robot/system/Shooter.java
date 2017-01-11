@@ -4,12 +4,12 @@ import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Shooter implements IterativeSystem {
+public class Shooter implements RobotSystem {
 	private enum ShooterState {
 		INTAKE_POSITIONING, INTAKE_WAITING, OFF, SHOOTING, SHOOTING_LOW
 	}
 
-	private static final int /*SHOOT_DURATION = 2000,*/ SHOOT_INTAKE_DURATION = 1000;
+	private static final int intakeDuration = 1000;
 
 	private CANTalon intakeTalon;
 	private DigitalInput intakeSwitch1;
@@ -32,7 +32,8 @@ public class Shooter implements IterativeSystem {
 	}
 
 	/**
-	 * If the shooter is currently inactive, starts intaking otherwise it stops the shooter
+	 * If the shooter is currently inactive, starts intaking otherwise it stops
+	 * the shooter
 	 */
 	public void toggleIntake() {
 		if (state == ShooterState.OFF)
@@ -43,27 +44,19 @@ public class Shooter implements IterativeSystem {
 
 	/**
 	 * Shoots the ball based on a raw speed
-	 * @param speed the speed to shoot at [-1, 1]
+	 * 
+	 * @param speed
+	 *            the speed to shoot at [-1, 1]
 	 */
 	public void shootRaw(double speed) {
 		shootSpeed = speed;
 		state = ShooterState.SHOOTING;
 	}
-	
-	
-	public void launch() {
-		shootEnd = System.currentTimeMillis() + SHOOT_INTAKE_DURATION;
-		launching = true;
-		//System.out.println(launching);
-	}
-	
 
-	/**
-	 * Shoots the ball based on a distance from the target
-	 * @param inches the distance from the goal
-	 */
-	public void shoot(double inches) {
-		shootRaw(inchesToSpeed(inches));
+	public void launch() {
+		shootEnd = System.currentTimeMillis() + intakeDuration;
+		launching = true;
+		// System.out.println(launching);
 	}
 
 	/**
@@ -79,11 +72,12 @@ public class Shooter implements IterativeSystem {
 	 */
 	@Override
 	public void update() {
-		//System.out.println(launching);
+		// System.out.println(launching);
 		double intakeSpeed = 0, shooterSpeed = 0;
 
 		long shootRemaining = shootEnd - System.currentTimeMillis();
-		// Inverted so switches[] is true if the ball is present at that detector
+		// Inverted so switches[] is true if the ball is present at that
+		// detector
 		boolean[] switches = { !intakeSwitch1.get(), !intakeSwitch2.get() };
 
 		if (state == ShooterState.INTAKE_WAITING) {
@@ -106,14 +100,13 @@ public class Shooter implements IterativeSystem {
 
 		if (state == ShooterState.SHOOTING) {
 			shooterSpeed = shootSpeed;
-			if (launching){
-			    if (shootRemaining < 0){
-				    state = ShooterState.OFF;
-				    launching = false;
-			        }
-			    else {
-			    	intakeSpeed = 1;
-			    } 
+			if (launching) {
+				if (shootRemaining < 0) {
+					state = ShooterState.OFF;
+					launching = false;
+				} else {
+					intakeSpeed = 1;
+				}
 			}
 		}
 
@@ -129,24 +122,4 @@ public class Shooter implements IterativeSystem {
 		shooterTalon2.set(shooterSpeed);
 		intakeTalon.set(intakeSpeed);
 	}
-
-	private static double inchesToSpeed(double inches) {
-		double root = Math.sqrt(2 * gravity * (inches * Math.tan(launch_angle) - target_height));
-		double speed = (inches * gravity) / (Math.cos(launch_angle) * root);
-		double rps = speed / (2 * Math.PI * wheel_radius);
-
-		return (rps * magic_number) / maximum_rps;
-	}
-
-	private static final double gravity = 32 * 12, // ft/s^2//in
-			// maximum speed for shooter wheels
-			maximum_rps = 16000 / 180,
-			// angle of launch above horizontal
-			launch_angle = Math.PI / 3,
-			// magic multiplier
-			magic_number = 2.62,
-			// radius of wheels
-			wheel_radius = 2,
-			// height of target above ground
-			target_height = 7 * 12 + 1; // -robot_height
 }

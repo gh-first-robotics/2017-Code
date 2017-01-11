@@ -1,10 +1,11 @@
 package org.usfirst.frc.team5530.robot.system;
 
-import org.usfirst.frc.team5530.robot.Vector2;
-
+import org.usfirst.frc.team5530.robot.teleop.Vector2;
+//import org.usfirst.frc.team5530.robot.Robot;
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
-public class DriveTrain {
+public class DriveTrain implements RobotSystem {
 	private CANTalon[] talons;
 
 	public DriveTrain(CANTalon l1, CANTalon l2, CANTalon r1, CANTalon r2) {
@@ -56,6 +57,15 @@ public class DriveTrain {
 		talons[2].set(rSpeed);
 		talons[3].set(rSpeed);
 	}
+	
+	boolean turnTowardsTarget = false;
+	int targetDirection = 0;
+	double speed = 1;
+	static double error = 5;
+	static double center = 50; // is this number correct?
+	public void turnTowardsTarget(){
+		turnTowardsTarget = true;
+	}
 
 	/**
 	 * Clamps a value between a minimum and a maximum value
@@ -70,5 +80,58 @@ public class DriveTrain {
 	 */
 	private static double clamp(double val, double min, double max) {
 		return Math.min(max, Math.max(val, val));
+	}
+	
+	//TODO: find a way to get the bestTargetIndex from Robot.java instead of copying the bestTarget() function
+	static double bestWHratio = 1;
+	int bestTargetIndex;
+	int bestTarget(double[] widths, double[] heights/*, double[] areas*/){
+		if (widths.length == 0){
+			return -1;
+		}
+		else{
+			bestTargetIndex=0;
+			for (int i=0; i<widths.length; i++){
+				if (Math.abs(widths[i]/heights[i] - bestWHratio)<Math.abs(widths[bestTargetIndex]/heights[bestTargetIndex] - bestWHratio)){
+					bestTargetIndex=i;
+				}
+				//add something to include area
+			}
+			return bestTargetIndex;
+		}
+	}
+	
+	NetworkTable table = NetworkTable.getTable("GRIP/myContoursReport"); //is this necessary?
+	double centerX;
+	public void update() { 
+		System.out.println("Drivetrain update is being called. Going to print information about the robot turning towards the target here.");
+		if (turnTowardsTarget){
+			System.out.println("robot is turning towards target");
+			double[] centerXs = table.getNumberArray("centerX", new double[0]);
+			double[] widths = table.getNumberArray("width", new double[0]);
+			double[] heights = table.getNumberArray("height", new double[0]);
+			System.out.println("index of best target: " + bestTarget(widths, heights));
+			if (widths.length>0){ //if targets found
+				centerX = centerXs[bestTargetIndex];
+			}
+			else{ //if no targets found
+				centerX = center; //don't move
+				System.out.println("no targets found");
+			}
+			System.out.println("center X of best target: " + centerX);
+			if (centerX - center > error){ //turn right, X of target is on right side of screen
+				targetDirection=1;				
+			}
+			else if (centerX - center < -error){ //turn left, X of target is on left side of screen
+				targetDirection=-1;				
+			}
+			else{//don't turn, already within error of target
+				targetDirection = 0;
+				turnTowardsTarget = false;
+			}
+			System.out.println("target direction: " + targetDirection);
+			tankDrive(targetDirection * speed, -targetDirection*speed);
+			
+		}
 	}
 }
