@@ -2,7 +2,7 @@ package org.usfirst.frc.team5530.robot.system;
 
 import org.usfirst.frc.team5530.robot.teleop.Vector2;
 
-import edu.wpi.first.wpilibj.CANTalon;
+import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.Servo;
 
 public class Scaler implements RobotSystem {

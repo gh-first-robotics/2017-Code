@@ -2,7 +2,7 @@ package org.usfirst.frc.team5530.robot.system;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
-import edu.wpi.first.wpilibj.CANTalon;
+import com.ctre.CANTalon;
 
 public class LowArm implements RobotSystem {
 	private CANTalon talon;

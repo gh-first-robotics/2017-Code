@@ -15,7 +15,7 @@ import org.usfirst.frc.team5530.robot.system.Shooter;
 import org.usfirst.frc.team5530.robot.teleop.Operator;
 
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.CANTalon;
+import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
@@ -83,8 +83,8 @@ public class Robot extends SampleRobot {
 		SmartDashboard.putData("Starting Defense", defenseChooser);
 
 		camera = new USBCamera("cam0");
-		CameraServer.getInstance().setQuality(20);
-		CameraServer.getInstance().startAutomaticCapture(camera);
+		//CameraServer.getInstance().setQuality(20);
+		CameraServer.getInstance().startAutomaticCapture();
 
 
 		Joystick stick1 = new Joystick(0);
