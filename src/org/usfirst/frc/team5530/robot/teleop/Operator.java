@@ -51,6 +51,10 @@ public class Operator {
 
 		if (state.isNewlyPressed(InputButton.Reverse_Steering, previousState))
 			reverseDriving = !reverseDriving;	
+		
+		if (state.isNewlyPressed(InputButton.Drive_Towards_Target, previousState))
+			driveTrain.startDriveToTarget();
+
 
 		if (state.isNewlyPressed(InputButton.Shoot_Auto, previousState))
 			driveTrain.turnTowardsTarget();
