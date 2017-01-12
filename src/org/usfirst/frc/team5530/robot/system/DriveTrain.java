@@ -4,10 +4,12 @@ import org.usfirst.frc.team5530.robot.teleop.Vector2;
 import org.usfirst.frc.team5530.robot.Robot;
 import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import edu.wpi.first.wpilibj.Ultrasonic;
 
 public class DriveTrain implements RobotSystem {
 	private CANTalon[] talons;
-
+	public Ultrasonic ultrasonic = new Ultrasonic(0,1);
+	
 	public DriveTrain(CANTalon l1, CANTalon l2, CANTalon r1, CANTalon r2) {
 		talons = new CANTalon[] { l1, l2, r1, r2 };
 	}
@@ -132,7 +134,7 @@ public class DriveTrain implements RobotSystem {
 	NetworkTable table = NetworkTable.getTable("GRIP/myContoursReport"); //is this necessary?
 	double centerX;
 	public void update() { 
-		
+		System.out.println("Ultrasonic range in inches "+ ultrasonic.getRangeInches());
 		
 		if (driveToTarget){
 			driveToTarget();
