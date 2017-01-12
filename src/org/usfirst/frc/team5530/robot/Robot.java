@@ -119,9 +119,10 @@ public class Robot extends SampleRobot {
 			sleep(5);
 		}
 	}
-	static double bestWHratio = 1; //figure out what this is
+	public static double bestWHratio = 1; //figure out what this is
 	//largest area is best???
 	public int bestTargetIndex;
+	double screenCenter = 50;
 	int bestTarget(double[] widths, double[] heights/*, double[] areas*/){
 		if (widths.length == 0){
 			return -1;
@@ -141,10 +142,11 @@ public class Robot extends SampleRobot {
 		return bestTargetIndex;
 	}
 	static double k = 6032; //is this the correct number?
-	double distanceToTarget(double width){ //TODO: change to use height in calculations as well
+	public static double distanceToTarget(double width){ //TODO: change to use height in calculations as well
 		return k/width;
 	}
-	
+	public static double center0;
+	public static double distanceToTarget;
 	NetworkTable table = NetworkTable.getTable("GRIP/myContoursReport");
 	public void printTargetInformation(){		
 		double[] areas = table.getNumberArray("area", new double[0]);
@@ -158,9 +160,11 @@ public class Robot extends SampleRobot {
 		if (areas.length != 0){
 			System.out.println("index of best target: "+bestTarget(widths, heights));
 			table.putNumber("bestTargetIndex", bestTargetIndex);
+			distanceToTarget = distanceToTarget(widths[bestTargetIndex]);
 			System.out.println("distance to target: "+distanceToTarget(widths[bestTargetIndex]));
 			table.putNumber("indexOfBestTargetdistanceToTarget", distanceToTarget(widths[bestTargetIndex]));
-			System.out.println("center X of best target: "+distanceToTarget(centerXs[bestTargetIndex]));
+			center0= centerXs[bestTargetIndex] - screenCenter;
+			System.out.println("center X of best target: "+centerXs[bestTargetIndex]);
 		}
 	}
 	

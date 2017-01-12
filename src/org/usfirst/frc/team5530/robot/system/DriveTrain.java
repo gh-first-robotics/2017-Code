@@ -1,7 +1,7 @@
 package org.usfirst.frc.team5530.robot.system;
 
 import org.usfirst.frc.team5530.robot.teleop.Vector2;
-//import org.usfirst.frc.team5530.robot.Robot;
+import org.usfirst.frc.team5530.robot.Robot;
 import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
@@ -67,6 +67,34 @@ public class DriveTrain implements RobotSystem {
 		turnTowardsTarget = true;
 	}
 
+	boolean driveToTarget = false;
+	double drive_speed;
+	double turn_speed;
+	double max_speed = 1;
+	double min_speed = 0.2;
+	double max_turn_speed = 0.7;
+//	double min_turn_speed = 0.2;
+	double distance_speed_ratio = 1/10;
+	double distance_turn_speed_ratio = 1/50;
+	double errorDfromT = 1;
+	public void startDriveToTarget(){
+		if (driveToTarget){
+			driveToTarget = false;
+		}
+		else{
+			driveToTarget = true;
+		}
+	}
+	public void driveToTarget(){ //called repeatedly if driveToTarget==true
+		drive_speed = Math.min(1, Math.max(min_speed, Robot.distanceToTarget * distance_speed_ratio));
+		turn_speed = (Robot.center0/Math.abs(Robot.center0)) * Math.min(max_turn_speed, Math.abs(distance_turn_speed_ratio * Robot.center0)); // - means turn left
+		tankDrive(drive_speed + turn_speed, drive_speed - turn_speed);
+		if (Robot.distanceToTarget<errorDfromT){
+			tankDrive(0, 0);
+			driveToTarget = false;
+		}
+	}
+	
 	/**
 	 * Clamps a value between a minimum and a maximum value
 	 * 
@@ -104,6 +132,14 @@ public class DriveTrain implements RobotSystem {
 	NetworkTable table = NetworkTable.getTable("GRIP/myContoursReport"); //is this necessary?
 	double centerX;
 	public void update() { 
+		
+		
+		if (driveToTarget){
+			driveToTarget();
+		}
+		
+		
+		
 		System.out.println("Drivetrain update is being called. Going to print information about the robot turning towards the target here.");
 		if (turnTowardsTarget){
 			System.out.println("robot is turning towards target");
