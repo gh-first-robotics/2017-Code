@@ -122,6 +122,7 @@ public class Robot extends SampleRobot {
 	public static double bestWHratio = 1; //figure out what this is
 	//largest area is best???
 	public int bestTargetIndex;
+	public int secondBestTargetIndex;
 	double screenCenter = 50;
 	int bestTarget(double[] widths, double[] heights/*, double[] areas*/){
 		if (widths.length == 0){
@@ -129,8 +130,10 @@ public class Robot extends SampleRobot {
 		}
 		else{
 			bestTargetIndex=0;
+			secondBestTargetIndex=0;
 			for (int i=0; i<widths.length; i++){
 				if (Math.abs(widths[i]/heights[i] - bestWHratio)<Math.abs(widths[bestTargetIndex]/heights[bestTargetIndex] - bestWHratio)){
+					secondBestTargetIndex=bestTargetIndex;
 					bestTargetIndex=i;
 				}
 				//add something to include area
