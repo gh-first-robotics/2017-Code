@@ -122,7 +122,7 @@ public class Robot extends SampleRobot {
 	public static double bestWHratio = 1; //figure out what this is
 	//largest area is best???
 	public int bestTargetIndex;
-	public int secondBestTargetIndex;
+	public static int secondBestTargetIndex;
 	double screenCenter = 50;
 	int bestTarget(double[] widths, double[] heights/*, double[] areas*/){
 		if (widths.length == 0){
@@ -144,7 +144,7 @@ public class Robot extends SampleRobot {
 	public int getbestTargetIndex(){
 		return bestTargetIndex;
 	}
-	static double k = 6032; //is this the correct number?
+	static double k = 21*40; //is this the correct number?
 	public static double distanceToTarget(double width){ //TODO: change to use height in calculations as well
 		return k/width;
 	}
@@ -162,6 +162,7 @@ public class Robot extends SampleRobot {
 		System.out.println(areas.length); //prints number of targets found
 		if (areas.length != 0){
 			System.out.println("index of best target: "+bestTarget(widths, heights));
+			System.out.println("width: "+widths[bestTargetIndex]);
 			table.putNumber("bestTargetIndex", bestTargetIndex);
 			distanceToTarget = distanceToTarget(widths[bestTargetIndex]);
 			System.out.println("distance to target: "+distanceToTarget(widths[bestTargetIndex]));

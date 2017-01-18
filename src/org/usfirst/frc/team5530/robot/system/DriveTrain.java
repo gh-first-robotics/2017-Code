@@ -150,7 +150,7 @@ public class DriveTrain implements RobotSystem {
 			double[] heights = table.getNumberArray("height", new double[0]);
 			System.out.println("index of best target: " + bestTarget(widths, heights));
 			if (widths.length>0){ //if targets found
-				centerX = centerXs[bestTargetIndex];
+				centerX = (centerXs[bestTargetIndex] + centerXs[Robot.secondBestTargetIndex])/2;
 			}
 			else{ //if no targets found
 				centerX = center; //don't move
