@@ -121,14 +121,11 @@ public class Robot extends SampleRobot {
 	}
 	public static double bestWHratio = 1; //figure out what this is
 	//largest area is best???
-	public int bestTargetIndex;
-	public static int secondBestTargetIndex;
-	double screenCenter = 50;
-	int bestTarget(double[] widths, double[] heights/*, double[] areas*/){
-		if (widths.length == 0){
-			return -1;
-		}
-		else{
+	public static int bestTargetIndex =0;
+	public static int secondBestTargetIndex = 0;
+	double screenCenter = 160; //50
+	static int bestTarget(double[] widths, double[] heights/*, double[] areas*/){
+		if (widths.length > 0){		
 			bestTargetIndex=0;
 			secondBestTargetIndex=0;
 			for (int i=0; i<widths.length; i++){
@@ -139,6 +136,9 @@ public class Robot extends SampleRobot {
 				//add something to include area
 			}
 			return bestTargetIndex;
+		}
+		else{
+			return -1;
 		}
 	}
 	public int getbestTargetIndex(){
@@ -160,7 +160,7 @@ public class Robot extends SampleRobot {
 		double[] solidities = table.getNumberArray("solidity", new double[0]);
 		System.out.println(table.isConnected()); //prints true
 		System.out.println(areas.length); //prints number of targets found
-		if (areas.length != 0){
+		if (areas.length > 0){
 			System.out.println("index of best target: "+bestTarget(widths, heights));
 			System.out.println("width: "+widths[bestTargetIndex]);
 			table.putNumber("bestTargetIndex", bestTargetIndex);

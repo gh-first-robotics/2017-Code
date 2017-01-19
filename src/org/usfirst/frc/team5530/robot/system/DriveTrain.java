@@ -64,7 +64,7 @@ public class DriveTrain implements RobotSystem {
 	int targetDirection = 0;
 	double speed = 1;
 	static double error = 5;
-	static double center = 50; // is this number correct?
+	static double center = 160; // is this number correct?
 	public void turnTowardsTarget(){
 		turnTowardsTarget = true;
 	}
@@ -149,7 +149,7 @@ public class DriveTrain implements RobotSystem {
 			double[] widths = table.getNumberArray("width", new double[0]);
 			double[] heights = table.getNumberArray("height", new double[0]);
 			System.out.println("index of best target: " + bestTarget(widths, heights));
-			if (widths.length>0){ //if targets found
+			if (widths.length>1){ //if targets found
 				centerX = (centerXs[bestTargetIndex] + centerXs[Robot.secondBestTargetIndex])/2;
 			}
 			else{ //if no targets found
