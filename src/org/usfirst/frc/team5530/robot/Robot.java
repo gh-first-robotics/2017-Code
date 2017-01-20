@@ -124,7 +124,7 @@ public class Robot extends SampleRobot {
 	public static int bestTargetIndex =0;
 	public static int secondBestTargetIndex = 0;
 	double screenCenter = 160; //50
-	static int bestTarget(double[] widths, double[] heights/*, double[] areas*/){
+	public static int bestTarget(double[] widths, double[] heights/*, double[] areas*/){
 		if (widths.length > 0){		
 			bestTargetIndex=0;
 			secondBestTargetIndex=0;

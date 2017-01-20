@@ -114,8 +114,8 @@ public class DriveTrain implements RobotSystem {
 	
 	//TODO: find a way to get the bestTargetIndex from Robot.java instead of copying the bestTarget() function
 	static double bestWHratio = 1;
-	int bestTargetIndex;
-	int bestTarget(double[] widths, double[] heights/*, double[] areas*/){
+/*	int bestTargetIndex;
+	int bestTarget(double[] widths, double[] heights*//*, double[] areas*//*){
 		if (widths.length == 0){
 			return -1;
 		}
@@ -129,7 +129,7 @@ public class DriveTrain implements RobotSystem {
 			}
 			return bestTargetIndex;
 		}
-	}
+	}*/
 	
 	NetworkTable table = NetworkTable.getTable("GRIP/myContoursReport"); //is this necessary?
 	double centerX;
@@ -148,9 +148,9 @@ public class DriveTrain implements RobotSystem {
 			double[] centerXs = table.getNumberArray("centerX", new double[0]);
 			double[] widths = table.getNumberArray("width", new double[0]);
 			double[] heights = table.getNumberArray("height", new double[0]);
-			System.out.println("index of best target: " + bestTarget(widths, heights));
+			System.out.println("index of best target: " + Robot.bestTargetIndex);//Robot.bestTarget(widths, heights)
 			if (widths.length>1){ //if targets found
-				centerX = (centerXs[bestTargetIndex] + centerXs[Robot.secondBestTargetIndex])/2;
+				centerX = (centerXs[Robot.bestTargetIndex] + centerXs[Robot.secondBestTargetIndex])/2;
 			}
 			else{ //if no targets found
 				centerX = center; //don't move
