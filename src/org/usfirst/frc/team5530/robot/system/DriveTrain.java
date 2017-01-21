@@ -78,10 +78,11 @@ public class DriveTrain implements RobotSystem {
 //	double min_turn_speed = 0.2;
 	double distance_speed_ratio = 1/10;
 	double distance_turn_speed_ratio = 1/50;
-	double errorDfromT = 1;
+	double errorDfromT = 17; //make this minimum distance that target can fully be seen from. This number was previously 10
 	public void startDriveToTarget(){
 		if (driveToTarget){
 			driveToTarget = false;
+			tankDrive(0,0);
 		}
 		else{
 			driveToTarget = true;
@@ -94,6 +95,9 @@ public class DriveTrain implements RobotSystem {
 		if (Robot.distanceToTarget<errorDfromT){
 			tankDrive(0, 0);
 			driveToTarget = false;
+		}
+		if(!Robot.targetsFound){
+			startDriveToTarget();
 		}
 	}
 	

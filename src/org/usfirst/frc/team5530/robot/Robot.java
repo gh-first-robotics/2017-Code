@@ -144,6 +144,7 @@ public class Robot extends SampleRobot {
 	public int getbestTargetIndex(){
 		return bestTargetIndex;
 	}
+	public static boolean targetsFound = false;
 	static double k = 21*40; //is this the correct number?
 	public static double distanceToTarget(double width){ //TODO: change to use height in calculations as well
 		return k/width;
@@ -160,7 +161,8 @@ public class Robot extends SampleRobot {
 		double[] solidities = table.getNumberArray("solidity", new double[0]);
 		System.out.println(table.isConnected()); //prints true
 		System.out.println(areas.length); //prints number of targets found
-		if (areas.length > 0){
+		if (widths.length > 0){
+			targetsFound=true;
 			System.out.println("index of best target: "+bestTarget(widths, heights));
 			System.out.println("width: "+widths[bestTargetIndex]);
 			table.putNumber("bestTargetIndex", bestTargetIndex);
@@ -169,6 +171,9 @@ public class Robot extends SampleRobot {
 			table.putNumber("indexOfBestTargetdistanceToTarget", distanceToTarget(widths[bestTargetIndex]));
 			center0= centerXs[bestTargetIndex] - screenCenter;
 			System.out.println("center X of best target: "+centerXs[bestTargetIndex]);
+		}
+		else{
+			targetsFound=false;
 		}
 	}
 	
