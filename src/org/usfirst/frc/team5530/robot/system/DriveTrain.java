@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.Ultrasonic;
 public class DriveTrain implements RobotSystem {
 	private CANTalon[] talons;
 	public Ultrasonic ultrasonic = new Ultrasonic(0,1);
-	
+	public static boolean autoDrive = false;
 	public DriveTrain(CANTalon l1, CANTalon l2, CANTalon r1, CANTalon r2) {
 		talons = new CANTalon[] { l1, l2, r1, r2 };
 	}
@@ -54,10 +54,12 @@ public class DriveTrain implements RobotSystem {
 	public void tankDrive(double lSpeed, double rSpeed) {
 		lSpeed = clamp(lSpeed, -1, 1);
 		rSpeed = clamp(rSpeed, -1, 1);
-		talons[0].set(-lSpeed);
-		talons[1].set(-lSpeed);
-		talons[2].set(rSpeed);
-		talons[3].set(rSpeed);
+		System.out.println("l speed: "+lSpeed);
+		System.out.println("r speed: "+ rSpeed);
+		talons[0].set(-lSpeed /*0.5*/);
+		talons[1].set(-lSpeed/*0.5*/);
+		talons[2].set(rSpeed * 0.8);
+		talons[3].set(rSpeed * 0.8);
 	}
 	
 	boolean turnTowardsTarget = false;
@@ -72,26 +74,31 @@ public class DriveTrain implements RobotSystem {
 	boolean driveToTarget = false;
 	double drive_speed;
 	double turn_speed;
-	double max_speed = 1;
-	double min_speed = 0.2;
-	double max_turn_speed = 0.7;
+	double max_speed = .4;
+	double min_speed = 0.15;
+	double max_turn_speed = 0.1;
 //	double min_turn_speed = 0.2;
 	double distance_speed_ratio = 1/10;
-	double distance_turn_speed_ratio = 1/50;
+	double distance_turn_speed_ratio = 0.1;
 	double errorDfromT = 17; //make this minimum distance that target can fully be seen from. This number was previously 10
 	public void startDriveToTarget(){
 		if (driveToTarget){
 			driveToTarget = false;
 			tankDrive(0,0);
+			autoDrive=false;
 		}
 		else{
 			driveToTarget = true;
+			autoDrive=true;
 		}
 	}
 	public void driveToTarget(){ //called repeatedly if driveToTarget==true
+		autoDrive=true;
 		drive_speed = Math.min(1, Math.max(min_speed, Robot.distanceToTarget * distance_speed_ratio));
 		turn_speed = (Robot.center0/Math.abs(Robot.center0)) * Math.min(max_turn_speed, Math.abs(distance_turn_speed_ratio * Robot.center0)); // - means turn left
-		tankDrive(drive_speed + turn_speed, drive_speed - turn_speed);
+		System.out.println("WARNING: turn speed"+turn_speed);
+		tankDrive(drive_speed - turn_speed, drive_speed + turn_speed);
+	//	tankDrive(0.1, 0.1);
 		if (Robot.distanceToTarget<errorDfromT){
 			tankDrive(0, 0);
 			driveToTarget = false;

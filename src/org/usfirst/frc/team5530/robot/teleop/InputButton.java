@@ -1,7 +1,7 @@
 package org.usfirst.frc.team5530.robot.teleop;
 
 public enum InputButton {
-    Raise_Arm(0, 1),
+    Raise_Arm(0, 1), //temporarily disabling arms to prevent them from messing up the camera
     Lower_Arm(0, 2),
     Reverse_Steering(0, 7),
     Drive_Towards_Target(0,3),
