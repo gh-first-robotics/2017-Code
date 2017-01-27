@@ -82,9 +82,9 @@ public class Robot extends SampleRobot {
 			defenseChooser.addObject(autons[i].getName(), i);
 		SmartDashboard.putData("Starting Defense", defenseChooser);
 
-		camera = new USBCamera("cam0");
+	//	camera = new USBCamera("cam0");
 		//CameraServer.getInstance().setQuality(20);
-		CameraServer.getInstance().startAutomaticCapture();
+		//CameraServer.getInstance().startAutomaticCapture();
 
 
 		Joystick stick1 = new Joystick(0);
