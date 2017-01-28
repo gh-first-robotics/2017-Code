@@ -4,16 +4,56 @@ import org.usfirst.frc.team5530.robot.VisionProcessing;
 import org.usfirst.frc.team5530.robot.teleop.Vector2;
 
 import com.ctre.CANTalon;
+import com.ctre.CANTalon.FeedbackDevice;
+import com.ctre.CANTalon.TalonControlMode;
 
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveTrain implements RobotSystem {
+	//static double max_rpm = 1500; //highest rpm of what encoder is measuring
+	static double speedRatio= 1/1500; //get this number by having the robot drive, 
+									 // then dividing the actual distance the robot drove
+									//  by the distance the encoder measured that the robot drove
+								   //   or 2 * pi * radius * gear_ratio   ???
 	private CANTalon[] talons;
 	public Ultrasonic ultrasonic = new Ultrasonic(0,1);
 	public static boolean autoDrive = false;
-	public DriveTrain(CANTalon l1, CANTalon l2, CANTalon r1, CANTalon r2) {
-		talons = new CANTalon[] { l1, l2, r1, r2 };
+	static double max_robot_speed= 10; //fastest speed the robot can drive at
+	public int
+		l1 = 0,
+		l2 = 1,
+		r1 = 2,
+		r2 = 3;
+	
+/*	public static double
+		wheel_radius,
+		gear_ratio;
+*/
+	int allowableError = 10;
+	public DriveTrain() {
+		talons = new CANTalon[] { new CANTalon(l1), new CANTalon(l2), new CANTalon(r1), new CANTalon(r2) };
+	}
+	
+	 public void driveTrainInit(){
+		 System.out.println("driveTrainInit called");
+		talons[1].changeControlMode(TalonControlMode.Follower);
+		talons[1].set(l1);
+		talons[3].changeControlMode(TalonControlMode.Follower);
+		talons[3].set(r1);
+		talons[0].setFeedbackDevice(FeedbackDevice.QuadEncoder);
+		talons[0].reverseSensor(false);
+		talons[0].configEncoderCodesPerRev(4);
+		talons[2].setFeedbackDevice(FeedbackDevice.QuadEncoder);
+		talons[2].reverseSensor(false);
+		talons[2].configEncoderCodesPerRev(4);
+		talons[0].setPID(0.5, 0.001, 0.0);
+		talons[0].setPosition(0);
+		talons[2].setPID(0.5, 0.001, 0.0);
+		talons[2].setPosition(0);
+		talons[0].setAllowableClosedLoopErr(allowableError);
+		talons[2].setAllowableClosedLoopErr(allowableError);
 	}
 
 	/**
@@ -44,7 +84,7 @@ public class DriveTrain implements RobotSystem {
 	public void drive(double speed) {
 		tankDrive(speed, speed);
 	}
-
+	
 	/**
 	 * Sets the speed of the drive train
 	 * 
@@ -54,15 +94,33 @@ public class DriveTrain implements RobotSystem {
 	 *            the speed for the right wheels [-1, 1]
 	 */
 	public void tankDrive(double lSpeed, double rSpeed) {
+		talons[0].changeControlMode(TalonControlMode.PercentVbus);
+		talons[2].changeControlMode(TalonControlMode.PercentVbus);
 		lSpeed = clamp(lSpeed, -1, 1);
 		rSpeed = clamp(rSpeed, -1, 1);
 		System.out.println("l speed: "+lSpeed);
 		System.out.println("r speed: "+ rSpeed);
-		talons[0].set(-lSpeed /*0.5*/);
-		talons[1].set(-lSpeed/*0.5*/);
-		talons[2].set(rSpeed * 0.8);
-		talons[3].set(rSpeed * 0.8);
+		talons[0].set(lSpeed);	
+		talons[2].set(rSpeed);
 	}
+	
+	public void driveStraight(double lSpeed, double rSpeed){
+		talons[0].changeControlMode(TalonControlMode.Speed);
+		talons[2].changeControlMode(TalonControlMode.Speed);
+		talons[0].set(lSpeed/speedRatio);	
+		talons[2].set(rSpeed/speedRatio);
+	}
+	
+	public void driveStraightDistance(double distance/*, double speed*/){
+		talons[0].changeControlMode(TalonControlMode.Position);
+		talons[2].changeControlMode(TalonControlMode.Position);
+		//talons[0].pushMotionProfileTrajectory();
+		talons[0].setSetpoint(talons[0].getPosition() + distance/speedRatio);
+		talons[2].setSetpoint(talons[2].getPosition() + distance/speedRatio);
+	}
+	
+	public void findSpeedRatio(){}
+	
 	
 	boolean turnTowardsTarget = false;
 	int targetDirection = 0;
@@ -125,29 +183,19 @@ public class DriveTrain implements RobotSystem {
 		return Math.min(max, Math.max(val, val));
 	}
 	
-	//TODO: find a way to get the bestTargetIndex from Robot.java instead of copying the bestTarget() function
-	static double bestWHratio = 1;
-/*	int bestTargetIndex;
-	int bestTarget(double[] widths, double[] heights*//*, double[] areas*//*){
-		if (widths.length == 0){
-			return -1;
-		}
-		else{
-			bestTargetIndex=0;
-			for (int i=0; i<widths.length; i++){
-				if (Math.abs(widths[i]/heights[i] - bestWHratio)<Math.abs(widths[bestTargetIndex]/heights[bestTargetIndex] - bestWHratio)){
-					bestTargetIndex=i;
-				}
-				//add something to include area
-			}
-			return bestTargetIndex;
-		}
-	}*/
-	
 	NetworkTable table = NetworkTable.getTable("GRIP/myContoursReport"); //is this necessary?
 	double centerX;
 	public void update() { 
 		System.out.println("Ultrasonic range in inches "+ ultrasonic.getRangeInches());
+		
+		SmartDashboard.putNumber("left getEncPosition", talons[0].getEncPosition());
+		SmartDashboard.putNumber("right getEncPosition", talons[2].getEncPosition());
+		SmartDashboard.putNumber("left getEncVelocity", talons[0].getEncVelocity());
+		SmartDashboard.putNumber("right getEncVelocity", talons[2].getEncVelocity());
+		SmartDashboard.putNumber("left getPosition", talons[0].getPosition());
+		SmartDashboard.putNumber("right getPosition", talons[2].getPosition());
+		SmartDashboard.putNumber("left getSpeed", talons[0].getSpeed());
+		SmartDashboard.putNumber("right getSpeed", talons[2].getSpeed());
 		
 		if (driveToTarget){
 			driveToTarget();

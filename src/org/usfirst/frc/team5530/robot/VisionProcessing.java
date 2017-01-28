@@ -87,7 +87,7 @@ public class VisionProcessing {
 		}
 	}//printTargetInfo
 	public static double distanceToTarget(double width){ //TODO: change to use height in calculations as well
-		return k/width;
+		return k/width; //inches
 	}
 	public static double center0;
 	public static double distanceToTarget;
