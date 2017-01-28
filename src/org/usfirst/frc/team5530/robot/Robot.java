@@ -97,7 +97,7 @@ public class Robot extends SampleRobot {
 		 * BuiltInAccelerometer(Accelerometer.Range.k4G); double xVal =
 		 * accel.getX(); double yVal = accel.getY(); double zVal = accel.getZ();
 		 */
-	}
+	}//Robot Init
 
 	@Override
 	public void autonomous() {
@@ -108,7 +108,7 @@ public class Robot extends SampleRobot {
 
 		System.out.println("Running  " + program.getName() + " at position " + position);
 		program.run(this, Integer.parseInt((String) positionChooser.getSelected()));
-	}
+	}//autonomous
 
 	@Override
 	public void operatorControl() {
@@ -118,7 +118,7 @@ public class Robot extends SampleRobot {
 			VisionProcessing.printTargetInformation();
 			sleep(5);
 		}
-	}
+	}//operatorControl
 	
 
 	@SuppressWarnings("unchecked")
@@ -129,7 +129,7 @@ public class Robot extends SampleRobot {
 			}
 		}
 		throw new IllegalArgumentException("Found no system of type " + clazz.getName());
-	}
+	}//T extends RobotSystem
 
 	public void execute(Macro m) {
 		m.run(this);
@@ -144,22 +144,22 @@ public class Robot extends SampleRobot {
 
 			if (System.currentTimeMillis() < end)
 				Timer.delay(5 / 1000.0);
-		}
-	}
+		}//while System.currentTimeMillis
+	}//sleep
 
 	public static void start(String mode) {
 		System.out.println("#    " + mode + "    #");
-	}
+	}//start
 	@Override
 	public void test() {
 		start("Test");
-	}
+	}//test
 	@Override
 	public void disabled() {
 		start("Disabled");				
 		while (isDisabled()) {
 			VisionProcessing.printTargetInformation();
 			Timer.delay(.5);
-		}
-	}
-}
+		}//while isDisabled
+	}//disabled
+}//Robot Class

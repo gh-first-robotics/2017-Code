@@ -48,7 +48,7 @@ public class VisionProcessing {
 		else{
 			return -1;
 		}
-	}
+	}//bestTarget
 	public static void printTargetInformation(){		
 		double[] areas = table.getNumberArray("area", new double[0]);
 		double[] widths = table.getNumberArray("width", new double[0]);
@@ -81,7 +81,7 @@ public class VisionProcessing {
 			System.out.println("center X of best target: "+centerXs[bestTargetIndex]);
 
 			}
-					}
+					}//widths.length > 0
 		else{
 			targetsFound=false;
 		}
@@ -92,4 +92,4 @@ public class VisionProcessing {
 	public static double center0;
 	public static double distanceToTarget;
 	static NetworkTable table = NetworkTable.getTable("GRIP/myContoursReport");
-}
+}//class VisionProcessing

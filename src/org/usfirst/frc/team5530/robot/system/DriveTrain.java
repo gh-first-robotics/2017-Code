@@ -33,7 +33,7 @@ public class DriveTrain implements RobotSystem {
 		} else {
 			tankDrive(left, right);
 		}
-	}
+	}//arcadeDrive
 
 	/**
 	 * Drive in a straight line
@@ -62,7 +62,7 @@ public class DriveTrain implements RobotSystem {
 		talons[1].set(-lSpeed/*0.5*/);
 		talons[2].set(rSpeed * 0.8);
 		talons[3].set(rSpeed * 0.8);
-	}
+	}//tank drive
 	
 	boolean turnTowardsTarget = false;
 	int targetDirection = 0;
@@ -93,7 +93,7 @@ public class DriveTrain implements RobotSystem {
 			driveToTarget = true;
 			autoDrive=true;
 		}
-	}
+	}//startDriveToTarget
 	public void driveToTarget(){ //called repeatedly if driveToTarget==true
 		autoDrive=true;
 		drive_speed = Math.min(1, Math.max(min_speed, VisionProcessing.distanceToTarget * distance_speed_ratio));
@@ -108,7 +108,7 @@ public class DriveTrain implements RobotSystem {
 		if(!VisionProcessing.targetsFound){
 			startDriveToTarget();
 		}
-	}
+	}//driveToTarget
 	
 	/**
 	 * Clamps a value between a minimum and a maximum value
@@ -179,10 +179,10 @@ public class DriveTrain implements RobotSystem {
 			else{//don't turn, already within error of target
 				targetDirection = 0;
 				turnTowardsTarget = false;
-			}
+			}//else
 			System.out.println("target direction: " + targetDirection);
 			tankDrive(targetDirection * speed, -targetDirection*speed);
 			
-		}
-	}
-}
+		}//if turnTowardsTarget
+	}//update
+}//DriveTrain class
