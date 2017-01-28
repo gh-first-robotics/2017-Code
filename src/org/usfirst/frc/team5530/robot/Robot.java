@@ -13,6 +13,7 @@ import org.usfirst.frc.team5530.robot.system.RobotSystem;
 import org.usfirst.frc.team5530.robot.system.Scaler;
 import org.usfirst.frc.team5530.robot.system.Shooter;
 import org.usfirst.frc.team5530.robot.teleop.Operator;
+import org.usfirst.frc.team5530.robot.VisionProcessing;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import com.ctre.CANTalon;
@@ -22,7 +23,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.vision.USBCamera;
@@ -47,14 +47,14 @@ import edu.wpi.first.wpilibj.vision.USBCamera;
 public class Robot extends SampleRobot {
 	private RobotSystem[] systems;
 
-	private USBCamera camera;
+	public USBCamera camera;
 	private Operator teleop;
 	
 	private static final AutoProgram[] autons = { new ChillyFries(), new Porticullis(), new LowBar(), new Other() };
-	private SendableChooser defenseChooser;
+	public SendableChooser defenseChooser;
 
 	private static final String[] positions = { "1", "2", "3", "4", "5" };
-	private SendableChooser positionChooser;
+	public SendableChooser positionChooser;
 	
 	@Override
 	public void robotInit() {
@@ -82,9 +82,9 @@ public class Robot extends SampleRobot {
 			defenseChooser.addObject(autons[i].getName(), i);
 		SmartDashboard.putData("Starting Defense", defenseChooser);
 
-		camera = new USBCamera("cam0");
+	//	camera = new USBCamera("cam0");
 		//CameraServer.getInstance().setQuality(20);
-		CameraServer.getInstance().startAutomaticCapture();
+		//CameraServer.getInstance().startAutomaticCapture();
 
 
 		Joystick stick1 = new Joystick(0);
@@ -115,68 +115,11 @@ public class Robot extends SampleRobot {
 		start("Teleoperation");
 		while (isOperatorControl() && isEnabled()) {
 			teleop.tick();
-			printTargetInformation();
+			VisionProcessing.printTargetInformation();
 			sleep(5);
 		}
 	}
-	static double bestWHratio = 1; //figure out what this is
-	//largest area is best???
-	public int bestTargetIndex;
-	int bestTarget(double[] widths, double[] heights/*, double[] areas*/){
-		if (widths.length == 0){
-			return -1;
-		}
-		else{
-			bestTargetIndex=0;
-			for (int i=0; i<widths.length; i++){
-				if (Math.abs(widths[i]/heights[i] - bestWHratio)<Math.abs(widths[bestTargetIndex]/heights[bestTargetIndex] - bestWHratio)){
-					bestTargetIndex=i;
-				}
-				//add something to include area
-			}
-			return bestTargetIndex;
-		}
-	}
-	public int getbestTargetIndex(){
-		return bestTargetIndex;
-	}
-	static double k = 6032; //is this the correct number?
-	double distanceToTarget(double width){ //TODO: change to use height in calculations as well
-		return k/width;
-	}
 	
-	NetworkTable table = NetworkTable.getTable("GRIP/myContoursReport");
-	public void printTargetInformation(){		
-		double[] areas = table.getNumberArray("area", new double[0]);
-		double[] widths = table.getNumberArray("width", new double[0]);
-		double[] heights = table.getNumberArray("height", new double[0]);
-		double[] centerXs = table.getNumberArray("centerX", new double[0]);
-		double[] centerYs = table.getNumberArray("centerY", new double[0]);
-		double[] solidities = table.getNumberArray("solidity", new double[0]);
-		System.out.println(table.isConnected()); //prints true
-		System.out.println(areas.length); //prints number of targets found
-		if (areas.length != 0){
-			System.out.println("index of best target: "+bestTarget(widths, heights));
-			table.putNumber("bestTargetIndex", bestTargetIndex);
-			System.out.println("distance to target: "+distanceToTarget(widths[bestTargetIndex]));
-			table.putNumber("indexOfBestTargetdistanceToTarget", distanceToTarget(widths[bestTargetIndex]));
-			System.out.println("center X of best target: "+distanceToTarget(centerXs[bestTargetIndex]));
-		}
-	}
-	
-	@Override
-	public void disabled() {
-		start("Disabled");				
-		while (isDisabled()) {
-			printTargetInformation();
-			Timer.delay(.5);
-		}
-	}
-
-	@Override
-	public void test() {
-		start("Test");
-	}
 
 	@SuppressWarnings("unchecked")
 	public <T extends RobotSystem> T getSystem(Class<T> clazz) {
@@ -204,7 +147,19 @@ public class Robot extends SampleRobot {
 		}
 	}
 
-	private static void start(String mode) {
+	public static void start(String mode) {
 		System.out.println("#    " + mode + "    #");
+	}
+	@Override
+	public void test() {
+		start("Test");
+	}
+	@Override
+	public void disabled() {
+		start("Disabled");				
+		while (isDisabled()) {
+			VisionProcessing.printTargetInformation();
+			Timer.delay(.5);
+		}
 	}
 }

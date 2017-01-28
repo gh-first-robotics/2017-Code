@@ -37,20 +37,25 @@ public class Operator {
 	public void tick() {
 		previousState = state;
 		state = controls.update();
-
+if (!DriveTrain.autoDrive){
 		driveTrain.arcadeDrive(state.getStick(0), reverseDriving);
+		}
 		if (enableScale)
 			scaler.move(state.getStick(1));
 
-		if (state.isPressed(InputButton.Raise_Arm))
-			lowArm.raise();
-		else if (state.isPressed(InputButton.Lower_Arm))
-			lowArm.lower();
-		else
-			lowArm.stop();
+		//if (state.isPressed(InputButton.Raise_Arm))
+			//lowArm.raise();
+		//else if (state.isPressed(InputButton.Lower_Arm))
+			//lowArm.lower();
+		//else
+		//	lowArm.stop();
 
 		if (state.isNewlyPressed(InputButton.Reverse_Steering, previousState))
 			reverseDriving = !reverseDriving;	
+		
+		if (state.isNewlyPressed(InputButton.Drive_Towards_Target, previousState))
+			driveTrain.startDriveToTarget();
+
 
 		if (state.isNewlyPressed(InputButton.Shoot_Auto, previousState))
 			driveTrain.turnTowardsTarget();
