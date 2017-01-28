@@ -1,10 +1,12 @@
 package org.usfirst.frc.team5530.robot.system;
 
+import org.usfirst.frc.team5530.robot.VisionProcessing;
 import org.usfirst.frc.team5530.robot.teleop.Vector2;
-import org.usfirst.frc.team5530.robot.Robot;
+
 import com.ctre.CANTalon;
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
+
 import edu.wpi.first.wpilibj.Ultrasonic;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 public class DriveTrain implements RobotSystem {
 	private CANTalon[] talons;
@@ -94,16 +96,16 @@ public class DriveTrain implements RobotSystem {
 	}
 	public void driveToTarget(){ //called repeatedly if driveToTarget==true
 		autoDrive=true;
-		drive_speed = Math.min(1, Math.max(min_speed, Robot.distanceToTarget * distance_speed_ratio));
-		turn_speed = (Robot.center0/Math.abs(Robot.center0)) * Math.min(max_turn_speed, Math.abs(distance_turn_speed_ratio * Robot.center0)); // - means turn left
+		drive_speed = Math.min(1, Math.max(min_speed, VisionProcessing.distanceToTarget * distance_speed_ratio));
+		turn_speed = (VisionProcessing.center0/Math.abs(VisionProcessing.center0)) * Math.min(max_turn_speed, Math.abs(distance_turn_speed_ratio * VisionProcessing.center0)); // - means turn left
 		System.out.println("WARNING: turn speed"+turn_speed);
 		tankDrive(drive_speed - turn_speed, drive_speed + turn_speed);
 	//	tankDrive(0.1, 0.1);
-		if (Robot.distanceToTarget<errorDfromT){
+		if (VisionProcessing.distanceToTarget<errorDfromT){
 			tankDrive(0, 0);
 			driveToTarget = false;
 		}
-		if(!Robot.targetsFound){
+		if(!VisionProcessing.targetsFound){
 			startDriveToTarget();
 		}
 	}
@@ -159,9 +161,9 @@ public class DriveTrain implements RobotSystem {
 			double[] centerXs = table.getNumberArray("centerX", new double[0]);
 			double[] widths = table.getNumberArray("width", new double[0]);
 			double[] heights = table.getNumberArray("height", new double[0]);
-			System.out.println("index of best target: " + Robot.bestTargetIndex);//Robot.bestTarget(widths, heights)
+			System.out.println("index of best target: " + VisionProcessing.bestTargetIndex);//Robot.bestTarget(widths, heights)
 			if (widths.length>1){ //if targets found
-				centerX = (centerXs[Robot.bestTargetIndex] + centerXs[Robot.secondBestTargetIndex])/2;
+				centerX = (centerXs[VisionProcessing.bestTargetIndex] + centerXs[VisionProcessing.secondBestTargetIndex])/2;
 			}
 			else{ //if no targets found
 				centerX = center; //don't move
