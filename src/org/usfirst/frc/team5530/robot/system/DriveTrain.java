@@ -10,10 +10,12 @@ import com.ctre.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+//TODO: should we change all units to meters and seconds, or should we leave them as inches and seconds
 public class DriveTrain implements RobotSystem {
+	static double wheel_radius = 2;
+	static double gear_ratio = 1;
 	//static double max_rpm = 1500; //highest rpm of what encoder is measuring
-	static double speedRatio= 1/1500; //get this number by having the robot drive, 
+/*inches*/	static double speedRatio= 2 * Math.PI * wheel_radius * gear_ratio; //get this number by having the robot drive, 
 									 // then dividing the actual distance the robot drove
 									//  by the distance the encoder measured that the robot drove
 								   //   or 2 * pi * radius * gear_ratio   ???
