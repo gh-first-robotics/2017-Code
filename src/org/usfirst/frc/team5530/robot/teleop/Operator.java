@@ -59,6 +59,12 @@ if (!DriveTrain.autoDrive){
 
 		if (state.isNewlyPressed(InputButton.Shoot_Auto, previousState))
 			driveTrain.turnTowardsTarget();
+		
+		if (state.isNewlyPressed(InputButton.Test_Drive_Straight, previousState))
+			driveTrain.driveStraight(3,3);
+		
+		if (state.isNewlyPressed(InputButton.Test_Drive_Distance, previousState))
+			driveTrain.driveStraightDistance(5*12);
 
 		if (state.isNewlyPressed(InputButton.Intake, previousState))
 			shooter.toggleIntake();
