@@ -55,6 +55,8 @@ if (!DriveTrain.autoDrive){
 		
 		if (state.isNewlyPressed(InputButton.Drive_Towards_Target, previousState))
 			driveTrain.startDriveToTarget();
+		if (state.isNewlyPressed(InputButton.Test_Turn, previousState))
+			driveTrain.rotateToAngle(90);
 
 
 		if (state.isNewlyPressed(InputButton.Shoot_Auto, previousState))
