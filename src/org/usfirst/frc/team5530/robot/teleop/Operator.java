@@ -3,7 +3,7 @@ package org.usfirst.frc.team5530.robot.teleop;
 import org.usfirst.frc.team5530.robot.Robot;
 import org.usfirst.frc.team5530.robot.macros.ShootMacro;
 import org.usfirst.frc.team5530.robot.system.DriveTrain;
-import org.usfirst.frc.team5530.robot.system.LowArm;
+import org.usfirst.frc.team5530.robot.system.Gear;
 import org.usfirst.frc.team5530.robot.system.Scaler;
 import org.usfirst.frc.team5530.robot.system.Shooter;
 
@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.Joystick;
 public class Operator {
 	private DriveTrain driveTrain;
 	private Shooter shooter;
-	private LowArm lowArm;
+	private Gear gear;
 	private Scaler scaler;
 
 	private Robot rob;
@@ -26,7 +26,7 @@ public class Operator {
 	public Operator(Robot rob, Joystick... sticks) {
 		this.driveTrain = rob.getSystem(DriveTrain.class);
 		this.shooter = rob.getSystem(Shooter.class);
-		this.lowArm = rob.getSystem(LowArm.class);
+		this.gear = rob.getSystem(Gear.class);
 		this.scaler = rob.getSystem(Scaler.class);
 
 		this.rob = rob;

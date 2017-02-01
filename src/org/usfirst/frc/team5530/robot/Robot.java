@@ -2,13 +2,10 @@
 package org.usfirst.frc.team5530.robot;
 
 import org.usfirst.frc.team5530.robot.autonomous.AutoProgram;
-import org.usfirst.frc.team5530.robot.autonomous.ChillyFries;
-import org.usfirst.frc.team5530.robot.autonomous.LowBar;
 import org.usfirst.frc.team5530.robot.autonomous.Other;
-import org.usfirst.frc.team5530.robot.autonomous.Porticullis;
 import org.usfirst.frc.team5530.robot.macros.Macro;
 import org.usfirst.frc.team5530.robot.system.DriveTrain;
-import org.usfirst.frc.team5530.robot.system.LowArm;
+import org.usfirst.frc.team5530.robot.system.Gear;
 import org.usfirst.frc.team5530.robot.system.RobotSystem;
 import org.usfirst.frc.team5530.robot.system.Scaler;
 import org.usfirst.frc.team5530.robot.system.Shooter;
@@ -50,7 +47,7 @@ public class Robot extends SampleRobot {
 	public USBCamera camera;
 	private Operator teleop;
 	
-	private static final AutoProgram[] autons = { new ChillyFries(), new Porticullis(), new LowBar(), new Other() };
+	private static final AutoProgram[] autons = { new Other() };
 	public SendableChooser defenseChooser;
 
 	private static final String[] positions = { "1", "2", "3", "4", "5" };
@@ -63,11 +60,11 @@ public class Robot extends SampleRobot {
 		// Intake, Switch1, Switch2, Shooter1, Shooter2
 		RobotSystem shooter = new Shooter(new CANTalon(6), new DigitalInput(9), new DigitalInput(8), new CANTalon(4), new CANTalon(5));
 		// Arm, ArmAngle
-		RobotSystem lowArm = new LowArm(new CANTalon(7), new AnalogInput(1));
+		RobotSystem gear = new Gear();
 		// Scaler
 		RobotSystem scaler = new Scaler(new CANTalon(0), new Servo(0));
 
-		systems = new RobotSystem[] { driveTrain, shooter, lowArm, scaler };
+		systems = new RobotSystem[] { driveTrain, shooter, gear, scaler };
 
 		defenseChooser = new SendableChooser();
 		positionChooser = new SendableChooser();
