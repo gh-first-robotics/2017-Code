@@ -23,13 +23,18 @@ public class Gear implements RobotSystem{
 	private DigitalInput stopSwitch= new DigitalInput(lS);
 	private Servo gripper = new Servo(g);
 	
+	boolean first = true;
+	double forward_position = 10;
+	double  XresetPosition = 0,
+			YresetPosition = 0;
+	
 	boolean beam = breakBeam.get();
 	boolean limit = stopSwitch.get();
 	double 	fast_speed = 0.8,
 			slow_speed = 0.3,
 			gripperClosedAngle = 90,
 			gripperOpenAngle = 0;
-	
+	int error = 5;
 	private enum GearState {
 		OFF, MOVING_FAST, MOVING_SLOW, ARM_DEPLOYING, MOVING_FORWARD, ARM_RELEASING, RESETTING 
 	}
@@ -40,16 +45,26 @@ public class Gear implements RobotSystem{
 		talonX.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		talonX.reverseSensor(false);
 		talonX.configEncoderCodesPerRev(4);
+		talonX.setPID(0.5, 0.001, 0.0);
+		talonX.setAllowableClosedLoopErr(error);
 		
 		talonY.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		talonY.reverseSensor(false);
 		talonY.configEncoderCodesPerRev(4);
+		talonY.setPID(0.5, 0.001, 0.0);
+		talonY.setAllowableClosedLoopErr(error);
 	}
 	
 	
 	public void placeGear(){
+		talonX.changeControlMode(TalonControlMode.PercentVbus);
+		talonY.changeControlMode(TalonControlMode.PercentVbus);
 		talonX.set(fast_speed);
 		state = GearState.MOVING_FAST;
+	}
+	
+	public void reset(){
+		state = GearState.RESETTING;
 	}
 	
 	@Override
@@ -76,9 +91,32 @@ public class Gear implements RobotSystem{
 			state = GearState.MOVING_FORWARD;
 		}
 		if (state == GearState.MOVING_FORWARD){
-			
+			if (first){
+				talonY.changeControlMode(TalonControlMode.Position);
+				talonY.setSetpoint(forward_position);
+				first = false;
+			}
 		}
-		
+		if (state == GearState.MOVING_FORWARD && Math.abs(talonY.getPosition() - forward_position) < error){
+			state = GearState.ARM_RELEASING;
+		}
+		if (state == GearState.ARM_RELEASING){
+			gripper.setAngle(gripperOpenAngle);
+		}
+		if (state == GearState.RESETTING){
+			gripper.setAngle(gripperOpenAngle);
+			
+			talonY.changeControlMode(TalonControlMode.Position);
+			talonY.setSetpoint(YresetPosition);
+			
+			talonX.changeControlMode(TalonControlMode.Position);
+			talonX.setSetpoint(XresetPosition);
+			
+			first = true;
+		}
+		if (state == GearState.RESETTING && gripper.getAngle()==gripperOpenAngle && Math.abs(talonY.getPosition() - YresetPosition) < error && Math.abs(talonX.getPosition() - XresetPosition) < error){
+			state = GearState.OFF;
+		}
 	}
 
 }
