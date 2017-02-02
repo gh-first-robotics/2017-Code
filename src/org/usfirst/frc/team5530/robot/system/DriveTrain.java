@@ -72,6 +72,7 @@ public class DriveTrain implements RobotSystem {
 		double left = -stick.y - stick.x;
 		double right = -stick.y + stick.x;
 		if (!autoDrive || left != 0 || right != 0){
+			autoDrive=false;
 			if (reverse) {
 				tankDrive(right, left);
 			} else {
@@ -112,6 +113,7 @@ public class DriveTrain implements RobotSystem {
 	}
 	
 	public void driveStraight(double lSpeed, double rSpeed){
+		autoDrive=true;
 		talons[0].changeControlMode(TalonControlMode.Speed);
 		talons[2].changeControlMode(TalonControlMode.Speed);
 		talons[0].set(lSpeed/speedRatio);	
@@ -119,6 +121,7 @@ public class DriveTrain implements RobotSystem {
 	}
 	
 	public void driveStraightDistance(double distance/*, double speed*/){
+		autoDrive=true;
 		talons[0].changeControlMode(TalonControlMode.Position);
 		talons[2].changeControlMode(TalonControlMode.Position);
 		//talons[0].pushMotionProfileTrajectory();
