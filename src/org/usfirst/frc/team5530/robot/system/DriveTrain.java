@@ -47,7 +47,8 @@ public class DriveTrain implements RobotSystem {
 		talons[3].changeControlMode(TalonControlMode.Follower);
 		talons[3].set(r1);
 		talons[0].setFeedbackDevice(FeedbackDevice.QuadEncoder);
-		talons[0].reverseSensor(false);
+		talons[0].reverseSensor(true);
+		talons[2].setInverted(true);
 		talons[0].configEncoderCodesPerRev(4);
 		talons[2].setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		talons[2].reverseSensor(false);
@@ -71,13 +72,18 @@ public class DriveTrain implements RobotSystem {
 	public void arcadeDrive(Vector2 stick, boolean reverse) {
 		double left = -stick.y - stick.x;
 		double right = -stick.y + stick.x;
-		if (!autoDrive || left != 0 || right != 0){
+		if (!autoDrive || left > .02 || right > .02){
+			System.out.println(left);
+			System.out.println(right);
 			autoDrive=false;
 			if (reverse) {
 				tankDrive(right, left);
 			} else {
 				tankDrive(left, right);
 			}
+		}
+		else{
+			System.out.println("autodriving");
 		}
 	}
 
@@ -104,10 +110,10 @@ public class DriveTrain implements RobotSystem {
 		talons[2].changeControlMode(TalonControlMode.PercentVbus);
 		lSpeed = clamp(lSpeed, -1, 1);
 		rSpeed = clamp(rSpeed, -1, 1);
-		System.out.println("l speed: "+lSpeed);
-		System.out.println("r speed: "+ rSpeed);
+	//	System.out.println("l speed: "+lSpeed);
+	//	System.out.println("r speed: "+ rSpeed);
 		
-		talons[0].set(-lSpeed);	
+		talons[0].set(lSpeed);	
 		talons[2].set(rSpeed);
 		
 	}
@@ -125,7 +131,7 @@ public class DriveTrain implements RobotSystem {
 		talons[0].changeControlMode(TalonControlMode.Position);
 		talons[2].changeControlMode(TalonControlMode.Position);
 		//talons[0].pushMotionProfileTrajectory();
-		talons[0].setSetpoint(talons[0].getPosition() + distance/speedRatio);
+		talons[0].setSetpoint(talons[0].getPosition() - distance/speedRatio);
 		talons[2].setSetpoint(talons[2].getPosition() + distance/speedRatio);
 	}
 	
@@ -196,9 +202,10 @@ public class DriveTrain implements RobotSystem {
 	NetworkTable table = NetworkTable.getTable("GRIP/myContoursReport"); //is this necessary?
 	double centerX;
 	public void update() { 
-		System.out.println("Ultrasonic range in inches "+ ultrasonic.getRangeInches());
+	//	System.out.println("Ultrasonic range in inches "+ ultrasonic.getRangeInches());
 		
-		System.out.println("test get bus voltage"+talons[0].getBusVoltage());	
+	//	talons[0].setFeedbackDevice(FeedbackDevice.QuadEncoder);
+	/*	System.out.println("test get bus voltage"+talons[0].getBusVoltage());	
 		System.out.println("left getEncPosition"+ talons[0].getEncPosition());
 		System.out.println("right getEncPosition"+ talons[2].getEncPosition());
 		System.out.println("left getEncVelocity"+ talons[0].getEncVelocity());
@@ -206,7 +213,7 @@ public class DriveTrain implements RobotSystem {
 		System.out.println("left getPosition"+ talons[0].getPosition());
 		System.out.println("right getPosition"+ talons[2].getPosition());
 		System.out.println("left getSpeed"+ talons[0].getSpeed());
-		System.out.println("right getSpeed"+ talons[2].getSpeed());
+		System.out.println("right getSpeed"+ talons[2].getSpeed()); */
 		SmartDashboard.putNumber("test get bus voltage", talons[0].getBusVoltage());
 		SmartDashboard.putNumber("left getEncPosition", talons[0].getEncPosition());
 		SmartDashboard.putNumber("right getEncPosition", talons[2].getEncPosition());
@@ -223,7 +230,7 @@ public class DriveTrain implements RobotSystem {
 		
 		
 		
-		System.out.println("Drivetrain update is being called. Going to print information about the robot turning towards the target here.");
+	//	System.out.println("Drivetrain update is being called. Going to print information about the robot turning towards the target here.");
 		if (turnTowardsTarget){
 			System.out.println("robot is turning towards target");
 			double[] centerXs = table.getNumberArray("centerX", new double[0]);

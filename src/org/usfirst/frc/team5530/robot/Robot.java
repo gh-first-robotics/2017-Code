@@ -116,7 +116,7 @@ public class Robot extends SampleRobot {
 		start("Teleoperation");
 		while (isOperatorControl() && isEnabled()) {
 			teleop.tick();
-			VisionProcessing.printTargetInformation();
+		//	VisionProcessing.printTargetInformation();
 			sleep(5);
 		}
 	}

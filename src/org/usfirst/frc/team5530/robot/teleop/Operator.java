@@ -64,7 +64,7 @@ public class Operator {
 			driveTrain.driveStraight(3,3);
 		
 		if (state.isNewlyPressed(InputButton.Test_Drive_Distance, previousState))
-			driveTrain.driveStraightDistance(5*12);
+			driveTrain.driveStraightDistance(2000);
 
 		if (state.isNewlyPressed(InputButton.Intake, previousState))
 			shooter.toggleIntake();
