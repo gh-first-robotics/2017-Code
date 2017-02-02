@@ -37,10 +37,9 @@ public class Operator {
 	public void tick() {
 		previousState = state;
 		state = controls.update();
-		DriveTrain.autoDrive = false;
-
+if (!DriveTrain.autoDrive){
 		driveTrain.arcadeDrive(state.getStick(0), reverseDriving);
-		
+		}
 		if (enableScale)
 			scaler.move(state.getStick(1));
 

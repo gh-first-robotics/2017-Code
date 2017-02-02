@@ -60,7 +60,7 @@ public class Robot extends SampleRobot {
 	public void robotInit() {
 		// Left, Left, Right, Right
 		RobotSystem driveTrain = new DriveTrain();
-		//getSystem(DriveTrain.class).driveTrainInit();
+		getSystem(DriveTrain.class).driveTrainInit();
 		// Intake, Switch1, Switch2, Shooter1, Shooter2
 		RobotSystem shooter = new Shooter(new CANTalon(6), new DigitalInput(9), new DigitalInput(8), new CANTalon(4), new CANTalon(5));
 		// Arm, ArmAngle

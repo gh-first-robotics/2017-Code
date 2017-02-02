@@ -24,10 +24,10 @@ public class DriveTrain implements RobotSystem {
 	public static boolean autoDrive = false;
 	static double max_robot_speed= 10; //fastest speed the robot can drive at
 	public int
-		r1 = 0,
-		r2 = 1,
-		l1 = 2,
-		l2 = 3;
+		l1 = 0,
+		l2 = 1,
+		r1 = 2,
+		r2 = 3;
 	
 /*	public static double
 		wheel_radius,
@@ -35,30 +35,27 @@ public class DriveTrain implements RobotSystem {
 */
 	int allowableError = 10;
 	public DriveTrain() {
-		talons = new CANTalon[] { new CANTalon(r1), new CANTalon(r2), new CANTalon(l1), new CANTalon(l2) };
-		driveTrainInit();
+		talons = new CANTalon[] { new CANTalon(l1), new CANTalon(l2), new CANTalon(r1), new CANTalon(r2) };
 	}
 	
 	 public void driveTrainInit(){
 		 System.out.println("driveTrainInit called");
-	//	 talons[l2].reverseOutput(true);
-	//	 talons[r2].reverseOutput(true);
-		talons[l2].changeControlMode(TalonControlMode.Follower);
-		talons[l2].set(l1);
-		talons[r2].changeControlMode(TalonControlMode.Follower);
-		talons[r2].set(r1);
-		talons[l1].setFeedbackDevice(FeedbackDevice.QuadEncoder);
-		talons[l1].reverseSensor(false);
-		talons[l1].configEncoderCodesPerRev(4);
-		talons[r1].setFeedbackDevice(FeedbackDevice.QuadEncoder);
-		talons[r1].reverseSensor(false);
-		talons[r1].configEncoderCodesPerRev(4);
-		talons[l1].setPID(0.5, 0.001, 0.0);
-		talons[l1].setPosition(0);
-		talons[r1].setPID(0.5, 0.001, 0.0);
-		talons[r1].setPosition(0);
-		talons[l1].setAllowableClosedLoopErr(allowableError);
-		talons[r1].setAllowableClosedLoopErr(allowableError);
+		talons[1].changeControlMode(TalonControlMode.Follower);
+		talons[1].set(l1);
+		talons[3].changeControlMode(TalonControlMode.Follower);
+		talons[3].set(r1);
+		talons[0].setFeedbackDevice(FeedbackDevice.QuadEncoder);
+		talons[0].reverseSensor(false);
+		talons[0].configEncoderCodesPerRev(4);
+		talons[2].setFeedbackDevice(FeedbackDevice.QuadEncoder);
+		talons[2].reverseSensor(false);
+		talons[2].configEncoderCodesPerRev(4);
+		talons[0].setPID(0.5, 0.001, 0.0);
+		talons[0].setPosition(0);
+		talons[2].setPID(0.5, 0.001, 0.0);
+		talons[2].setPosition(0);
+		talons[0].setAllowableClosedLoopErr(allowableError);
+		talons[2].setAllowableClosedLoopErr(allowableError);
 	}
 
 	/**
@@ -69,19 +66,14 @@ public class DriveTrain implements RobotSystem {
 	 * @param reverse
 	 *            true to reverse driving
 	 */
-	 public static boolean stickMoved = false;
 	public void arcadeDrive(Vector2 stick, boolean reverse) {
 		double left = -stick.y - stick.x;
 		double right = -stick.y + stick.x;
-if (left == 0 && right ==0){stickMoved = false;}
-else {stickMoved = true;}
-if (!autoDrive || stickMoved){
-	autoDrive = false;
+
 		if (reverse) {
 			tankDrive(right, left);
 		} else {
 			tankDrive(left, right);
-		}
 		}
 	}
 
@@ -104,31 +96,29 @@ if (!autoDrive || stickMoved){
 	 *            the speed for the right wheels [-1, 1]
 	 */
 	public void tankDrive(double lSpeed, double rSpeed) {
-		talons[l1].changeControlMode(TalonControlMode.PercentVbus);
-		talons[r1].changeControlMode(TalonControlMode.PercentVbus);
+		talons[0].changeControlMode(TalonControlMode.PercentVbus);
+		talons[2].changeControlMode(TalonControlMode.PercentVbus);
 		lSpeed = clamp(lSpeed, -1, 1);
 		rSpeed = clamp(rSpeed, -1, 1);
 		System.out.println("l speed: "+lSpeed);
 		System.out.println("r speed: "+ rSpeed);
-		talons[l1].set(rSpeed);	
-		talons[r1].set(-lSpeed);
+		talons[0].set(lSpeed);	
+		talons[2].set(rSpeed);
 	}
 	
 	public void driveStraight(double lSpeed, double rSpeed){
-		autoDrive=true;
-		talons[l1].changeControlMode(TalonControlMode.Speed);
-		talons[r1].changeControlMode(TalonControlMode.Speed);
-		talons[l1].set(lSpeed/speedRatio);	
-		talons[r1].set(rSpeed/speedRatio);
+		talons[0].changeControlMode(TalonControlMode.Speed);
+		talons[2].changeControlMode(TalonControlMode.Speed);
+		talons[0].set(lSpeed/speedRatio);	
+		talons[2].set(rSpeed/speedRatio);
 	}
 	
 	public void driveStraightDistance(double distance/*, double speed*/){
-		autoDrive=true;
-		talons[l1].changeControlMode(TalonControlMode.Position);
-		talons[r1].changeControlMode(TalonControlMode.Position);
+		talons[0].changeControlMode(TalonControlMode.Position);
+		talons[2].changeControlMode(TalonControlMode.Position);
 		//talons[0].pushMotionProfileTrajectory();
-		talons[l1].setSetpoint(talons[l1].getPosition() + distance/speedRatio);
-		talons[r1].setSetpoint(talons[r1].getPosition() + distance/speedRatio);
+		talons[0].setSetpoint(talons[0].getPosition() + distance/speedRatio);
+		talons[2].setSetpoint(talons[2].getPosition() + distance/speedRatio);
 	}
 	
 	public void findSpeedRatio(){}
@@ -200,14 +190,14 @@ if (!autoDrive || stickMoved){
 	public void update() { 
 		System.out.println("Ultrasonic range in inches "+ ultrasonic.getRangeInches());
 		
-		SmartDashboard.putNumber("left getEncPosition", talons[l1].getEncPosition());
-		SmartDashboard.putNumber("right getEncPosition", talons[r1].getEncPosition());
-		SmartDashboard.putNumber("left getEncVelocity", talons[l1].getEncVelocity());
-		SmartDashboard.putNumber("right getEncVelocity", talons[r1].getEncVelocity());
-		SmartDashboard.putNumber("left getPosition", talons[l1].getPosition());
-		SmartDashboard.putNumber("right getPosition", talons[r1].getPosition());
-		SmartDashboard.putNumber("left getSpeed", talons[l1].getSpeed());
-		SmartDashboard.putNumber("right getSpeed", talons[r1].getSpeed());
+		SmartDashboard.putNumber("left getEncPosition", talons[0].getEncPosition());
+		SmartDashboard.putNumber("right getEncPosition", talons[2].getEncPosition());
+		SmartDashboard.putNumber("left getEncVelocity", talons[0].getEncVelocity());
+		SmartDashboard.putNumber("right getEncVelocity", talons[2].getEncVelocity());
+		SmartDashboard.putNumber("left getPosition", talons[0].getPosition());
+		SmartDashboard.putNumber("right getPosition", talons[2].getPosition());
+		SmartDashboard.putNumber("left getSpeed", talons[0].getSpeed());
+		SmartDashboard.putNumber("right getSpeed", talons[2].getSpeed());
 		
 		if (driveToTarget){
 			driveToTarget();
