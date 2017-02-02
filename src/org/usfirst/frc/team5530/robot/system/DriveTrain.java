@@ -24,10 +24,10 @@ public class DriveTrain implements RobotSystem {
 	public static boolean autoDrive = false;
 	static double max_robot_speed= 10; //fastest speed the robot can drive at
 	public int
-		l1 = 0,
-		l2 = 1,
-		r1 = 2,
-		r2 = 3;
+		l1 = 2,
+		l2 = 3,
+		r1 = 0,
+		r2 = 1;
 	
 /*	public static double
 		wheel_radius,
@@ -36,9 +36,11 @@ public class DriveTrain implements RobotSystem {
 	int allowableError = 10;
 	public DriveTrain() {
 		talons = new CANTalon[] { new CANTalon(l1), new CANTalon(l2), new CANTalon(r1), new CANTalon(r2) };
+		driveTrainInit();
 	}
 	
 	 public void driveTrainInit(){
+		 autoDrive = false;
 		 System.out.println("driveTrainInit called");
 		talons[1].changeControlMode(TalonControlMode.Follower);
 		talons[1].set(l1);
@@ -69,11 +71,12 @@ public class DriveTrain implements RobotSystem {
 	public void arcadeDrive(Vector2 stick, boolean reverse) {
 		double left = -stick.y - stick.x;
 		double right = -stick.y + stick.x;
-
-		if (reverse) {
-			tankDrive(right, left);
-		} else {
-			tankDrive(left, right);
+		if (!autoDrive || left != 0 || right != 0){
+			if (reverse) {
+				tankDrive(right, left);
+			} else {
+				tankDrive(left, right);
+			}
 		}
 	}
 
@@ -102,8 +105,10 @@ public class DriveTrain implements RobotSystem {
 		rSpeed = clamp(rSpeed, -1, 1);
 		System.out.println("l speed: "+lSpeed);
 		System.out.println("r speed: "+ rSpeed);
-		talons[0].set(lSpeed);	
+		
+		talons[0].set(-lSpeed);	
 		talons[2].set(rSpeed);
+		
 	}
 	
 	public void driveStraight(double lSpeed, double rSpeed){
@@ -190,6 +195,16 @@ public class DriveTrain implements RobotSystem {
 	public void update() { 
 		System.out.println("Ultrasonic range in inches "+ ultrasonic.getRangeInches());
 		
+		System.out.println("test get bus voltage"+talons[0].getBusVoltage());	
+		System.out.println("left getEncPosition"+ talons[0].getEncPosition());
+		System.out.println("right getEncPosition"+ talons[2].getEncPosition());
+		System.out.println("left getEncVelocity"+ talons[0].getEncVelocity());
+		System.out.println("right getEncVelocity"+ talons[2].getEncVelocity());
+		System.out.println("left getPosition"+ talons[0].getPosition());
+		System.out.println("right getPosition"+ talons[2].getPosition());
+		System.out.println("left getSpeed"+ talons[0].getSpeed());
+		System.out.println("right getSpeed"+ talons[2].getSpeed());
+		SmartDashboard.putNumber("test get bus voltage", talons[0].getBusVoltage());
 		SmartDashboard.putNumber("left getEncPosition", talons[0].getEncPosition());
 		SmartDashboard.putNumber("right getEncPosition", talons[2].getEncPosition());
 		SmartDashboard.putNumber("left getEncVelocity", talons[0].getEncVelocity());
