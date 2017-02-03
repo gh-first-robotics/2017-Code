@@ -33,7 +33,7 @@ public class DriveTrain implements RobotSystem {
 		wheel_radius,
 		gear_ratio;
 */
-	int allowableError = 10;
+	int allowableError = 5;
 	public DriveTrain() {
 		talons = new CANTalon[] { new CANTalon(l1), new CANTalon(l2), new CANTalon(r1), new CANTalon(r2) };
 		driveTrainInit();
@@ -56,9 +56,9 @@ public class DriveTrain implements RobotSystem {
 		talons[0].configEncoderCodesPerRev(4);
 		talons[2].setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		talons[2].configEncoderCodesPerRev(4);
-		talons[0].setPID(0.5, 0.001, 0.0);
+		talons[0].setPID(0.1, 0.00001, 0.0);
 		talons[0].setPosition(0);
-		talons[2].setPID(0.5, 0.001, 0.0);
+		talons[2].setPID(0.1, 0.00001, 0.0);
 		talons[2].setPosition(0);
 		talons[0].setAllowableClosedLoopErr(allowableError);
 		talons[2].setAllowableClosedLoopErr(allowableError);
@@ -76,7 +76,7 @@ public class DriveTrain implements RobotSystem {
 		double left = -stick.y + stick.x;
 		double right = -stick.y - stick.x;
 		
-		if (!autoDrive || left > .02 || right > .02){
+		if (!autoDrive || Math.abs(left) > .02 || Math.abs(right) > .02){
 			System.out.println(left);
 			System.out.println(right);
 			autoDrive=false;
@@ -123,6 +123,7 @@ public class DriveTrain implements RobotSystem {
 		
 	}
 	
+	double multiply_distance_by = 40 * 5/3;
 	public void driveStraight(double lSpeed, double rSpeed){
 		autoDrive=true;
 		talons[0].changeControlMode(TalonControlMode.Speed);
@@ -136,8 +137,8 @@ public class DriveTrain implements RobotSystem {
 		talons[0].changeControlMode(TalonControlMode.Position);
 		talons[2].changeControlMode(TalonControlMode.Position);
 		//talons[0].pushMotionProfileTrajectory();
-		talons[2].setSetpoint(talons[2].getPosition() - distance/speedRatio);
-		talons[0].setSetpoint(talons[0].getPosition() + distance/speedRatio);
+		talons[2].setSetpoint(talons[2].getPosition() - multiply_distance_by*distance/speedRatio);
+		talons[0].setSetpoint(talons[0].getPosition() + multiply_distance_by*distance/speedRatio);
 		
 	}
 	
