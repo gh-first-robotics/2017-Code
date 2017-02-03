@@ -40,6 +40,12 @@ public class DriveTrain implements RobotSystem {
 	}
 	
 	 public void driveTrainInit(){
+		 
+		talons[0].reverseSensor(false);
+		talons[0].setInverted(false);
+		talons[2].setInverted(true);
+		//talons[2].reverseSensor(true);
+		
 		 autoDrive = false;
 		 System.out.println("driveTrainInit called");
 		talons[1].changeControlMode(TalonControlMode.Follower);
@@ -47,11 +53,8 @@ public class DriveTrain implements RobotSystem {
 		talons[3].changeControlMode(TalonControlMode.Follower);
 		talons[3].set(r1);
 		talons[0].setFeedbackDevice(FeedbackDevice.QuadEncoder);
-		talons[0].reverseSensor(true);
-		talons[2].setInverted(true);
 		talons[0].configEncoderCodesPerRev(4);
 		talons[2].setFeedbackDevice(FeedbackDevice.QuadEncoder);
-		talons[2].reverseSensor(false);
 		talons[2].configEncoderCodesPerRev(4);
 		talons[0].setPID(0.5, 0.001, 0.0);
 		talons[0].setPosition(0);
@@ -70,12 +73,14 @@ public class DriveTrain implements RobotSystem {
 	 *            true to reverse driving
 	 */
 	public void arcadeDrive(Vector2 stick, boolean reverse) {
-		double left = -stick.y - stick.x;
-		double right = -stick.y + stick.x;
+		double left = -stick.y + stick.x;
+		double right = -stick.y - stick.x;
+		
 		if (!autoDrive || left > .02 || right > .02){
 			System.out.println(left);
 			System.out.println(right);
 			autoDrive=false;
+			
 			if (reverse) {
 				tankDrive(right, left);
 			} else {
@@ -131,8 +136,9 @@ public class DriveTrain implements RobotSystem {
 		talons[0].changeControlMode(TalonControlMode.Position);
 		talons[2].changeControlMode(TalonControlMode.Position);
 		//talons[0].pushMotionProfileTrajectory();
-		talons[0].setSetpoint(talons[0].getPosition() - distance/speedRatio);
-		talons[2].setSetpoint(talons[2].getPosition() + distance/speedRatio);
+		talons[2].setSetpoint(talons[2].getPosition() - distance/speedRatio);
+		talons[0].setSetpoint(talons[0].getPosition() + distance/speedRatio);
+		
 	}
 	
 	public void findSpeedRatio(){}
