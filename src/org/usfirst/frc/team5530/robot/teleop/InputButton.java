@@ -5,8 +5,12 @@ public enum InputButton {
     Lower_Arm(0, 2),
     Reverse_Steering(0, 7),
     Drive_Towards_Target(0,3),
+
+    Test_Turn(0,6),
+
     Test_Drive_Straight(0,4),
     Test_Drive_Distance(0,5),
+
     //	Record(0, 12),
     
     Shoot_Auto(1,1),

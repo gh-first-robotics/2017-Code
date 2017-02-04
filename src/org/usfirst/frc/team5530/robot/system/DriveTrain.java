@@ -9,6 +9,61 @@ import com.ctre.CANTalon.TalonControlMode;
 
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
+
+import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.PIDOutput;
+import edu.wpi.first.wpilibj.SPI;
+
+public class DriveTrain implements RobotSystem, PIDOutput {
+	AHRS ahrs;
+	PIDController turnController;
+	double rotateToAngleRate;
+	
+	static final double kP = 0.03; //might be unnecessary
+	static final double kI = 0.00;
+	static final double kD = 0.00;
+	static final double kF = 0.00;
+	
+	static final double kToleranceDegrees = 4.0f;
+	 
+	private CANTalon[] talons;
+	public Ultrasonic ultrasonic = new Ultrasonic(0,1);
+	public static boolean autoDrive = false;
+	public DriveTrain(CANTalon l1, CANTalon l2, CANTalon r1, CANTalon r2) {
+		talons = new CANTalon[] { l1, l2, r1, r2 };
+		try {
+	          /* Communicate w/navX-MXP via the MXP SPI Bus.                                     */
+	          /* Alternatively:  I2C.Port.kMXP, SerialPort.Port.kMXP or SerialPort.Port.kUSB     */
+	          /* See http://navx-mxp.kauailabs.com/guidance/selecting-an-interface/ for details. */
+	          ahrs = new AHRS(SPI.Port.kMXP); 
+	      } catch (RuntimeException ex ) {
+	          DriverStation.reportError("Error instantiating navX-MXP:  " + ex.getMessage(), true);
+	      }
+	      turnController = new PIDController(kP, kI, kD, kF, ahrs, this);
+	      turnController.setInputRange(-180.0f,  180.0f);
+	      turnController.setOutputRange(-1.0, 1.0);
+	      turnController.setAbsoluteTolerance(kToleranceDegrees);
+	      turnController.setContinuous(true);
+	      
+	      /* Add the PID Controller to the Test-mode dashboard, allowing manual  */
+	      /* tuning of the Turn Controller's P, I and D coefficients.            */
+	      /* Typically, only the P value needs to be modified.                   */
+	     
+	  }
+		public void resetAngle(){
+			ahrs.reset();
+		}
+		
+		boolean rotateToAngle = false;
+		public void rotateToAngle(double angle){
+			turnController.setSetpoint(angle);
+            rotateToAngle = true;
+		}
+	
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //TODO: should we change all units to meters and seconds, or should we leave them as inches and seconds
 public class DriveTrain implements RobotSystem {
@@ -63,6 +118,7 @@ public class DriveTrain implements RobotSystem {
 		talons[0].setAllowableClosedLoopErr(allowableError);
 		talons[2].setAllowableClosedLoopErr(allowableError);
 	}
+
 
 	/**
 	 * Updates the drive train based on the position of the joystick
@@ -235,7 +291,13 @@ public class DriveTrain implements RobotSystem {
 			driveToTarget();
 		}
 		
-		
+		double currentRotationRate;
+        if ( rotateToAngle ) {
+            turnController.enable();
+            currentRotationRate = rotateToAngleRate;
+            tankDrive(rotateToAngleRate, -rotateToAngleRate); 
+            // the - might have to be on the left instead of the right
+        }
 		
 	//	System.out.println("Drivetrain update is being called. Going to print information about the robot turning towards the target here.");
 		if (turnTowardsTarget){
@@ -266,5 +328,11 @@ public class DriveTrain implements RobotSystem {
 			tankDrive(targetDirection * speed, -targetDirection*speed);
 			
 		}
+	}
+
+	@Override
+	public void pidWrite(double output) {
+		// TODO Auto-generated method stub
+		rotateToAngleRate = output;
 	}
 }
