@@ -37,9 +37,10 @@ public class Operator {
 	public void tick() {
 		previousState = state;
 		state = controls.update();
-if (!DriveTrain.autoDrive){
+
 		driveTrain.arcadeDrive(state.getStick(0), reverseDriving);
-		}
+	//	driveTrain.tankDrive(0.3, 0.3);
+
 		if (enableScale)
 			scaler.move(state.getStick(1));
 
@@ -59,6 +60,12 @@ if (!DriveTrain.autoDrive){
 
 		if (state.isNewlyPressed(InputButton.Shoot_Auto, previousState))
 			driveTrain.turnTowardsTarget();
+		
+		if (state.isNewlyPressed(InputButton.Test_Drive_Straight, previousState))
+			driveTrain.driveStraight(3,3);
+		
+		if (state.isNewlyPressed(InputButton.Test_Drive_Distance, previousState))
+			driveTrain.driveStraightDistance(7*12);
 
 		if (state.isNewlyPressed(InputButton.Intake, previousState))
 			shooter.toggleIntake();
