@@ -24,7 +24,7 @@ public class DriveTrain implements RobotSystem, PIDOutput {
 	static final double kD = 0.00;
 	static final double kF = 0.00;
 	
-	static final double kToleranceDegrees = 2.0f;
+	static final double kToleranceDegrees = 4.0f;
 	 
 	private CANTalon[] talons;
 	public Ultrasonic ultrasonic = new Ultrasonic(0,1);
