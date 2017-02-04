@@ -4,9 +4,12 @@ import org.usfirst.frc.team5530.robot.VisionProcessing;
 import org.usfirst.frc.team5530.robot.teleop.Vector2;
 
 import com.ctre.CANTalon;
+import com.ctre.CANTalon.FeedbackDevice;
+import com.ctre.CANTalon.TalonControlMode;
 
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
+
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -60,7 +63,63 @@ public class DriveTrain implements RobotSystem, PIDOutput {
             rotateToAngle = true;
 		}
 	
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+//TODO: should we change all units to meters and seconds, or should we leave them as inches and seconds
+public class DriveTrain implements RobotSystem {
+	static double wheel_radius = 2;
+	static double gear_ratio = 1;
+	//static double max_rpm = 1500; //highest rpm of what encoder is measuring
+/*inches*/	static double speedRatio= 2 * Math.PI * wheel_radius * gear_ratio; //get this number by having the robot drive, 
+									 // then dividing the actual distance the robot drove
+									//  by the distance the encoder measured that the robot drove
+								   //   or 2 * pi * radius * gear_ratio   ???
+	private CANTalon[] talons;
+	public Ultrasonic ultrasonic = new Ultrasonic(0,1);
+	public static boolean autoDrive = false;
+	static double max_robot_speed= 10; //fastest speed the robot can drive at
+	public int
+		l1 = 2,
+		l2 = 3,
+		r1 = 0,
+		r2 = 1;
 	
+/*	public static double
+		wheel_radius,
+		gear_ratio;
+*/
+	int allowableError = 5;
+	public DriveTrain() {
+		talons = new CANTalon[] { new CANTalon(l1), new CANTalon(l2), new CANTalon(r1), new CANTalon(r2) };
+		driveTrainInit();
+	}
+	
+	 public void driveTrainInit(){
+		 
+		talons[0].reverseSensor(false);
+		talons[0].setInverted(false);
+		talons[2].setInverted(true);
+		//talons[2].reverseSensor(true);
+		
+		 autoDrive = false;
+		 System.out.println("driveTrainInit called");
+		talons[1].changeControlMode(TalonControlMode.Follower);
+		talons[1].set(l1);
+		talons[3].changeControlMode(TalonControlMode.Follower);
+		talons[3].set(r1);
+		talons[0].setFeedbackDevice(FeedbackDevice.QuadEncoder);
+		talons[0].configEncoderCodesPerRev(4);
+		talons[2].setFeedbackDevice(FeedbackDevice.QuadEncoder);
+		talons[2].configEncoderCodesPerRev(4);
+		talons[0].setPID(0.1, 0.00001, 0.0);
+		talons[0].setPosition(0);
+		talons[2].setPID(0.1, 0.00001, 0.0);
+		talons[2].setPosition(0);
+		talons[0].setAllowableClosedLoopErr(allowableError);
+		talons[2].setAllowableClosedLoopErr(allowableError);
+	}
+
+
 	/**
 	 * Updates the drive train based on the position of the joystick
 	 * 
@@ -70,13 +129,22 @@ public class DriveTrain implements RobotSystem, PIDOutput {
 	 *            true to reverse driving
 	 */
 	public void arcadeDrive(Vector2 stick, boolean reverse) {
-		double left = -stick.y - stick.x;
-		double right = -stick.y + stick.x;
-
-		if (reverse) {
-			tankDrive(right, left);
-		} else {
-			tankDrive(left, right);
+		double left = -stick.y + stick.x;
+		double right = -stick.y - stick.x;
+		
+		if (!autoDrive || Math.abs(left) > .02 || Math.abs(right) > .02){
+			System.out.println(left);
+			System.out.println(right);
+			autoDrive=false;
+			
+			if (reverse) {
+				tankDrive(right, left);
+			} else {
+				tankDrive(left, right);
+			}
+		}
+		else{
+			System.out.println("autodriving");
 		}
 	}
 
@@ -89,7 +157,7 @@ public class DriveTrain implements RobotSystem, PIDOutput {
 	public void drive(double speed) {
 		tankDrive(speed, speed);
 	}
-
+	
 	/**
 	 * Sets the speed of the drive train
 	 * 
@@ -99,15 +167,39 @@ public class DriveTrain implements RobotSystem, PIDOutput {
 	 *            the speed for the right wheels [-1, 1]
 	 */
 	public void tankDrive(double lSpeed, double rSpeed) {
+		talons[0].changeControlMode(TalonControlMode.PercentVbus);
+		talons[2].changeControlMode(TalonControlMode.PercentVbus);
 		lSpeed = clamp(lSpeed, -1, 1);
 		rSpeed = clamp(rSpeed, -1, 1);
-		System.out.println("l speed: "+lSpeed);
-		System.out.println("r speed: "+ rSpeed);
-		talons[0].set(-lSpeed /*0.5*/);
-		talons[1].set(-lSpeed/*0.5*/);
-		talons[2].set(rSpeed * 0.8);
-		talons[3].set(rSpeed * 0.8);
+	//	System.out.println("l speed: "+lSpeed);
+	//	System.out.println("r speed: "+ rSpeed);
+		
+		talons[0].set(lSpeed);	
+		talons[2].set(rSpeed);
+		
 	}
+	
+	double multiply_distance_by = 40 * 5/3;
+	public void driveStraight(double lSpeed, double rSpeed){
+		autoDrive=true;
+		talons[0].changeControlMode(TalonControlMode.Speed);
+		talons[2].changeControlMode(TalonControlMode.Speed);
+		talons[0].set(lSpeed/speedRatio);	
+		talons[2].set(rSpeed/speedRatio);
+	}
+	
+	public void driveStraightDistance(double distance/*, double speed*/){
+		autoDrive=true;
+		talons[0].changeControlMode(TalonControlMode.Position);
+		talons[2].changeControlMode(TalonControlMode.Position);
+		//talons[0].pushMotionProfileTrajectory();
+		talons[2].setSetpoint(talons[2].getPosition() - multiply_distance_by*distance/speedRatio);
+		talons[0].setSetpoint(talons[0].getPosition() + multiply_distance_by*distance/speedRatio);
+		
+	}
+	
+	public void findSpeedRatio(){}
+	
 	
 	boolean turnTowardsTarget = false;
 	int targetDirection = 0;
@@ -170,29 +262,30 @@ public class DriveTrain implements RobotSystem, PIDOutput {
 		return Math.min(max, Math.max(val, val));
 	}
 	
-	//TODO: find a way to get the bestTargetIndex from Robot.java instead of copying the bestTarget() function
-	static double bestWHratio = 1;
-/*	int bestTargetIndex;
-	int bestTarget(double[] widths, double[] heights*//*, double[] areas*//*){
-		if (widths.length == 0){
-			return -1;
-		}
-		else{
-			bestTargetIndex=0;
-			for (int i=0; i<widths.length; i++){
-				if (Math.abs(widths[i]/heights[i] - bestWHratio)<Math.abs(widths[bestTargetIndex]/heights[bestTargetIndex] - bestWHratio)){
-					bestTargetIndex=i;
-				}
-				//add something to include area
-			}
-			return bestTargetIndex;
-		}
-	}*/
-	
 	NetworkTable table = NetworkTable.getTable("GRIP/myContoursReport"); //is this necessary?
 	double centerX;
 	public void update() { 
-		System.out.println("Ultrasonic range in inches "+ ultrasonic.getRangeInches());
+	//	System.out.println("Ultrasonic range in inches "+ ultrasonic.getRangeInches());
+		
+	//	talons[0].setFeedbackDevice(FeedbackDevice.QuadEncoder);
+	/*	System.out.println("test get bus voltage"+talons[0].getBusVoltage());	
+		System.out.println("left getEncPosition"+ talons[0].getEncPosition());
+		System.out.println("right getEncPosition"+ talons[2].getEncPosition());
+		System.out.println("left getEncVelocity"+ talons[0].getEncVelocity());
+		System.out.println("right getEncVelocity"+ talons[2].getEncVelocity());
+		System.out.println("left getPosition"+ talons[0].getPosition());
+		System.out.println("right getPosition"+ talons[2].getPosition());
+		System.out.println("left getSpeed"+ talons[0].getSpeed());
+		System.out.println("right getSpeed"+ talons[2].getSpeed()); */
+		SmartDashboard.putNumber("test get bus voltage", talons[0].getBusVoltage());
+		SmartDashboard.putNumber("left getEncPosition", talons[0].getEncPosition());
+		SmartDashboard.putNumber("right getEncPosition", talons[2].getEncPosition());
+		SmartDashboard.putNumber("left getEncVelocity", talons[0].getEncVelocity());
+		SmartDashboard.putNumber("right getEncVelocity", talons[2].getEncVelocity());
+		SmartDashboard.putNumber("left getPosition", talons[0].getPosition());
+		SmartDashboard.putNumber("right getPosition", talons[2].getPosition());
+		SmartDashboard.putNumber("left getSpeed", talons[0].getSpeed());
+		SmartDashboard.putNumber("right getSpeed", talons[2].getSpeed());
 		
 		if (driveToTarget){
 			driveToTarget();
@@ -206,7 +299,7 @@ public class DriveTrain implements RobotSystem, PIDOutput {
             // the - might have to be on the left instead of the right
         }
 		
-		System.out.println("Drivetrain update is being called. Going to print information about the robot turning towards the target here.");
+	//	System.out.println("Drivetrain update is being called. Going to print information about the robot turning towards the target here.");
 		if (turnTowardsTarget){
 			System.out.println("robot is turning towards target");
 			double[] centerXs = table.getNumberArray("centerX", new double[0]);
