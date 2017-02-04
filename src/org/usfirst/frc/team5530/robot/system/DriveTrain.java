@@ -16,8 +16,12 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+		
 
+//TODO: should we change all units to meters and seconds, or should we leave them as inches and seconds
 public class DriveTrain implements RobotSystem, PIDOutput {
+	
 	AHRS ahrs;
 	PIDController turnController;
 	double rotateToAngleRate;
@@ -28,45 +32,6 @@ public class DriveTrain implements RobotSystem, PIDOutput {
 	static final double kF = 0.00;
 	
 	static final double kToleranceDegrees = 4.0f;
-	 
-	private CANTalon[] talons;
-	public Ultrasonic ultrasonic = new Ultrasonic(0,1);
-	public static boolean autoDrive = false;
-	public DriveTrain(CANTalon l1, CANTalon l2, CANTalon r1, CANTalon r2) {
-		talons = new CANTalon[] { l1, l2, r1, r2 };
-		try {
-	          /* Communicate w/navX-MXP via the MXP SPI Bus.                                     */
-	          /* Alternatively:  I2C.Port.kMXP, SerialPort.Port.kMXP or SerialPort.Port.kUSB     */
-	          /* See http://navx-mxp.kauailabs.com/guidance/selecting-an-interface/ for details. */
-	          ahrs = new AHRS(SPI.Port.kMXP); 
-	      } catch (RuntimeException ex ) {
-	          DriverStation.reportError("Error instantiating navX-MXP:  " + ex.getMessage(), true);
-	      }
-	      turnController = new PIDController(kP, kI, kD, kF, ahrs, this);
-	      turnController.setInputRange(-180.0f,  180.0f);
-	      turnController.setOutputRange(-1.0, 1.0);
-	      turnController.setAbsoluteTolerance(kToleranceDegrees);
-	      turnController.setContinuous(true);
-	      
-	      /* Add the PID Controller to the Test-mode dashboard, allowing manual  */
-	      /* tuning of the Turn Controller's P, I and D coefficients.            */
-	      /* Typically, only the P value needs to be modified.                   */
-	     
-	  }
-		public void resetAngle(){
-			ahrs.reset();
-		}
-		
-		boolean rotateToAngle = false;
-		public void rotateToAngle(double angle){
-			turnController.setSetpoint(angle);
-            rotateToAngle = true;
-		}
-	
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-//TODO: should we change all units to meters and seconds, or should we leave them as inches and seconds
-public class DriveTrain implements RobotSystem {
 	static double wheel_radius = 2;
 	static double gear_ratio = 1;
 	//static double max_rpm = 1500; //highest rpm of what encoder is measuring
@@ -92,6 +57,19 @@ public class DriveTrain implements RobotSystem {
 	public DriveTrain() {
 		talons = new CANTalon[] { new CANTalon(l1), new CANTalon(l2), new CANTalon(r1), new CANTalon(r2) };
 		driveTrainInit();
+		try {
+	          /* Communicate w/navX-MXP via the MXP SPI Bus.                                     */
+	          /* Alternatively:  I2C.Port.kMXP, SerialPort.Port.kMXP or SerialPort.Port.kUSB     */
+	          /* See http://navx-mxp.kauailabs.com/guidance/selecting-an-interface/ for details. */
+	          ahrs = new AHRS(SPI.Port.kMXP); 
+	      } catch (RuntimeException ex ) {
+	          DriverStation.reportError("Error instantiating navX-MXP:  " + ex.getMessage(), true);
+	      }
+	      turnController = new PIDController(kP, kI, kD, kF, ahrs, this);
+	      turnController.setInputRange(-180.0f,  180.0f);
+	      turnController.setOutputRange(-1.0, 1.0);
+	      turnController.setAbsoluteTolerance(kToleranceDegrees);
+	      turnController.setContinuous(true);
 	}
 	
 	 public void driveTrainInit(){
@@ -199,6 +177,17 @@ public class DriveTrain implements RobotSystem {
 	}
 	
 	public void findSpeedRatio(){}
+	
+	
+	public void resetAngle(){
+		ahrs.reset();
+	}
+	
+	boolean rotateToAngle = false;
+	public void rotateToAngle(double angle){
+		turnController.setSetpoint(angle);
+        rotateToAngle = true;
+	}
 	
 	
 	boolean turnTowardsTarget = false;
