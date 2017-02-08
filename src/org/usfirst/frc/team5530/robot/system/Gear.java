@@ -130,7 +130,7 @@ public class Gear implements RobotSystem{
 	
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
+
 		talonX.set(0);
 		talonY.set(0);
 		if (gearExists){

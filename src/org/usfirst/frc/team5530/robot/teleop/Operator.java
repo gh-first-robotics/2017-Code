@@ -42,15 +42,6 @@ if (!DriveTrain.autoDrive){
 		}
 if (state.isPressed(InputButton.Enable_Gear_Movement))
 	gear.manualGearMovement(state.getStick(1));
-	/*	if (enableScale)
-			scaler.move(state.getStick(1));*/
-
-		//if (state.isPressed(InputButton.Raise_Arm))
-			//lowArm.raise();
-		//else if (state.isPressed(InputButton.Lower_Arm))
-			//lowArm.lower();
-		//else
-		//	lowArm.stop();
 
 		if (state.isNewlyPressed(InputButton.Reverse_Steering, previousState))
 			reverseDriving = !reverseDriving;	
@@ -58,24 +49,11 @@ if (state.isPressed(InputButton.Enable_Gear_Movement))
 		if (state.isNewlyPressed(InputButton.Drive_Towards_Target, previousState))
 			driveTrain.startDriveToTarget();
 
-
-		/*if (state.isNewlyPressed(InputButton.Shoot_Auto, previousState))
-			driveTrain.turnTowardsTarget();*/
-
-		if (state.isNewlyPressed(InputButton.Intake, previousState))
-			shooter.toggleIntake();
-
 		if (state.isNewlyPressed(InputButton.Intake_Gear, previousState))
 			gear.intakeGear();
 
 		if (state.isNewlyPressed(InputButton.Place_Gear, previousState))
 			gear.placeGear();
-
-		if (state.isNewlyPressed(InputButton.Shoot_10, previousState))
-			rob.execute(new ShootMacro(10 * 12));
-
-		if (state.isNewlyPressed(InputButton.Shoot_Low, previousState))
-			shooter.shootLow();
 
 		if (state.isNewlyPressed(InputButton.Toggle_Scaler, previousState))
 			enableScale = !enableScale;
@@ -86,7 +64,5 @@ if (state.isPressed(InputButton.Enable_Gear_Movement))
 		if (state.isNewlyPressed(InputButton.Unlock_Scaler, previousState))
 			scaler.unlock();
 
-		if (state.isNewlyPressed(InputButton.Shoot_Finish, previousState))
-			shooter.launch();
 	}
 }

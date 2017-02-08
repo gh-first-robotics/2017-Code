@@ -8,15 +8,11 @@ public enum InputButton {
     //	Record(0, 12),
     
     Enable_Gear_Movement(1,1),
-    Intake(1, 2),
     Intake_Gear(1, 3),
     Place_Gear(1, 4),
-    Shoot_10(1, 5),
-    Shoot_Low(1, 6),
     Toggle_Scaler(1, 7),
     Lock_Scaler(1, 9),
-    Unlock_Scaler(1, 10),
-    Shoot_Finish(1, 12);
+    Unlock_Scaler(1, 10);
     
     public final int stick;
     public final int button;
