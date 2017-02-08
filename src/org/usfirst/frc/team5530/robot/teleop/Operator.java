@@ -65,11 +65,11 @@ if (state.isPressed(InputButton.Enable_Gear_Movement))
 		if (state.isNewlyPressed(InputButton.Intake, previousState))
 			shooter.toggleIntake();
 
-		if (state.isNewlyPressed(InputButton.Shoot_Max, previousState))
-			shooter.shootRaw(1);
+		if (state.isNewlyPressed(InputButton.Intake_Gear, previousState))
+			gear.intakeGear();
 
-		if (state.isNewlyPressed(InputButton.Shoot_5, previousState))
-			rob.execute(new ShootMacro(5 * 12));
+		if (state.isNewlyPressed(InputButton.Place_Gear, previousState))
+			gear.placeGear();
 
 		if (state.isNewlyPressed(InputButton.Shoot_10, previousState))
 			rob.execute(new ShootMacro(10 * 12));

@@ -9,8 +9,8 @@ public enum InputButton {
     
     Enable_Gear_Movement(1,1),
     Intake(1, 2),
-    Shoot_Max(1, 3),
-    Shoot_5(1, 4),
+    Intake_Gear(1, 3),
+    Place_Gear(1, 4),
     Shoot_10(1, 5),
     Shoot_Low(1, 6),
     Toggle_Scaler(1, 7),
