@@ -40,8 +40,10 @@ public class Operator {
 if (!DriveTrain.autoDrive){
 		driveTrain.arcadeDrive(state.getStick(0), reverseDriving);
 		}
-		if (enableScale)
-			scaler.move(state.getStick(1));
+if (state.isPressed(InputButton.Enable_Gear_Movement))
+	gear.manualGearMovement(state.getStick(1));
+	/*	if (enableScale)
+			scaler.move(state.getStick(1));*/
 
 		//if (state.isPressed(InputButton.Raise_Arm))
 			//lowArm.raise();
@@ -57,8 +59,8 @@ if (!DriveTrain.autoDrive){
 			driveTrain.startDriveToTarget();
 
 
-		if (state.isNewlyPressed(InputButton.Shoot_Auto, previousState))
-			driveTrain.turnTowardsTarget();
+		/*if (state.isNewlyPressed(InputButton.Shoot_Auto, previousState))
+			driveTrain.turnTowardsTarget();*/
 
 		if (state.isNewlyPressed(InputButton.Intake, previousState))
 			shooter.toggleIntake();

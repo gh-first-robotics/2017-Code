@@ -7,7 +7,7 @@ public enum InputButton {
     Drive_Towards_Target(0,3),
     //	Record(0, 12),
     
-    Shoot_Auto(1,1),
+    Enable_Gear_Movement(1,1),
     Intake(1, 2),
     Shoot_Max(1, 3),
     Shoot_5(1, 4),

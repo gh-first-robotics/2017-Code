@@ -4,6 +4,8 @@ package org.usfirst.frc.team5530.robot.system;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
 
+import org.usfirst.frc.team5530.robot.teleop.Vector2;
+
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
@@ -12,31 +14,58 @@ import com.ctre.CANTalon.TalonControlMode;
 public class Gear implements RobotSystem{
 	int x = 5, //talonX
 		y = 6, //talonY
+		r = 7, //rotates gear (talonR)
 		bB = 0, //breakBeam
 		lS = 1, //stopSwitch
-		g = 3; //gripper arm
+		g = 3,
+		chute_panel = 4,
+		gearInRobot = 5,
+		xhome = 6,
+		yhome = 7,
+		ab1 = 2,
+		ab2 = 3,
+		ab3 = 4; //gripper arm
 	
 	
 	private CANTalon talonX = new CANTalon(x);
 	private CANTalon talonY = new CANTalon(y);
+	private CANTalon talonR = new CANTalon(r);
 	private DigitalInput breakBeam = new DigitalInput(bB);
 	private DigitalInput stopSwitch= new DigitalInput(lS);
+	private DigitalInput adjustBeam1 = new DigitalInput(ab1);
+	private DigitalInput adjustBeam2 = new DigitalInput(ab2);
+	private DigitalInput adjustBeam3 = new DigitalInput(ab3);
+	private DigitalInput gear = new DigitalInput(gearInRobot);
+	private DigitalInput xHomeSwitch = new DigitalInput(xhome);
+	private DigitalInput yHomeSwitch = new DigitalInput(yhome);
 	private Servo gripper = new Servo(g);
+	private Servo chutePanel = new Servo(chute_panel);
 	
 	boolean first = true;
-	double forward_position = 10;
+
 	double  XresetPosition = 0,
-			YresetPosition = 0;
+			YresetPosition = 0,
+			XforwardPosition = 10,
+			YforwardPosition = 10;
 	
 	boolean beam = breakBeam.get();
 	boolean limit = stopSwitch.get();
+	boolean adjust1 = adjustBeam1.get();
+	boolean adjust2 = adjustBeam2.get();
+	boolean adjust3 = adjustBeam3.get();
+	boolean gearExists = gear.get();
+	boolean xHome = xHomeSwitch.get();
+	boolean yHome = yHomeSwitch.get();
+	
 	double 	fast_speed = 0.8,
 			slow_speed = 0.3,
+			chuteOpenAngle = 45,
+			chuteClosedAngle = 0,
 			gripperClosedAngle = 90,
 			gripperOpenAngle = 0;
 	int error = 5;
 	private enum GearState {
-		OFF, MOVING_FAST, MOVING_SLOW, ARM_DEPLOYING, MOVING_FORWARD, ARM_RELEASING, RESETTING 
+		OFF, INTAKING, MOVING_FAST, MOVING_SLOW, ARM_DEPLOYING, MOVING_FORWARD, ARM_RELEASING, RESETTING 
 	}
 	
 	private GearState state = GearState.OFF;
@@ -55,6 +84,38 @@ public class Gear implements RobotSystem{
 		talonY.setAllowableClosedLoopErr(error);
 	}
 	
+	public void manualGearMovement(Vector2 stick){
+		if (talonX.getPosition() >= XforwardPosition){
+			talonX.set(Math.min(stick.x, 0));
+		}
+		else if (talonX.getPosition() <= XresetPosition || xHome){
+			talonX.set(Math.max(stick.x, 0));
+		}
+		else{
+			talonX.set(stick.x);
+		}
+		if (talonY.getPosition() >= YforwardPosition){
+			talonY.set(Math.min(stick.y, 0));
+		}
+		else if (talonY.getPosition() <= YresetPosition || yHome){
+			talonY.set(Math.max(stick.y, 0));
+		}
+		else{
+			talonY.set(stick.y);
+		}
+	}
+	
+	public void rotateGear(){
+		talonR.set(0);	
+		if(adjust1 || !adjust2 || adjust3){
+			talonR.set(0.2);			
+		}
+		
+	}
+	
+	public void intakeGear(){
+		state = GearState.INTAKING;
+	}
 	
 	public void placeGear(){
 		talonX.changeControlMode(TalonControlMode.PercentVbus);
@@ -72,6 +133,17 @@ public class Gear implements RobotSystem{
 		// TODO Auto-generated method stub
 		talonX.set(0);
 		talonY.set(0);
+		if (gearExists){
+			rotateGear();
+		}
+		if (state==GearState.INTAKING && !gearExists){
+			gripper.setAngle(gripperClosedAngle);
+			chutePanel.setAngle(chuteOpenAngle);
+		}
+		if (state==GearState.INTAKING && gearExists){
+			reset();		
+		}
+		
 		if ((state== GearState.MOVING_FAST) && !beam && !limit){
 			talonX.set(fast_speed);
 		}
@@ -93,17 +165,21 @@ public class Gear implements RobotSystem{
 		if (state == GearState.MOVING_FORWARD){
 			if (first){
 				talonY.changeControlMode(TalonControlMode.Position);
-				talonY.setSetpoint(forward_position);
+				talonY.setSetpoint(YforwardPosition);
 				first = false;
 			}
 		}
-		if (state == GearState.MOVING_FORWARD && Math.abs(talonY.getPosition() - forward_position) < error){
+		if (state == GearState.MOVING_FORWARD && Math.abs(talonY.getPosition() - YforwardPosition) < error){
 			state = GearState.ARM_RELEASING;
 		}
 		if (state == GearState.ARM_RELEASING){
 			gripper.setAngle(gripperOpenAngle);
 		}
+		if (state == GearState.ARM_RELEASING && gripper.getAngle()==gripperOpenAngle){
+			state = GearState.OFF;
+		}
 		if (state == GearState.RESETTING){
+			chutePanel.setAngle(chuteClosedAngle);
 			gripper.setAngle(gripperOpenAngle);
 			
 			talonY.changeControlMode(TalonControlMode.Position);
@@ -112,9 +188,19 @@ public class Gear implements RobotSystem{
 			talonX.changeControlMode(TalonControlMode.Position);
 			talonX.setSetpoint(XresetPosition);
 			
+			if (xHome){
+				talonX.changeControlMode(TalonControlMode.PercentVbus);
+				talonX.set(0);
+			}
+			
+			if (yHome){
+				talonY.changeControlMode(TalonControlMode.PercentVbus);
+				talonY.set(0);
+			}
+			
 			first = true;
 		}
-		if (state == GearState.RESETTING && gripper.getAngle()==gripperOpenAngle && Math.abs(talonY.getPosition() - YresetPosition) < error && Math.abs(talonX.getPosition() - XresetPosition) < error){
+		if (state == GearState.RESETTING && gripper.getAngle()==gripperOpenAngle &&  chutePanel.getAngle()==chuteClosedAngle && Math.abs(talonY.getPosition() - YresetPosition) < error && Math.abs(talonX.getPosition() - XresetPosition) < error){
 			state = GearState.OFF;
 		}
 	}
