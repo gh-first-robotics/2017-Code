@@ -1,5 +1,6 @@
 package org.usfirst.frc.team5530.robot.system;
 
+import org.usfirst.frc.team5530.robot.teleop.Operator;
 import org.usfirst.frc.team5530.robot.teleop.Vector2;
 
 import com.ctre.CANTalon;
@@ -7,11 +8,18 @@ import edu.wpi.first.wpilibj.Servo;
 
 public class Scaler implements RobotSystem {
 	private CANTalon talon;
-	private Servo lock;
+	private Servo top;
+	private Servo bottom;
+	double  speed = .3,
+			topClosedAngle = 0,
+			bottomClosedAngle = 0,
+			topOpenAngle = 90,
+			bottomOpenAngle = 90;
 
-	public Scaler(CANTalon talon, Servo lock) {
+	public Scaler(CANTalon talon, Servo top, Servo bottom) {
 		this.talon = talon;
-		this.lock = lock;
+		this.top = top;
+		this.bottom = bottom;
 	}
 
 	/**
@@ -20,23 +28,32 @@ public class Scaler implements RobotSystem {
 	 * @param stick
 	 *            the stick to control the scaler
 	 */
-	public void move(Vector2 stick) {
-		talon.set(stick.y);
-	}
+	
+	
 
 	/**
 	 * Locks the scaler
 	 */
-	public void lock() {
-		lock.setAngle(180);
+	public void close() {
+		top.setAngle(topClosedAngle);
+		bottom.setAngle(bottomClosedAngle);
 	}
 
 	/**
 	 * Unlocks the scaler
 	 */
-	public void unlock() {
-		lock.setAngle(-15);
+	public void openBottom() {
+		bottom.setAngle(bottomOpenAngle);
+	}
+	
+	public void openAll() {
+		bottom.setAngle(bottomOpenAngle);
+		top.setAngle(topOpenAngle);
 	}
 
-	public void update() {}
+	public void update() {
+		if(Operator.moveScaler)
+			talon.set(speed);
+		
+	}
 }
