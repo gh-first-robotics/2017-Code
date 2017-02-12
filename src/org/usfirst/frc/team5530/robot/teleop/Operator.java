@@ -48,7 +48,7 @@ if (state.isPressed(InputButton.Enable_Gear_Movement)){
 	manualMove = true;
 	}
 else{manualMove = false;}
-
+		
 		if (state.isNewlyPressed(InputButton.Reverse_Steering, previousState))
 			reverseDriving = !reverseDriving;	
 		
@@ -60,6 +60,9 @@ else{manualMove = false;}
 
 		if (state.isNewlyPressed(InputButton.Place_Gear, previousState))
 			gear.placeGear();
+		
+		if (state.isNewlyPressed(InputButton.Zero_Position, previousState))
+			gear.zeroPosition();
 
 		if (state.isNewlyPressed(InputButton.Toggle_Scaler, previousState))
 			enableScale = !enableScale;

@@ -10,6 +10,7 @@ public enum InputButton {
     Enable_Gear_Movement(1,1),
     Intake_Gear(1, 3),
     Place_Gear(1, 4),
+    Zero_Position(1, 4),
     Toggle_Scaler(1, 7),
     Lock_Scaler(1, 9),
     Unlock_Scaler(1, 10);

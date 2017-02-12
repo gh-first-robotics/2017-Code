@@ -98,7 +98,7 @@ public class Gear implements RobotSystem{
 	boolean zeroing_position = false,
 			Xzeroed = false,
 			Yzeroed = false;
-	public void resetPosition(){
+	public void zeroPosition(){
 		zeroing_position = true;
 		Xzeroed = false;
 		Yzeroed = false;
