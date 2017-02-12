@@ -73,13 +73,13 @@ public class Gear implements RobotSystem{
 	public Gear() {
 		talonX.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		talonX.reverseSensor(false);
-		talonX.configEncoderCodesPerRev(4);
+		talonX.configEncoderCodesPerRev(497);
 		talonX.setPID(0.5, 0.001, 0.0);
 		talonX.setAllowableClosedLoopErr(error);
 		
 		talonY.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		talonY.reverseSensor(false);
-		talonY.configEncoderCodesPerRev(4);
+		talonY.configEncoderCodesPerRev(497);
 		talonY.setPID(0.5, 0.001, 0.0);
 		talonY.setAllowableClosedLoopErr(error);
 		
