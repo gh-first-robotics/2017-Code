@@ -111,7 +111,7 @@ public class Gear implements RobotSystem{
 		if (talonY.getPosition() >= YforwardPosition){
 			talonY.set(Math.min(stick.y, 0));
 		}
-		else if (talonY.getPosition() <= YresetPosition /*|| yHome*/){
+		else if (talonY.getPosition() <= YresetPosition || yHome){
 			talonY.set(Math.max(stick.y, 0));
 		}
 		else{
