@@ -43,7 +43,7 @@ public class Gear implements RobotSystem{
 	
 	boolean first = true;
 
-	double  XresetPosition = 0,
+	int  	XresetPosition = 0,
 			YresetPosition = 0,
 			XforwardPosition = 10,
 			YforwardPosition = 10;
@@ -82,6 +82,13 @@ public class Gear implements RobotSystem{
 		talonY.configEncoderCodesPerRev(4);
 		talonY.setPID(0.5, 0.001, 0.0);
 		talonY.setAllowableClosedLoopErr(error);
+		
+		if (xHome){
+			talonX.setEncPosition(XresetPosition);
+		}
+		if (yHome){
+			talonY.setEncPosition(YresetPosition);
+		}
 	}
 	
 	public void manualGearMovement(Vector2 stick){
@@ -102,6 +109,12 @@ public class Gear implements RobotSystem{
 		}
 		else{
 			talonY.set(stick.y);
+		}
+		if (xHome){
+			talonX.setEncPosition(XresetPosition);
+		}
+		if (yHome){
+			talonY.setEncPosition(YresetPosition);
 		}
 	}
 	
@@ -130,7 +143,15 @@ public class Gear implements RobotSystem{
 	
 	@Override
 	public void update() {
-
+		
+		
+		if (xHome){
+			talonX.setEncPosition(XresetPosition);
+		}
+		if (yHome){
+			talonY.setEncPosition(YresetPosition);
+		}
+		
 		talonX.set(0);
 		talonY.set(0);
 		if (gearExists){
