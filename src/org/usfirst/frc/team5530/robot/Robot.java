@@ -8,7 +8,7 @@ import org.usfirst.frc.team5530.robot.system.DriveTrain;
 import org.usfirst.frc.team5530.robot.system.Gear;
 import org.usfirst.frc.team5530.robot.system.RobotSystem;
 import org.usfirst.frc.team5530.robot.system.Scaler;
-import org.usfirst.frc.team5530.robot.system.Shooter;
+
 import org.usfirst.frc.team5530.robot.teleop.Operator;
 import org.usfirst.frc.team5530.robot.VisionProcessing;
 
@@ -58,13 +58,13 @@ public class Robot extends SampleRobot {
 		// Left, Left, Right, Right
 		RobotSystem driveTrain = new DriveTrain(new CANTalon(8), new CANTalon(1), new CANTalon(2), new CANTalon(3));
 		// Intake, Switch1, Switch2, Shooter1, Shooter2
-		RobotSystem shooter = new Shooter(new CANTalon(6), new DigitalInput(9), new DigitalInput(8), new CANTalon(4), new CANTalon(5));
+		//RobotSystem shooter = new Shooter(new CANTalon(6), new DigitalInput(9), new DigitalInput(8), new CANTalon(4), new CANTalon(5));
 		// Arm, ArmAngle
 		RobotSystem gear = new Gear();
 		// Scaler
 		RobotSystem scaler = new Scaler(new CANTalon(0), new Servo(0));
 
-		systems = new RobotSystem[] { driveTrain, shooter, gear, scaler };
+		systems = new RobotSystem[] { driveTrain, gear, scaler };
 
 		defenseChooser = new SendableChooser();
 		positionChooser = new SendableChooser();

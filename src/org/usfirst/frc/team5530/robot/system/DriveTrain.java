@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 public class DriveTrain implements RobotSystem {
 	private CANTalon[] talons;
-	public Ultrasonic ultrasonic = new Ultrasonic(0,1);
+	//public Ultrasonic ultrasonic = new Ultrasonic(0,1);
 	public static boolean autoDrive = false;
 	public DriveTrain(CANTalon l1, CANTalon l2, CANTalon r1, CANTalon r2) {
 		talons = new CANTalon[] { l1, l2, r1, r2 };
@@ -147,7 +147,7 @@ public class DriveTrain implements RobotSystem {
 	NetworkTable table = NetworkTable.getTable("GRIP/myContoursReport"); //is this necessary?
 	double centerX;
 	public void update() { 
-		System.out.println("Ultrasonic range in inches "+ ultrasonic.getRangeInches());
+		//System.out.println("Ultrasonic range in inches "+ ultrasonic.getRangeInches());
 		
 		if (driveToTarget){
 			driveToTarget();

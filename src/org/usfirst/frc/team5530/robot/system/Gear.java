@@ -3,7 +3,10 @@ package org.usfirst.frc.team5530.robot.system;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import org.usfirst.frc.team5530.robot.teleop.InputButton;
+import org.usfirst.frc.team5530.robot.teleop.Operator;
 import org.usfirst.frc.team5530.robot.teleop.Vector2;
 
 import com.ctre.CANTalon;
@@ -26,7 +29,7 @@ public class Gear implements RobotSystem{
 		ab2 = 3,
 		ab3 = 4; //gripper arm
 	
-	
+	//break beam is true when beam is not broken
 	private CANTalon talonX = new CANTalon(x);
 	private CANTalon talonY = new CANTalon(y);
 	private CANTalon talonR = new CANTalon(r);
@@ -48,14 +51,15 @@ public class Gear implements RobotSystem{
 			XforwardPosition = 10,
 			YforwardPosition = 10;
 	
-	boolean beam = breakBeam.get();
-	boolean limit = stopSwitch.get();
-	boolean adjust1 = adjustBeam1.get();
-	boolean adjust2 = adjustBeam2.get();
-	boolean adjust3 = adjustBeam3.get();
-	boolean gearExists = gear.get();
-	boolean xHome = xHomeSwitch.get();
-	boolean yHome = yHomeSwitch.get();
+	//booleans for beams will be true when beam is broken
+	boolean beam = !breakBeam.get();
+	boolean limit = !stopSwitch.get();
+	boolean adjust1 = !adjustBeam1.get();
+	boolean adjust2 = !adjustBeam2.get();
+	boolean adjust3 = !adjustBeam3.get();
+	boolean gearExists = !gear.get();
+	boolean xHome = !xHomeSwitch.get();
+	boolean yHome = !yHomeSwitch.get();
 	
 	double 	fast_speed = 0.8,
 			slow_speed = 0.3,
@@ -92,6 +96,9 @@ public class Gear implements RobotSystem{
 	}
 	
 	public void manualGearMovement(Vector2 stick){
+		SmartDashboard.putNumber("Y gear position", talonY.getPosition());
+		
+		System.out.println("gear y" + stick.y);
 		if (talonX.getPosition() >= XforwardPosition){
 			talonX.set(Math.min(stick.x, 0));
 		}
@@ -104,7 +111,7 @@ public class Gear implements RobotSystem{
 		if (talonY.getPosition() >= YforwardPosition){
 			talonY.set(Math.min(stick.y, 0));
 		}
-		else if (talonY.getPosition() <= YresetPosition || yHome){
+		else if (talonY.getPosition() <= YresetPosition /*|| yHome*/){
 			talonY.set(Math.max(stick.y, 0));
 		}
 		else{
@@ -116,6 +123,7 @@ public class Gear implements RobotSystem{
 		if (yHome){
 			talonY.setEncPosition(YresetPosition);
 		}
+		
 	}
 	
 	public void rotateGear(){
@@ -141,9 +149,17 @@ public class Gear implements RobotSystem{
 		state = GearState.RESETTING;
 	}
 	
+	public void zeroSpeed(){		
+			talonX.set(0);
+			talonY.set(0);
+	}
+	
 	@Override
 	public void update() {
 		
+		if(!Operator.manualMove){
+			zeroSpeed();
+		}
 		
 		if (xHome){
 			talonX.setEncPosition(XresetPosition);
@@ -151,9 +167,7 @@ public class Gear implements RobotSystem{
 		if (yHome){
 			talonY.setEncPosition(YresetPosition);
 		}
-		
-		talonX.set(0);
-		talonY.set(0);
+	
 		if (gearExists){
 			rotateGear();
 		}
