@@ -95,6 +95,19 @@ public class Gear implements RobotSystem{
 		}
 	}
 	
+	boolean zeroing_position = false,
+			Xzeroed = false,
+			Yzeroed = false;
+	public void resetPosition(){
+		zeroing_position = true;
+		Xzeroed = false;
+		Yzeroed = false;
+		talonX.set(-.2);
+		talonY.set(-.2);
+		
+	}
+	
+	
 	public void manualGearMovement(Vector2 stick){
 		SmartDashboard.putNumber("Y gear position", talonY.getPosition());
 		
@@ -157,8 +170,24 @@ public class Gear implements RobotSystem{
 	@Override
 	public void update() {
 		
-		if(!Operator.manualMove){
-			zeroSpeed();
+		if(!Operator.manualMove && !zeroing_position){
+			//zeroSpeed();
+		}
+		
+		if (zeroing_position){
+			if (xHome){
+				Xzeroed = true;
+				talonX.set(0);
+				talonX.setEncPosition(XresetPosition);
+			}
+			if (yHome){
+				Yzeroed = true;
+				talonY.set(0);
+				talonY.setEncPosition(YresetPosition);
+			}
+			if (Xzeroed && Yzeroed){
+				zeroing_position = false;
+			}
 		}
 		
 		if (xHome){
@@ -192,6 +221,7 @@ public class Gear implements RobotSystem{
 			state = GearState.ARM_DEPLOYING;
 		}
 		if (state == GearState.ARM_DEPLOYING){
+			talonX.set(0);
 			gripper.setAngle(gripperClosedAngle);
 		}
 		if (state == GearState.ARM_DEPLOYING && gripper.getAngle()==gripperClosedAngle){
