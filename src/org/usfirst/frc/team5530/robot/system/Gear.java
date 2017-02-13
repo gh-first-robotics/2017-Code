@@ -170,8 +170,8 @@ public class Gear implements RobotSystem{
 	@Override
 	public void update() {
 		
-		if(!Operator.manualMove && !zeroing_position){
-			//zeroSpeed();
+		if(!Operator.manualMove && !zeroing_position && state==GearState.OFF){
+			zeroSpeed();
 		}
 		
 		if (zeroing_position){
