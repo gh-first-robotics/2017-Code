@@ -46,10 +46,11 @@ public class Gear implements RobotSystem{
 	
 	boolean first = true;
 
-	int  	XresetPosition = 0,
+	double  XresetPosition = 0,
 			YresetPosition = 0,
-			XforwardPosition = 10,
-			YforwardPosition = 10;
+			XforwardPosition = 7.5/*inches*/ * 0.0499/*inches per rotation*/,
+			YloadingPosition = 6.56 /*inches*/ * 0.0499/*inches per rotation*/,
+			YforwardPosition = 9.5/*inches*/ * 0.0499/*inches per rotation*/;
 	
 	//booleans for beams will be true when beam is broken
 	boolean beam = !breakBeam.get();
@@ -63,10 +64,10 @@ public class Gear implements RobotSystem{
 	
 	double 	fast_speed = 0.8,
 			slow_speed = 0.3,
-			chuteOpenAngle = 45,
+			chuteOpenAngle = -180,
 			chuteClosedAngle = 0,
-			gripperClosedAngle = 90,
-			gripperOpenAngle = 0;
+			gripperClosedAngle = 0,
+			gripperOpenAngle = -180;
 	int error = 5;
 	private enum GearState {
 		OFF, INTAKING, MOVING_FAST, MOVING_SLOW, ARM_DEPLOYING, MOVING_FORWARD, ARM_RELEASING, RESETTING 
@@ -88,10 +89,10 @@ public class Gear implements RobotSystem{
 		talonY.setAllowableClosedLoopErr(error);
 		
 		if (xHome){
-			talonX.setEncPosition(XresetPosition);
+			talonX.setPosition(XresetPosition);
 		}
 		if (yHome){
-			talonY.setEncPosition(YresetPosition);
+			talonY.setPosition(YresetPosition);
 		}
 	}
 	
@@ -109,6 +110,7 @@ public class Gear implements RobotSystem{
 	
 	
 	public void manualGearMovement(Vector2 stick){
+		SmartDashboard.putNumber("X gear position", talonX.getPosition());
 		SmartDashboard.putNumber("Y gear position", talonY.getPosition());
 		
 		System.out.println("gear y" + stick.y);
@@ -131,10 +133,10 @@ public class Gear implements RobotSystem{
 			talonY.set(stick.y);
 		}
 		if (xHome){
-			talonX.setEncPosition(XresetPosition);
+			talonX.setPosition(XresetPosition);
 		}
 		if (yHome){
-			talonY.setEncPosition(YresetPosition);
+			talonY.setPosition(YresetPosition);
 		}
 		
 	}
@@ -167,6 +169,22 @@ public class Gear implements RobotSystem{
 			talonY.set(0);
 	}
 	
+	public void preventMovingTooFar(){
+		//block x and y motors from going too far in any direction
+			if (talonX.getPosition()>=XforwardPosition && (talonX.getControlMode()==TalonControlMode.PercentVbus || talonX.getControlMode()==TalonControlMode.Speed)){
+				talonX.set(Math.min(0, talonX.get()));
+			}
+			if (xHome && (talonX.getControlMode()==TalonControlMode.PercentVbus || talonX.getControlMode()==TalonControlMode.Speed)){
+				talonX.set(Math.max(0, talonX.get()));
+			}
+			if (talonY.getPosition()>=YforwardPosition && (talonY.getControlMode()==TalonControlMode.PercentVbus || talonY.getControlMode()==TalonControlMode.Speed)){
+				talonY.set(Math.min(0, talonY.get()));
+			}
+			if (yHome && (talonY.getControlMode()==TalonControlMode.PercentVbus || talonY.getControlMode()==TalonControlMode.Speed)){
+				talonY.set(Math.max(0, talonY.get()));
+			}
+	}
+	
 	@Override
 	public void update() {
 		
@@ -178,12 +196,12 @@ public class Gear implements RobotSystem{
 			if (xHome){
 				Xzeroed = true;
 				talonX.set(0);
-				talonX.setEncPosition(XresetPosition);
+				talonX.setPosition(XresetPosition);
 			}
 			if (yHome){
 				Yzeroed = true;
 				talonY.set(0);
-				talonY.setEncPosition(YresetPosition);
+				talonY.setPosition(YresetPosition);
 			}
 			if (Xzeroed && Yzeroed){
 				zeroing_position = false;
@@ -191,10 +209,10 @@ public class Gear implements RobotSystem{
 		}
 		
 		if (xHome){
-			talonX.setEncPosition(XresetPosition);
+			talonX.setPosition(XresetPosition);
 		}
 		if (yHome){
-			talonY.setEncPosition(YresetPosition);
+			talonY.setPosition(YresetPosition);
 		}
 	
 		if (gearExists){
@@ -203,6 +221,7 @@ public class Gear implements RobotSystem{
 		if (state==GearState.INTAKING && !gearExists){
 			gripper.setAngle(gripperClosedAngle);
 			chutePanel.setAngle(chuteOpenAngle);
+			talonY.setSetpoint(YloadingPosition);
 		}
 		if (state==GearState.INTAKING && gearExists){
 			reset();		
@@ -268,6 +287,8 @@ public class Gear implements RobotSystem{
 		if (state == GearState.RESETTING && gripper.getAngle()==gripperOpenAngle &&  chutePanel.getAngle()==chuteClosedAngle && Math.abs(talonY.getPosition() - YresetPosition) < error && Math.abs(talonX.getPosition() - XresetPosition) < error){
 			state = GearState.OFF;
 		}
+		
+		preventMovingTooFar();
 	}
 
 }
