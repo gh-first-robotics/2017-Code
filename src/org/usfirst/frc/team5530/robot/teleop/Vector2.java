@@ -1,7 +1,7 @@
 package org.usfirst.frc.team5530.robot.teleop;
 
 public class Vector2 {
-	public final double x, y;
+	public final double x, y, magnitude, direction;
 
 	/**
 	 * Constructs a vector and Initializes it to {0, 0}, Note: {@link Vector2} is immutable
@@ -21,8 +21,28 @@ public class Vector2 {
 	public Vector2(double x, double y) {
 		this.x = x;
 		this.y = y;
+		this.magnitude = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+		this.direction = Math.atan(y/x);
 	}
-
+	
+	/**
+	 * Constructs a vector, Note: {@link Vector2} is immutable
+	 *
+	 * @param magnitude
+	 *            The magnitude of the vector
+	 * @param direction
+	 *            The direction of the vector (0 is towards the opposing alliance)
+	 * @param md
+	 * 			  Unused variable to separate this from Vector2(x,y).... is there a better way to do this?
+	 */
+	public Vector2(double magnitude, double direction, boolean md) {
+		this.magnitude = magnitude;
+		this.direction = direction;
+		this.x = magnitude * Math.cos(direction);
+		this.y = magnitude * Math.sin(direction);
+	}
+	
+	
 	/**
 	 * Adds this vector to another
 	 *
@@ -32,6 +52,17 @@ public class Vector2 {
 	 */
 	public Vector2 add(Vector2 other) {
 		return new Vector2(x + other.x, y + other.y);
+	}
+	
+	/**
+	 * Subtracts another vector from this one
+	 *
+	 * @param other
+	 *            The vector being subtracted
+	 * @return The resulting vector
+	 */
+	public Vector2 subtract(Vector2 other) {
+		return new Vector2(x - other.x, y - other.y);
 	}
 
 	/**

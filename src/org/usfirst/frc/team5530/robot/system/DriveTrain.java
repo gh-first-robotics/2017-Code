@@ -253,19 +253,16 @@ public class DriveTrain implements RobotSystem, PIDOutput {
 	
 	NetworkTable table = NetworkTable.getTable("GRIP/myContoursReport"); //is this necessary?
 	double centerX;
+	public static double leftDistance = 0,
+						 rightDistance = 0,
+						 currentAngle = 0;
 	public void update() { 
 	//	System.out.println("Ultrasonic range in inches "+ ultrasonic.getRangeInches());
 		
-	//	talons[0].setFeedbackDevice(FeedbackDevice.QuadEncoder);
-	/*	System.out.println("test get bus voltage"+talons[0].getBusVoltage());	
-		System.out.println("left getEncPosition"+ talons[0].getEncPosition());
-		System.out.println("right getEncPosition"+ talons[2].getEncPosition());
-		System.out.println("left getEncVelocity"+ talons[0].getEncVelocity());
-		System.out.println("right getEncVelocity"+ talons[2].getEncVelocity());
-		System.out.println("left getPosition"+ talons[0].getPosition());
-		System.out.println("right getPosition"+ talons[2].getPosition());
-		System.out.println("left getSpeed"+ talons[0].getSpeed());
-		System.out.println("right getSpeed"+ talons[2].getSpeed()); */
+		leftDistance = talons[0].getPosition();
+		rightDistance = talons[2].getPosition();
+		currentAngle = ahrs.getAngle();
+		
 		SmartDashboard.putNumber("test get bus voltage", talons[0].getBusVoltage());
 		SmartDashboard.putNumber("left getEncPosition", talons[0].getEncPosition());
 		SmartDashboard.putNumber("right getEncPosition", talons[2].getEncPosition());
