@@ -66,7 +66,7 @@ public class Robot extends SampleRobot {
 		// Arm, ArmAngle
 		RobotSystem lowArm = new LowArm(new CANTalon(7), new AnalogInput(1));
 		// Scaler
-		RobotSystem scaler = new Scaler(new CANTalon(8), new Servo(0), new Servo(1));
+		RobotSystem scaler = new Scaler(new CANTalon(7), new Servo(2), new Servo(3));
 
 		systems = new RobotSystem[] { driveTrain, shooter, lowArm, scaler };
 

@@ -20,8 +20,10 @@ public enum InputButton {
     Shoot_10(1, 5),
     Shoot_Low(1, 6),
     Move_Scaler(1, 7),
-    Lock_Scaler(1, 9),
-    Unlock_Scaler(1, 10),
+    Close(1, 8),
+    Open_Bottom(1, 9),
+    Open_All(1, 10),
+    
     Shoot_Finish(1, 12);
     
     public final int stick;

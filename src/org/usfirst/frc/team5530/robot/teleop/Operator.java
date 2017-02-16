@@ -81,6 +81,15 @@ public static boolean moveScaler = false;
 
 		if (state.isNewlyPressed(InputButton.Shoot_Low, previousState))
 			shooter.shootLow();
+		
+		if (state.isNewlyPressed(InputButton.Close, previousState))
+			scaler.close();
+
+		if (state.isNewlyPressed(InputButton.Open_Bottom, previousState))
+			scaler.openBottom();
+
+		if (state.isNewlyPressed(InputButton.Open_All, previousState))
+			scaler.openAll();
 
 		if (state.isPressed(InputButton.Move_Scaler))
 			moveScaler = true;
