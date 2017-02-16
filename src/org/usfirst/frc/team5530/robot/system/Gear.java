@@ -17,17 +17,17 @@ import com.ctre.CANTalon.TalonControlMode;
 public class Gear implements RobotSystem{
 	int x = 5, //talonX
 		y = 6, //talonY
-		r = 7, //rotates gear (talonR)
-		bB = 0, //breakBeam
-		lS = 1, //stopSwitch
-		g = 3,
+		r = 4, //rotates gear (talonR)
+		bB = 7, //breakBeam
+		lS = 2, //stopSwitch
+		g = 1,  //gripper arm
 		chute_panel = 4,
-		gearInRobot = 5,
-		xhome = 6,
-		yhome = 7,
-		ab1 = 2,
-		ab2 = 3,
-		ab3 = 4; //gripper arm
+		gearInRobot = 6,
+		xhome = 0,
+		yhome = 1,
+		ab1 = 3,
+		ab2 = 4,
+		ab3 = 5; 
 	
 	//break beam is true when beam is not broken
 	private CANTalon talonX = new CANTalon(x);
