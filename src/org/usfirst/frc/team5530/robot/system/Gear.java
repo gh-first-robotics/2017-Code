@@ -81,6 +81,7 @@ public class Gear implements RobotSystem{
 		talonX.configEncoderCodesPerRev(497);
 		talonX.setPID(0.5, 0.001, 0.0);
 		talonX.setAllowableClosedLoopErr(error);
+		talonX.setInverted(true);
 		
 		talonY.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		talonY.reverseSensor(false);
@@ -110,18 +111,22 @@ public class Gear implements RobotSystem{
 	
 	
 	public void manualGearMovement(Vector2 stick){
-		SmartDashboard.putNumber("X gear position", talonX.getPosition());
-		SmartDashboard.putNumber("Y gear position", talonY.getPosition());
+		//SmartDashboard.putNumber("X gear position", talonX.getPosition());
+		//SmartDashboard.putNumber("Y gear position", talonY.getPosition());
+	
 		
-		System.out.println("gear y" + stick.y);
+		talonX.changeControlMode(TalonControlMode.PercentVbus);
+		talonY.changeControlMode(TalonControlMode.PercentVbus);
+		
+		
 		if (talonX.getPosition() >= XforwardPosition){
-			talonX.set(Math.min(stick.x, 0));
+			talonX.set(Math.min(-stick.x, 0));
 		}
 		else if (talonX.getPosition() <= XresetPosition || xHome){
-			talonX.set(Math.max(stick.x, 0));
+			talonX.set(Math.max(-stick.x, 0));
 		}
 		else{
-			talonX.set(stick.x);
+			talonX.set(-stick.x);
 		}
 		if (talonY.getPosition() >= YforwardPosition){
 			talonY.set(Math.min(stick.y, 0));
@@ -143,10 +148,20 @@ public class Gear implements RobotSystem{
 	
 	public void rotateGear(){
 		talonR.set(0);	
+		//SmartDashboard.putBoolean("adjust1", adjust1);
 		if(adjust1 || !adjust2 || adjust3){
-			talonR.set(0.2);			
+			talonR.set(0.2);
+			//SmartDashboard.putBoolean("rotating", true);
+		}
+		else{
+			//SmartDashboard.putBoolean("rotating", false);
+			talonR.set(0);
 		}
 		
+	}
+	
+	public void turn_off(){
+		state = GearState.OFF;
 	}
 	
 	public void intakeGear(){
@@ -164,7 +179,9 @@ public class Gear implements RobotSystem{
 		state = GearState.RESETTING;
 	}
 	
-	public void zeroSpeed(){		
+	public void zeroSpeed(){
+		talonX.changeControlMode(TalonControlMode.PercentVbus);
+		talonY.changeControlMode(TalonControlMode.PercentVbus);
 			talonX.set(0);
 			talonY.set(0);
 	}
@@ -187,6 +204,16 @@ public class Gear implements RobotSystem{
 	
 	@Override
 	public void update() {
+		
+		beam = !breakBeam.get();
+		limit = !stopSwitch.get();
+		adjust1 = !adjustBeam1.get();
+		adjust2 = !adjustBeam2.get();
+		adjust3 = !adjustBeam3.get();
+		gearExists = !gear.get();
+		xHome = !xHomeSwitch.get();
+		yHome = !yHomeSwitch.get();
+		
 		
 		if(!Operator.manualMove && !zeroing_position && state==GearState.OFF){
 			zeroSpeed();
@@ -215,8 +242,15 @@ public class Gear implements RobotSystem{
 			talonY.setPosition(YresetPosition);
 		}
 	
+		SmartDashboard.putBoolean("gear exists", gearExists);
+	//	SmartDashboard.putBoolean("adjust1", adjust1);
+	//	SmartDashboard.putBoolean("adjust2", adjust2);
+	//	SmartDashboard.putBoolean("adjust3", adjust3);
 		if (gearExists){
 			rotateGear();
+		}
+		else{
+			talonR.set(0);
 		}
 		if (state==GearState.INTAKING && !gearExists){
 			gripper.setAngle(gripperClosedAngle);

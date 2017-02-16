@@ -63,6 +63,8 @@ else{manualMove = false;}
 		
 		if (state.isNewlyPressed(InputButton.Zero_Position, previousState))
 			gear.zeroPosition();
+		if (state.isNewlyPressed(InputButton.Turn_Off, previousState))
+			gear.turn_off();
 
 		if (state.isNewlyPressed(InputButton.Toggle_Scaler, previousState))
 			enableScale = !enableScale;
