@@ -50,7 +50,8 @@ public class Gear implements RobotSystem{
 			YresetPosition = 0,
 			XforwardPosition = 7.5/*inches*/ * 0.0499/*inches per rotation*/,
 			YloadingPosition = 6.56 /*inches*/ * 0.0499/*inches per rotation*/,
-			YforwardPosition = 9.5/*inches*/ * 0.0499/*inches per rotation*/;
+			YforwardPosition = 9.5/*inches*/ * 0.0499/*inches per rotation*/,
+			YreleaseGripperPosition = 7.5/*inches*/ * 0.0499/*inches per rotation*/;
 	
 	//booleans for beams will be true when beam is broken
 	boolean beam = !breakBeam.get();
@@ -68,7 +69,8 @@ public class Gear implements RobotSystem{
 			chuteClosedAngle = 0,
 			gripperClosedAngle = 0,
 			gripperOpenAngle = -180;
-	int error = 5;
+	double error = 0.3 * 0.0499;
+	int allowableClosedLoopError = 5;
 	private enum GearState {
 		OFF, INTAKING, MOVING_FAST, MOVING_SLOW, ARM_DEPLOYING, MOVING_FORWARD, ARM_RELEASING, RESETTING 
 	}
@@ -80,14 +82,14 @@ public class Gear implements RobotSystem{
 		talonX.reverseSensor(false);
 		talonX.configEncoderCodesPerRev(497);
 		talonX.setPID(0.5, 0.001, 0.0);
-		talonX.setAllowableClosedLoopErr(error);
+		talonX.setAllowableClosedLoopErr(allowableClosedLoopError);
 		talonX.setInverted(true);
 		
 		talonY.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		talonY.reverseSensor(false);
 		talonY.configEncoderCodesPerRev(497);
 		talonY.setPID(0.5, 0.001, 0.0);
-		talonY.setAllowableClosedLoopErr(error);
+		talonY.setAllowableClosedLoopErr(allowableClosedLoopError);
 		
 		if (xHome){
 			talonX.setPosition(XresetPosition);
@@ -287,6 +289,9 @@ public class Gear implements RobotSystem{
 				first = false;
 			}
 		}
+		if (state == GearState.MOVING_FORWARD && Math.abs(talonY.getPosition() - YreleaseGripperPosition) < error){
+			gripper.setAngle(gripperOpenAngle);
+		}		
 		if (state == GearState.MOVING_FORWARD && Math.abs(talonY.getPosition() - YforwardPosition) < error){
 			state = GearState.ARM_RELEASING;
 		}
