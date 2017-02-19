@@ -42,17 +42,15 @@ public class DriveTrain implements RobotSystem, PIDOutput {
 	private CANTalon[] talons;
 	public Ultrasonic ultrasonic = new Ultrasonic(0,1);
 	public static boolean autoDrive = false;
-	static double max_robot_speed= 10; //fastest speed the robot can drive at
+	static double max_robot_speed= 120; //fastest speed the robot can drive at
 	public int
 		l1 = 2,
 		l2 = 3,
 		r1 = 0,
 		r2 = 1;
 	
-/*	public static double
-		wheel_radius,
-		gear_ratio;
-*/
+
+	
 	int allowableError = 5;
 	public DriveTrain() {
 		talons = new CANTalon[] { new CANTalon(l1), new CANTalon(l2), new CANTalon(r1), new CANTalon(r2) };
@@ -106,7 +104,7 @@ public class DriveTrain implements RobotSystem, PIDOutput {
 	 * @param reverse
 	 *            true to reverse driving
 	 */
-	public void arcadeDrive(Vector2 stick, boolean reverse) {
+	public void arcadeDrive(Vector2 stick, boolean speedMode) {
 		double left = -stick.y + stick.x;
 		double right = -stick.y - stick.x;
 		
@@ -115,8 +113,8 @@ public class DriveTrain implements RobotSystem, PIDOutput {
 			System.out.println(right);
 			autoDrive=false;
 			
-			if (reverse) {
-				tankDrive(right, left);
+			if (speedMode) {
+				tankDriveSpeed(left, right);
 			} else {
 				tankDrive(left, right);
 			}
@@ -158,6 +156,17 @@ public class DriveTrain implements RobotSystem, PIDOutput {
 	}
 	
 	double multiply_distance_by = 40 * 5/3;
+	public void tankDriveSpeed(double lSpeed, double rSpeed){
+		talons[0].changeControlMode(TalonControlMode.Speed);
+		talons[2].changeControlMode(TalonControlMode.Speed);
+		lSpeed = clamp(lSpeed, -1, 1);
+		rSpeed = clamp(rSpeed, -1, 1);
+		
+		talons[0].set(lSpeed * multiply_distance_by * max_robot_speed/speedRatio);	
+		talons[2].set(-rSpeed * multiply_distance_by * max_robot_speed/speedRatio);
+	}
+	
+	
 	public void driveStraight(double lSpeed, double rSpeed){
 		autoDrive=true;
 		talons[0].changeControlMode(TalonControlMode.Speed);
