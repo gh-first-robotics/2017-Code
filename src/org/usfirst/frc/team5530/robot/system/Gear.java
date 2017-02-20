@@ -86,7 +86,7 @@ public class Gear implements RobotSystem{
 		talonX.setInverted(true);
 		
 		talonY.setFeedbackDevice(FeedbackDevice.QuadEncoder);
-		talonY.reverseSensor(false);
+		talonY.reverseSensor(true);
 		talonY.configEncoderCodesPerRev(497);
 		talonY.setPID(0.5, 0.001, 0.0);
 		talonY.setAllowableClosedLoopErr(allowableClosedLoopError);
@@ -191,10 +191,10 @@ public class Gear implements RobotSystem{
 	public void preventMovingTooFar(){
 		//block x and y motors from going too far in any direction
 			if (talonX.getPosition()>=XforwardPosition && (talonX.getControlMode()==TalonControlMode.PercentVbus || talonX.getControlMode()==TalonControlMode.Speed)){
-				talonX.set(Math.max(0, talonX.get()));
+				talonX.set(Math.min(0, talonX.get()));
 			}
 			if (xHome && (talonX.getControlMode()==TalonControlMode.PercentVbus || talonX.getControlMode()==TalonControlMode.Speed)){
-				talonX.set(Math.min(0, talonX.get()));
+				talonX.set(Math.max(0, talonX.get()));
 			}
 			if (talonY.getPosition()>=YforwardPosition && (talonY.getControlMode()==TalonControlMode.PercentVbus || talonY.getControlMode()==TalonControlMode.Speed)){
 				talonY.set(Math.min(0, talonY.get()));
@@ -263,13 +263,13 @@ public class Gear implements RobotSystem{
 			reset();		
 		}
 		
-		if ((state== GearState.MOVING_FAST) && !beam && !limit){
+		if ((state== GearState.MOVING_FAST) && !beam && !limit && talonX.getPosition()< XforwardPosition){
 			talonX.set(fast_speed);
 		}
 		else if (state == GearState.MOVING_FAST && beam){
 			state = GearState.MOVING_SLOW;
 		}
-		if (state == GearState.MOVING_SLOW && !limit){
+		if (state == GearState.MOVING_SLOW && !limit && talonX.getPosition()< XforwardPosition){
 			talonX.set(slow_speed);
 		}
 		if (limit && ((state == GearState.MOVING_SLOW) || (state == GearState.MOVING_FAST))){
