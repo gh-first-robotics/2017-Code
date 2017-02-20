@@ -48,10 +48,10 @@ public class Gear implements RobotSystem{
 
 	double  XresetPosition = 0,
 			YresetPosition = 0,
-			XforwardPosition = 7.5/*inches*/ * 0.0499/*inches per rotation*/,
-			YloadingPosition = 6.56 /*inches*/ * 0.0499/*inches per rotation*/,
-			YforwardPosition = 9.5/*inches*/ * 0.0499/*inches per rotation*/,
-			YreleaseGripperPosition = 7.5/*inches*/ * 0.0499/*inches per rotation*/;
+			XforwardPosition = 7.5/*inches*/ / 3.54/*inches per rotation*/,
+			YloadingPosition = 6.56 /*inches*/ / 3.54/*inches per rotation*/,
+			YforwardPosition = 9.5/*inches*/ /3.54/*inches per rotation*/,
+			YreleaseGripperPosition = 7.5/*inches*/ /3.54/*inches per rotation*/;
 	
 	//booleans for beams will be true when beam is broken
 	boolean beam = !breakBeam.get();
@@ -69,7 +69,7 @@ public class Gear implements RobotSystem{
 			chuteClosedAngle = 0,
 			gripperClosedAngle = 0,
 			gripperOpenAngle = -180;
-	double error = 0.3 * 0.0499;
+	double error = 0.3;
 	int allowableClosedLoopError = 5;
 	private enum GearState {
 		OFF, INTAKING, MOVING_FAST, MOVING_SLOW, ARM_DEPLOYING, MOVING_FORWARD, ARM_RELEASING, RESETTING 
@@ -113,8 +113,8 @@ public class Gear implements RobotSystem{
 	
 	
 	public void manualGearMovement(Vector2 stick){
-		//SmartDashboard.putNumber("X gear position", talonX.getPosition());
-		//SmartDashboard.putNumber("Y gear position", talonY.getPosition());
+		SmartDashboard.putNumber("X gear position", talonX.getPosition());
+		SmartDashboard.putNumber("Y gear position", talonY.getPosition());
 	
 		
 		talonX.changeControlMode(TalonControlMode.PercentVbus);
@@ -191,10 +191,10 @@ public class Gear implements RobotSystem{
 	public void preventMovingTooFar(){
 		//block x and y motors from going too far in any direction
 			if (talonX.getPosition()>=XforwardPosition && (talonX.getControlMode()==TalonControlMode.PercentVbus || talonX.getControlMode()==TalonControlMode.Speed)){
-				talonX.set(Math.min(0, talonX.get()));
+				talonX.set(Math.max(0, talonX.get()));
 			}
 			if (xHome && (talonX.getControlMode()==TalonControlMode.PercentVbus || talonX.getControlMode()==TalonControlMode.Speed)){
-				talonX.set(Math.max(0, talonX.get()));
+				talonX.set(Math.min(0, talonX.get()));
 			}
 			if (talonY.getPosition()>=YforwardPosition && (talonY.getControlMode()==TalonControlMode.PercentVbus || talonY.getControlMode()==TalonControlMode.Speed)){
 				talonY.set(Math.min(0, talonY.get()));
