@@ -70,7 +70,7 @@ public class Gear implements RobotSystem{
 			gripperClosedAngle = 0,
 			gripperOpenAngle = -180;
 	double error = 0.3;
-	int allowableClosedLoopError = 5;
+	int allowableClosedLoopError = 0;
 	private enum GearState {
 		OFF, INTAKING, MOVING_FAST, MOVING_SLOW, ARM_DEPLOYING, MOVING_FORWARD, ARM_RELEASING, RESETTING 
 	}
@@ -81,15 +81,16 @@ public class Gear implements RobotSystem{
 		talonX.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		talonX.reverseSensor(false);
 		talonX.configEncoderCodesPerRev(497);
-		talonX.setPID(0.5, 0.001, 0.0);
-		talonX.setAllowableClosedLoopErr(allowableClosedLoopError);
+		talonX.setPID(0.7, 0.00, 0.0);
+		//talonX.setAllowableClosedLoopErr(allowableClosedLoopError);
 		talonX.setInverted(true);
 		
 		talonY.setFeedbackDevice(FeedbackDevice.QuadEncoder);
-		talonY.reverseSensor(true);
+		talonY.reverseSensor(false);
 		talonY.configEncoderCodesPerRev(497);
-		talonY.setPID(0.5, 0.001, 0.0);
-		talonY.setAllowableClosedLoopErr(allowableClosedLoopError);
+		talonY.setPID(0.7, 0.00, 0.0);
+		//talonY.setAllowableClosedLoopErr(allowableClosedLoopError);
+		talonY.setInverted(true);
 		
 		if (xHome){
 			talonX.setPosition(XresetPosition);
@@ -207,6 +208,9 @@ public class Gear implements RobotSystem{
 	@Override
 	public void update() {
 		
+		SmartDashboard.putNumber("X gear position", talonX.getPosition());
+		SmartDashboard.putNumber("Y gear position", talonY.getPosition());
+		
 		beam = !breakBeam.get();
 		limit = !stopSwitch.get();
 		adjust1 = !adjustBeam1.get();
@@ -258,6 +262,10 @@ public class Gear implements RobotSystem{
 			gripper.setAngle(gripperClosedAngle);
 			chutePanel.setAngle(chuteOpenAngle);
 			talonY.setSetpoint(YloadingPosition);
+		}
+		if (state==GearState.INTAKING && !gearExists && Math.abs(talonY.getPosition()-YloadingPosition) < error){
+			talonY.changeControlMode(TalonControlMode.PercentVbus);
+			talonY.set(0);
 		}
 		if (state==GearState.INTAKING && gearExists){
 			reset();		
@@ -327,7 +335,9 @@ public class Gear implements RobotSystem{
 			state = GearState.OFF;
 		}
 		
-		preventMovingTooFar();
+		if (!zeroing_position){
+			preventMovingTooFar();
+		}
 	}
 
 }
