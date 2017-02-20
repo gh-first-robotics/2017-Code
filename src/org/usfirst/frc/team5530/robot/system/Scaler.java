@@ -11,10 +11,10 @@ public class Scaler implements RobotSystem {
 	private Servo top;
 	private Servo bottom;
 	double  speed = .3,
-			topClosedAngle = 0,
-			bottomClosedAngle = 0,
-			topOpenAngle = 90,
-			bottomOpenAngle = 90;
+			topClosedAngle = 165,
+			bottomClosedAngle = 170,
+			topOpenAngle = 0,
+			bottomOpenAngle = 0;
 
 	public Scaler(CANTalon talon, Servo top, Servo bottom) {
 		this.talon = talon;
