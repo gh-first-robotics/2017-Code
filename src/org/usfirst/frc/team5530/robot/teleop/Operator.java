@@ -16,7 +16,7 @@ public class Operator {
 	private Scaler scaler;
 
 	private Robot rob;
-
+public static boolean moveScaler = false;
 	private Controls controls;
 	private ControlState state, previousState;
 
@@ -41,8 +41,6 @@ public class Operator {
 		driveTrain.arcadeDrive(state.getStick(0), reverseDriving);
 	//	driveTrain.tankDrive(0.3, 0.3);
 
-		if (enableScale)
-			scaler.move(state.getStick(1));
 
 		//if (state.isPressed(InputButton.Raise_Arm))
 			//lowArm.raise();
@@ -83,15 +81,22 @@ public class Operator {
 
 		if (state.isNewlyPressed(InputButton.Shoot_Low, previousState))
 			shooter.shootLow();
+		
+		if (state.isNewlyPressed(InputButton.Close, previousState))
+			scaler.close();
 
-		if (state.isNewlyPressed(InputButton.Toggle_Scaler, previousState))
-			enableScale = !enableScale;
+		if (state.isNewlyPressed(InputButton.Open_Bottom, previousState))
+			scaler.openBottom();
 
-		if (state.isNewlyPressed(InputButton.Lock_Scaler, previousState))
-			scaler.lock();
+		if (state.isNewlyPressed(InputButton.Open_All, previousState))
+			scaler.openAll();
 
-		if (state.isNewlyPressed(InputButton.Unlock_Scaler, previousState))
-			scaler.unlock();
+		if (state.isPressed(InputButton.Move_Scaler))
+			moveScaler = true;
+		else
+			moveScaler = false;
+
+		
 
 		if (state.isNewlyPressed(InputButton.Shoot_Finish, previousState))
 			shooter.launch();
