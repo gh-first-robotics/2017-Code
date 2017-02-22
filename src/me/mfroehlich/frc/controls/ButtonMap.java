@@ -6,8 +6,8 @@ import java.util.List;
 import org.usfirst.frc.team5530.robot.teleop.ControlButton;
 
 import me.mfroehlich.frc.abstractions.Controls;
-import me.mfroehlich.frc.eventloop.Controller;
-import me.mfroehlich.frc.eventloop.actions.Action;
+import me.mfroehlich.frc.actionloop.Controller;
+import me.mfroehlich.frc.actionloop.actions.Action;
 
 public class ButtonMap {
 	private List<Mapping> onPressed = new LinkedList<>();

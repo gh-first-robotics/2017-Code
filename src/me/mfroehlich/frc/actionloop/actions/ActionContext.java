@@ -1,16 +1,14 @@
-package me.mfroehlich.frc.eventloop.actions;
+package me.mfroehlich.frc.actionloop.actions;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
-import me.mfroehlich.frc.eventloop.actions.Action.State;
-import me.mfroehlich.frc.eventloop.events.Callback;
+import me.mfroehlich.frc.actionloop.actions.Action.State;
 
 public class ActionContext {
-	private Object scheduleMutex = new Object();
-	
-	private Set<Action> scheduled_active = new HashSet<>();
-	private Set<Action> scheduled_buffer = new HashSet<>();
+	private Object mutex = new Object();
 	private Set<Action> executing = new HashSet<>();
 	
 	/**
@@ -28,25 +26,26 @@ public class ActionContext {
 		}
 		
 		action.state = State.STARTING;
-		schedule(action);
+		
+		synchronized (mutex) {
+			executing.add(action);
+		}
 	}
 	
 	/**
 	 * Must be called consistently during execution of this context. This is the main event loop.
 	 */
 	public void tick() {
-		synchronized (scheduleMutex) {
-			Set<Action> swap = scheduled_buffer;
-			scheduled_buffer = scheduled_active;
-			scheduled_active = swap;
+		List<Action> todo;
+		synchronized (mutex) {
+			todo = new LinkedList<>(executing);
 		}
 		
-		for (Action action : scheduled_active) {
+		for (Action action : todo) {
 			switch (action.state) {
 			case STARTING:
 				action.log("starting");
 				if (action.scope.lock()) {
-					executing.add(action);
 					action.state = State.RUNNING;
 					
 					action.before();
@@ -72,7 +71,15 @@ public class ActionContext {
 			case ABORTING:
 				action.log("aborting");
 				action.abort();
-				action.complete();
+				action.scope.release();
+				action.state = State.IDLE;
+				action.onCompleted.emit();
+				executing.remove(action);
+				action.log("stopped");
+				break;
+				
+			case IDLE:
+				executing.remove(action);
 				break;
 				
 			default:
@@ -80,8 +87,6 @@ public class ActionContext {
 				break;
 			}
 		}
-		
-		scheduled_active.clear();
 	}
 	
 	/**
@@ -90,26 +95,6 @@ public class ActionContext {
 	public void cancelAll() {
 		for (Action action : executing) {
 			action.cancel();
-		}
-	}
-	
-	private void schedule(Action update) {
-		synchronized (scheduleMutex) {
-			scheduled_buffer.add(update);
-		}
-	}
-	
-	public class UpdateNotifier implements Callback {
-		private Action action;
-		
-		public UpdateNotifier(Action action) {
-			this.action = action;
-		}
-		
-		public void invoke() {
-			if (action.state == State.IDLE || action.state == State.UNINITIALIZED)
-				return;
-			schedule(action);
 		}
 	}
 }

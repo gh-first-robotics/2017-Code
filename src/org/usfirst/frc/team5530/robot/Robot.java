@@ -5,9 +5,9 @@ import org.usfirst.frc.team5530.robot.test.TestController;
 
 import me.mfroehlich.frc.abstractions.RobotStateProvider;
 import me.mfroehlich.frc.abstractions.RobotStateProvider.State;
-import me.mfroehlich.frc.eventloop.EventLoopRobot;
+import me.mfroehlich.frc.actionloop.ActionRobot;
 
-public class Robot extends EventLoopRobot {
+public class Robot extends ActionRobot {
 	public Robot(RobotStateProvider provider) {
 		super(provider);
 	}

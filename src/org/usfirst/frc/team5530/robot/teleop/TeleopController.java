@@ -6,22 +6,20 @@ import org.usfirst.frc.team5530.robot.actions.drivetrain.ManualDriveAction;
 import org.usfirst.frc.team5530.robot.actions.gears.AlignSlideWithPegAction;
 import org.usfirst.frc.team5530.robot.actions.gears.ChutePanelAction;
 import org.usfirst.frc.team5530.robot.actions.gears.PegGripperAction;
+import org.usfirst.frc.team5530.robot.actions.gears.PegGripperAction.Position;
 import org.usfirst.frc.team5530.robot.actions.gears.PositionAxialSlideAction;
 import org.usfirst.frc.team5530.robot.actions.gears.PositionLateralSlideAction;
 import org.usfirst.frc.team5530.robot.actions.gears.ResetAxialSlideAction;
 import org.usfirst.frc.team5530.robot.actions.gears.ResetLateralSlideAction;
 import org.usfirst.frc.team5530.robot.actions.gears.RotateGearAction;
-import org.usfirst.frc.team5530.robot.actions.gears.RoughPositionAxialSlideAction;
-import org.usfirst.frc.team5530.robot.actions.gears.PegGripperAction.Position;
 
 import me.mfroehlich.frc.abstractions.Controls;
+import me.mfroehlich.frc.actionloop.Controller;
+import me.mfroehlich.frc.actionloop.actions.Action;
 import me.mfroehlich.frc.controls.Button;
+import me.mfroehlich.frc.controls.Button.Binding;
 import me.mfroehlich.frc.controls.ButtonMap;
 import me.mfroehlich.frc.controls.ControlsState;
-import me.mfroehlich.frc.controls.Button.Binding;
-import me.mfroehlich.frc.eventloop.Controller;
-import me.mfroehlich.frc.eventloop.EventLoopRobot;
-import me.mfroehlich.frc.eventloop.actions.Action;
 
 public class TeleopController extends Controller {
 	private ButtonMap control = new ButtonMap(Controls.create(0, 1), this);
@@ -89,7 +87,7 @@ public class TeleopController extends Controller {
 			),
 			new RotateGearAction(),
 			
-			new RoughPositionAxialSlideAction(4.5),
+			new PositionAxialSlideAction(4.5, true),
 			new PegGripperAction(Position.OPEN),
 			new PositionAxialSlideAction(8.5)
 		));
@@ -103,15 +101,12 @@ public class TeleopController extends Controller {
 	public void start() {
 		drive = new ManualDriveAction();
 		execute(drive);
-		EventLoopRobot.tick.listen(this::update);
 	}
 	
 	@Override
-	public void stop() {
-		EventLoopRobot.tick.remove(this::update);
-	}
+	public void stop() { }
 	
-	public void update() {
+	public void tick() {
 		ControlsState state = control.update();
 		
 		this.drive.control(state.getStick(1));

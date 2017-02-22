@@ -1,4 +1,4 @@
-package me.mfroehlich.frc.eventloop.actions;
+package me.mfroehlich.frc.actionloop.actions;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -19,13 +19,6 @@ class SequentialActionSet extends Action {
 	protected void add(Action c) {
 		actions.add(c);
 	}
-	
-	@Override
-	protected void init(ResourceScope scope) {
-		for (Action a : actions) {
-			listen(a.onCompleted);
-		}
-	}
 
 	@Override
 	protected void before() {
@@ -34,6 +27,13 @@ class SequentialActionSet extends Action {
 
 	@Override
 	public void update() {
+		if (current != null && current.state == State.ABORTING) {
+			this.cancel();
+			return;
+		} else if (current != null && current.isRunning()) {
+			return;
+		}
+		
 		current = queue.poll();
 		
 		if (current == null) {

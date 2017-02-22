@@ -3,8 +3,8 @@ package org.usfirst.frc.team5530.robot.actions.gears;
 import org.usfirst.frc.team5530.robot.systems.PegInterfaceSystem;
 
 import me.mfroehlich.frc.abstractions.Servo;
-import me.mfroehlich.frc.eventloop.actions.Action;
-import me.mfroehlich.frc.eventloop.actions.ResourceScope;
+import me.mfroehlich.frc.actionloop.actions.Action;
+import me.mfroehlich.frc.actionloop.actions.ResourceScope;
 
 public class PegGripperAction extends Action {
 	private Servo gripper;
@@ -35,7 +35,6 @@ public class PegGripperAction extends Action {
 			break;
 		}
 		
-		System.out.println("Peg gripper: " + gripper.get());
 		this.complete();
 	}
 	

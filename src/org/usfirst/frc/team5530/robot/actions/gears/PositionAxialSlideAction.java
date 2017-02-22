@@ -4,23 +4,26 @@ import org.usfirst.frc.team5530.robot.systems.AxialSlideSystem;
 
 import me.mfroehlich.frc.abstractions.Talon;
 import me.mfroehlich.frc.abstractions.Talon.ControlMode;
-import me.mfroehlich.frc.eventloop.EventLoopRobot;
-import me.mfroehlich.frc.eventloop.actions.Action;
-import me.mfroehlich.frc.eventloop.actions.ResourceScope;
+import me.mfroehlich.frc.actionloop.actions.Action;
+import me.mfroehlich.frc.actionloop.actions.ResourceScope;
 
 public class PositionAxialSlideAction extends Action {
 	private Talon slide;
 	private int position;
+	private boolean rough;
 	
 	public PositionAxialSlideAction(double pos) {
+		this(pos, false);
+	}
+	
+	public PositionAxialSlideAction(double pos, boolean rough) {
 		this.position = (int) Math.floor(pos * AxialSlideSystem.ticksPerInch);
+		this.rough = rough;
 	}
 	
 	@Override
 	protected void init(ResourceScope scope) {
 		slide = scope.require(AxialSlideSystem.motor);
-		
-		listen(EventLoopRobot.tick);
 	}
 	
 	@Override
@@ -43,14 +46,24 @@ public class PositionAxialSlideAction extends Action {
 		
 		System.out.println("Moving y: " + position + " " + current + " " + delta);
 		
-		if (Math.abs(delta) < 20) {
-			slide.set(0);
-			this.complete();
-			return;
-		} else if (Math.abs(delta) < 350) {
-			value = .2;
+		if (rough) {
+			if (Math.abs(delta) < 350) {
+				slide.set(0);
+				this.complete();
+				return;
+			} else {
+				value = .9;
+			}
 		} else {
-			value = 1;
+			if (Math.abs(delta) < 20) {
+				slide.set(0);
+				this.complete();
+				return;
+			} else if (Math.abs(delta) < 350) {
+				value = .2;
+			} else {
+				value = 1;
+			}
 		}
 		
 		slide.set(sign * value);

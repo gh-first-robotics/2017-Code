@@ -4,9 +4,8 @@ import org.usfirst.frc.team5530.robot.systems.LateralSlideSystem;
 
 import me.mfroehlich.frc.abstractions.Talon;
 import me.mfroehlich.frc.abstractions.Talon.ControlMode;
-import me.mfroehlich.frc.eventloop.EventLoopRobot;
-import me.mfroehlich.frc.eventloop.actions.Action;
-import me.mfroehlich.frc.eventloop.actions.ResourceScope;
+import me.mfroehlich.frc.actionloop.actions.Action;
+import me.mfroehlich.frc.actionloop.actions.ResourceScope;
 
 public class PositionLateralSlideAction extends Action {
 	private Talon slide;
@@ -19,8 +18,6 @@ public class PositionLateralSlideAction extends Action {
 	@Override
 	protected void init(ResourceScope scope) {
 		slide = scope.require(LateralSlideSystem.motor);
-		
-		listen(EventLoopRobot.tick);
 	}
 	
 	@Override

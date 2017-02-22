@@ -1,4 +1,4 @@
-package me.mfroehlich.frc.eventloop.actions;
+package me.mfroehlich.frc.actionloop.actions;
 
 import java.util.HashSet;
 import java.util.Set;

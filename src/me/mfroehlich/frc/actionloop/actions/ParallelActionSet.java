@@ -1,4 +1,4 @@
-package me.mfroehlich.frc.eventloop.actions;
+package me.mfroehlich.frc.actionloop.actions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,13 +9,6 @@ class ParallelActionSet extends Action {
 	public ParallelActionSet(Action[] group) {
 		for (Action action : group) {
 			this.actions.add(action);
-		}
-	}
-	
-	@Override
-	protected void init(ResourceScope scope) {
-		for (Action a : actions) {
-			listen(a.onCompleted);
 		}
 	}
 

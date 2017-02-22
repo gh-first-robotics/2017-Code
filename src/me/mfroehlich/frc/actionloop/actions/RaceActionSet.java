@@ -1,4 +1,4 @@
-package me.mfroehlich.frc.eventloop.actions;
+package me.mfroehlich.frc.actionloop.actions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,13 +13,6 @@ class RaceActionSet extends Action {
 			this.actions.add(action);
 		}
 	}
-	
-	@Override
-	protected void init(ResourceScope scope) {
-		for (Action a : actions) {
-			listen(a.onCompleted);
-		}
-	}
 
 	@Override
 	protected void before() {
@@ -31,6 +24,7 @@ class RaceActionSet extends Action {
 	@Override
 	public void update() {
 		boolean complete = false;
+		
 		for (Action action : actions) {
 			if (!action.isRunning()) {
 				complete = true;

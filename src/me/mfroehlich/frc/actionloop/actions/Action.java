@@ -1,8 +1,6 @@
-package me.mfroehlich.frc.eventloop.actions;
+package me.mfroehlich.frc.actionloop.actions;
 
-import me.mfroehlich.frc.eventloop.actions.ActionContext.UpdateNotifier;
 import me.mfroehlich.frc.eventloop.events.Event;
-import me.mfroehlich.frc.eventloop.events.EventSource;
 
 public abstract class Action {
 	public enum State {
@@ -20,7 +18,6 @@ public abstract class Action {
 	ResourceScope scope = new ResourceScope(this);
 	
 	private ActionContext context;
-	private UpdateNotifier notifier;
 	
 	/**
 	 * Cancels this action.
@@ -33,7 +30,6 @@ public abstract class Action {
 			
 		case RUNNING:
 			state = State.ABORTING;
-			notifier.invoke();
 			return;
 			
 		default: return;
@@ -43,13 +39,6 @@ public abstract class Action {
 	public final boolean isRunning() {
 		return state == State.STARTING || state == State.RUNNING;
 	}
-//	/**
-//	 * Gets the current state of this action.
-//	 * @return the state
-//	 */
-//	public final State getState() {
-//		return state;
-//	}
 	
 	/**
 	 * Initializes this action. This must only be called once, before it is executed
@@ -58,7 +47,6 @@ public abstract class Action {
 	
 	final void initialize(ActionContext context) {
 		this.context = context;
-		this.notifier = context.new UpdateNotifier(this);
 		
 		this.init(scope);
 		this.state = State.IDLE;
@@ -91,18 +79,6 @@ public abstract class Action {
 	protected void after() { }
 	
 	/**
-	 * Add an event as an update trigger for this action
-	 * @param e the event
-	 */
-	protected final void listen(EventSource e) {
-		if (state != State.UNINITIALIZED) {
-			throw new Error("Attempted to add listener outside of initialization");
-		}
-			
-		e.listen(notifier);
-	}
-	
-	/**
 	 * Mark this action as complete.
 	 */
 	protected final void complete() {
@@ -111,7 +87,6 @@ public abstract class Action {
 		}
 		
 		state = State.STOPPING;
-		notifier.invoke();
 	}
 
 	/**

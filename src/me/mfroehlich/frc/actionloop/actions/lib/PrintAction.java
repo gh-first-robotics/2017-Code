@@ -1,6 +1,6 @@
-package me.mfroehlich.frc.eventloop.actions.lib;
+package me.mfroehlich.frc.actionloop.actions.lib;
 
-import me.mfroehlich.frc.eventloop.actions.Action;
+import me.mfroehlich.frc.actionloop.actions.Action;
 
 public class PrintAction extends Action {
 	private String message;

@@ -7,10 +7,10 @@ import org.usfirst.frc.team5530.robot.actions.climber.ClimbAction;
 import org.usfirst.frc.team5530.robot.actions.climber.RopeGripperAction;
 import org.usfirst.frc.team5530.robot.actions.gears.ChutePanelAction;
 import org.usfirst.frc.team5530.robot.actions.gears.PegGripperAction;
+import org.usfirst.frc.team5530.robot.actions.gears.PegGripperAction.Position;
 import org.usfirst.frc.team5530.robot.actions.gears.ResetAxialSlideAction;
 import org.usfirst.frc.team5530.robot.actions.gears.ResetLateralSlideAction;
 import org.usfirst.frc.team5530.robot.actions.gears.RotateGearAction;
-import org.usfirst.frc.team5530.robot.actions.gears.PegGripperAction.Position;
 import org.usfirst.frc.team5530.robot.systems.AxialSlideSystem;
 import org.usfirst.frc.team5530.robot.systems.GearChuteSystem;
 import org.usfirst.frc.team5530.robot.systems.LateralSlideSystem;
@@ -18,11 +18,10 @@ import org.usfirst.frc.team5530.robot.systems.PegInterfaceSystem;
 import org.usfirst.frc.team5530.robot.teleop.ControlButton;
 
 import me.mfroehlich.frc.abstractions.Controls;
+import me.mfroehlich.frc.actionloop.Controller;
+import me.mfroehlich.frc.actionloop.actions.Action;
+import me.mfroehlich.frc.actionloop.actions.lib.DelayAction;
 import me.mfroehlich.frc.controls.ControlsState;
-import me.mfroehlich.frc.eventloop.Controller;
-import me.mfroehlich.frc.eventloop.EventLoopRobot;
-import me.mfroehlich.frc.eventloop.actions.Action;
-import me.mfroehlich.frc.eventloop.actions.lib.DelayAction;
 
 public class TestController extends Controller {
 	private Queue<Action> queue = new LinkedList<>();
@@ -71,16 +70,12 @@ public class TestController extends Controller {
 			new DelayAction(1000),
 			new ClimbAction(.5)
 		));
-		
-		EventLoopRobot.tick.listen(this::update);
 	}
 
 	@Override
-	public void stop() {
-		EventLoopRobot.tick.remove(this::update);
-	}
+	public void stop() { }
 	
-	private void update() {
+	public void tick() {
 		lastState = state;
 		state = controls.getState();
 		

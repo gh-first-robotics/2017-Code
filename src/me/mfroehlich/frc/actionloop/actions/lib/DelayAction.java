@@ -1,6 +1,6 @@
-package me.mfroehlich.frc.eventloop.actions.lib;
+package me.mfroehlich.frc.actionloop.actions.lib;
 
-import me.mfroehlich.frc.eventloop.actions.Action;
+import me.mfroehlich.frc.actionloop.actions.Action;
 
 public class DelayAction extends Action {
 	private int millis;
@@ -16,7 +16,7 @@ public class DelayAction extends Action {
 
 			this.complete();
 		} catch (InterruptedException e) {
-			System.out.println("Delay cancelled");
+			System.err.println("Delay cancelled");
 		}
 	}
 	

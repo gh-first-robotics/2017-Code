@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.InterruptHandlerFunction;
 import edu.wpi.first.wpilibj.Timer;
 import me.mfroehlich.frc.abstractions.DigitalSensor;
 import me.mfroehlich.frc.eventloop.events.Event;
-import me.mfroehlich.frc.eventloop.events.EventSource;
 
 class LiveDigitalSensor implements DigitalSensor {
 	private DigitalInput digital;
@@ -32,13 +31,14 @@ class LiveDigitalSensor implements DigitalSensor {
 				event.emit();
 			}
 		});
+		
 		digital.setUpSourceEdge(true, true);
 		digital.enableInterrupts();
 	}
 	
 	@Override
-	public EventSource changed() {
-		return event;
+	public Observer observe(boolean target) {
+		return new Observer(target);
 	}
 	
 	/**
@@ -62,5 +62,34 @@ class LiveDigitalSensor implements DigitalSensor {
 				Timer.delay(1);
 			}
 		}).start();
+	}
+	
+	private class Observer implements DigitalSensor.Observer {
+		private boolean target;
+		private boolean value;
+		
+		public Observer(boolean target) {
+			this.target = target;
+			this.reset();
+			
+			event.listen(this::update);
+		}
+		
+		private void update() {
+			if (LiveDigitalSensor.this.value() == target) {
+				value = target;
+			}
+		}
+		
+		@Override
+		public boolean value() {
+			return value;
+		}
+
+		@Override
+		public void reset() {
+			value = !target;
+			this.update();
+		}
 	}
 }

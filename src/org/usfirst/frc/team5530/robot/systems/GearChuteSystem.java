@@ -3,7 +3,7 @@ package org.usfirst.frc.team5530.robot.systems;
 import me.mfroehlich.frc.abstractions.DigitalSensor;
 import me.mfroehlich.frc.abstractions.Servo;
 import me.mfroehlich.frc.abstractions.Talon;
-import me.mfroehlich.frc.eventloop.actions.Resource;
+import me.mfroehlich.frc.actionloop.actions.Resource;
 
 public class GearChuteSystem {
 	private static Talon rotatorValue = Talon.create(4);

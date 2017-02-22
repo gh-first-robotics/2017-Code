@@ -1,18 +1,12 @@
-package me.mfroehlich.frc.eventloop.actions.lib;
+package me.mfroehlich.frc.actionloop.actions.lib;
 
-import me.mfroehlich.frc.eventloop.actions.Action;
-import me.mfroehlich.frc.eventloop.actions.ResourceScope;
+import me.mfroehlich.frc.actionloop.actions.Action;
 
 public abstract class AliasAction extends Action {
 	private Action action;
 	
 	protected AliasAction(Action action) {
 		this.action = action;
-	}
-	
-	@Override
-	protected void init(ResourceScope scope) {
-		this.listen(action.onCompleted);
 	}
 	
 	@Override

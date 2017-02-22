@@ -1,11 +1,11 @@
-package me.mfroehlich.frc.eventloop;
+package me.mfroehlich.frc.actionloop;
 
-import me.mfroehlich.frc.eventloop.actions.Action;
+import me.mfroehlich.frc.actionloop.actions.Action;
 
 public abstract class Controller {
-	private EventLoopRobot robot;
+	private ActionRobot robot;
 	
-	public final void initialize(EventLoopRobot rob) {
+	public final void initialize(ActionRobot rob) {
 		this.robot = rob;
 		this.init();
 	}
@@ -13,6 +13,7 @@ public abstract class Controller {
 	protected abstract void init();
 	
 	public abstract void start();
+	public abstract void tick();
 	public abstract void stop();
 	
 	public final void execute(Action command) {

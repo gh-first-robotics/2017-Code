@@ -6,8 +6,8 @@ import org.usfirst.frc.team5530.robot.teleop.Vector2;
 
 import me.mfroehlich.frc.abstractions.Talon;
 import me.mfroehlich.frc.abstractions.Talon.ControlMode;
-import me.mfroehlich.frc.eventloop.actions.Action;
-import me.mfroehlich.frc.eventloop.actions.ResourceScope;
+import me.mfroehlich.frc.actionloop.actions.Action;
+import me.mfroehlich.frc.actionloop.actions.ResourceScope;
 
 public class ManualDrive2Action extends Action {
 	private Talon left;

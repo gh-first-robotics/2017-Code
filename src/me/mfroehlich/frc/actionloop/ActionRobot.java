@@ -1,17 +1,14 @@
-package me.mfroehlich.frc.eventloop;
+package me.mfroehlich.frc.actionloop;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import me.mfroehlich.frc.abstractions.RobotStateProvider;
 import me.mfroehlich.frc.abstractions.RobotStateProvider.State;
-import me.mfroehlich.frc.eventloop.actions.Action;
-import me.mfroehlich.frc.eventloop.actions.ActionContext;
-import me.mfroehlich.frc.eventloop.events.Event;
+import me.mfroehlich.frc.actionloop.actions.Action;
+import me.mfroehlich.frc.actionloop.actions.ActionContext;
 
-public abstract class EventLoopRobot {
-	public static Event tick = new Event();
-	
+public abstract class ActionRobot {
 	private Map<State, Controller> controllers = new HashMap<>();
 	private Controller currentController;
 	private State currentState;
@@ -19,7 +16,7 @@ public abstract class EventLoopRobot {
 	private ActionContext actions = new ActionContext();
 	private RobotStateProvider provider;
 	
-	protected EventLoopRobot(RobotStateProvider provider) {
+	protected ActionRobot(RobotStateProvider provider) {
 		this.provider = provider;
 	}
 	
@@ -58,8 +55,7 @@ public abstract class EventLoopRobot {
 	}
 	
 	private void update() {
-		// First, emit the tick event. Any actions that listen for it are then queued
-		tick.emit();
+		// First, tick the action loop to actually run the robot
 		actions.tick();
 		
 		// Translate the boolean flags into a state

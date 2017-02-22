@@ -1,11 +1,11 @@
-package me.mfroehlich.frc.eventloop;
+package me.mfroehlich.frc.actionloop;
 
 import org.usfirst.frc.team5530.robot.Robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.hal.HAL;
 import edu.wpi.first.wpilibj.hal.FRCNetComm.tInstances;
 import edu.wpi.first.wpilibj.hal.FRCNetComm.tResourceType;
+import edu.wpi.first.wpilibj.hal.HAL;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import me.mfroehlich.frc.abstractions.RobotStateProvider;
 
@@ -27,7 +27,7 @@ public class CompetitionRobot extends RobotBase implements RobotStateProvider {
 	
 	@Override
 	public final void startCompetition() {
-		EventLoopRobot robot = new Robot(this);
+		ActionRobot robot = new Robot(this);
 		
 		HAL.report(tResourceType.kResourceType_Framework, tInstances.kFramework_Simple);
 		

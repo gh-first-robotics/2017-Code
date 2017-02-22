@@ -6,9 +6,8 @@ import org.usfirst.frc.team5530.robot.teleop.Vector2;
 
 import me.mfroehlich.frc.abstractions.Talon;
 import me.mfroehlich.frc.abstractions.Talon.ControlMode;
-import me.mfroehlich.frc.eventloop.EventLoopRobot;
-import me.mfroehlich.frc.eventloop.actions.Action;
-import me.mfroehlich.frc.eventloop.actions.ResourceScope;
+import me.mfroehlich.frc.actionloop.actions.Action;
+import me.mfroehlich.frc.actionloop.actions.ResourceScope;
 
 public class ManualDriveAction extends Action {
 	private Talon left;
@@ -24,8 +23,6 @@ public class ManualDriveAction extends Action {
 	protected void init(ResourceScope scope) {
 		left = scope.require(DriveTrainSystem.left);
 		right = scope.require(DriveTrainSystem.right);
-		
-		this.listen(EventLoopRobot.tick);
 	}
 	
 	@Override

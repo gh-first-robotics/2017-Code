@@ -3,8 +3,8 @@ package org.usfirst.frc.team5530.robot.actions.gears;
 import org.usfirst.frc.team5530.robot.systems.GearChuteSystem;
 
 import me.mfroehlich.frc.abstractions.Talon;
-import me.mfroehlich.frc.eventloop.actions.Action;
-import me.mfroehlich.frc.eventloop.actions.ResourceScope;
+import me.mfroehlich.frc.actionloop.actions.Action;
+import me.mfroehlich.frc.actionloop.actions.ResourceScope;
 
 public class RotateGearAction extends Action {
 	private Talon rotator;
@@ -12,11 +12,6 @@ public class RotateGearAction extends Action {
 	@Override
 	protected void init(ResourceScope scope) {
 		rotator = scope.require(GearChuteSystem.rotator);
-		
-		listen(GearChuteSystem.gearSensor.changed());
-		listen(GearChuteSystem.leftSensor.changed());
-		listen(GearChuteSystem.rightSensor.changed());
-		listen(GearChuteSystem.middleSensor.changed());
 	}
 
 	@Override

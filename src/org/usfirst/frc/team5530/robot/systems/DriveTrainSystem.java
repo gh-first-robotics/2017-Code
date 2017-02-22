@@ -1,7 +1,7 @@
 package org.usfirst.frc.team5530.robot.systems;
 
 import me.mfroehlich.frc.abstractions.Talon;
-import me.mfroehlich.frc.eventloop.actions.Resource;
+import me.mfroehlich.frc.actionloop.actions.Resource;
 
 public class DriveTrainSystem {
 	private static Talon leftValue = Talon.create(1);

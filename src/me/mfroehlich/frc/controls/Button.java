@@ -2,7 +2,7 @@ package me.mfroehlich.frc.controls;
 
 import org.usfirst.frc.team5530.robot.teleop.ControlButton;
 
-import me.mfroehlich.frc.eventloop.actions.Action;
+import me.mfroehlich.frc.actionloop.actions.Action;
 
 public class Button {
 	private ControlButton control;
