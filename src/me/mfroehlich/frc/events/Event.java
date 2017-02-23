@@ -1,4 +1,4 @@
-package me.mfroehlich.frc.eventloop.events;
+package me.mfroehlich.frc.events;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.InterruptHandlerFunction;
 import edu.wpi.first.wpilibj.Timer;
 import me.mfroehlich.frc.abstractions.DigitalSensor;
-import me.mfroehlich.frc.eventloop.events.Event;
+import me.mfroehlich.frc.events.Event;
 
 class LiveDigitalSensor implements DigitalSensor {
 	private DigitalInput digital;

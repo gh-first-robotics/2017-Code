@@ -55,7 +55,11 @@ public abstract class ActionRobot {
 	}
 	
 	private void update() {
-		// First, tick the action loop to actually run the robot
+		// Tick the current controller if there is one
+		if (currentController != null) {
+			currentController.tick();
+		}
+		// Tick the action loop to actually run the robot
 		actions.tick();
 		
 		// Translate the boolean flags into a state

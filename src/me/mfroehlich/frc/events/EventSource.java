@@ -1,4 +1,4 @@
-package me.mfroehlich.frc.eventloop.events;
+package me.mfroehlich.frc.events;
 
 public interface EventSource {
 	public void single(Callback cb);

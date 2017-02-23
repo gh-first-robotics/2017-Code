@@ -1,6 +1,6 @@
 package me.mfroehlich.frc.actionloop.actions;
 
-import me.mfroehlich.frc.eventloop.events.Event;
+import me.mfroehlich.frc.events.Event;
 
 public abstract class Action {
 	public enum State {
