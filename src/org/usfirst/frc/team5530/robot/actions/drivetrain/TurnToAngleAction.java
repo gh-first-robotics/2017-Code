@@ -12,7 +12,7 @@ import me.mfroehlich.frc.abstractions.Talon.ControlMode;
 import me.mfroehlich.frc.actionloop.actions.Action;
 import me.mfroehlich.frc.actionloop.actions.ResourceScope;
 
-public class TurnAngle extends Action implements PIDOutput {
+public class TurnToAngleAction extends Action implements PIDOutput {
 	private Talon left;
 	private Talon right;
 	
@@ -29,7 +29,7 @@ public class TurnAngle extends Action implements PIDOutput {
 	double targetAngle;
 	
 	
-	public TurnAngle(double angle) {
+	public TurnToAngleAction(double angle) {
 		turnController.setSetpoint(angle);
 		targetAngle = angle;
 	}
