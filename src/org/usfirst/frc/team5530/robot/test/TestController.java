@@ -3,6 +3,7 @@ package org.usfirst.frc.team5530.robot.test;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import org.usfirst.frc.team5530.robot.FindLocation;
 import org.usfirst.frc.team5530.robot.actions.climber.ClimbAction;
 import org.usfirst.frc.team5530.robot.actions.climber.RopeGripperAction;
 import org.usfirst.frc.team5530.robot.actions.gears.ChutePanelAction;
@@ -76,6 +77,9 @@ public class TestController extends Controller {
 	public void stop() { }
 	
 	public void tick() {
+		
+		FindLocation.update();
+		
 		lastState = state;
 		state = controls.getState();
 		

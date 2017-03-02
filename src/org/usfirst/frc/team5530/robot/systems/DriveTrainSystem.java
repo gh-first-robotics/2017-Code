@@ -20,4 +20,11 @@ public class DriveTrainSystem {
 		left2.follow(leftValue);
 		right2.follow(rightValue);
 	}
+	
+	public static double leftEncPosition(){
+		return leftValue.getEncoderPosition();
+	}
+	public static double rightEncPosition(){
+		return rightValue.getEncoderPosition();
+	}
 }

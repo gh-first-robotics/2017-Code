@@ -1,5 +1,6 @@
 package org.usfirst.frc.team5530.robot.teleop;
 
+import org.usfirst.frc.team5530.robot.FindLocation;
 import org.usfirst.frc.team5530.robot.actions.climber.ClimbAction;
 import org.usfirst.frc.team5530.robot.actions.climber.ToggleRopeGripperAction;
 import org.usfirst.frc.team5530.robot.actions.drivetrain.ManualDriveAction;
@@ -108,7 +109,7 @@ public class TeleopController extends Controller {
 	
 	public void tick() {
 		ControlsState state = control.update();
-		
+		FindLocation.update();
 		this.drive.control(state.getStick(1));
 	}
 }
