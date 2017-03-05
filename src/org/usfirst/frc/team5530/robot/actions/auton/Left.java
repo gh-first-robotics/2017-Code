@@ -18,7 +18,7 @@ import me.mfroehlich.frc.actionloop.actions.ResourceScope;
 import me.mfroehlich.frc.actionloop.actions.lib.DelayAction;
 
 public class Left extends Action {
-	
+	//114.25
 	Vector2 firstPoint = new Vector2(-1,2);
 	Vector2 placeGearAt = new Vector2(-.5,3);
 	double backUpFromGearPlacement = 1;

@@ -14,7 +14,7 @@ public class DriveDistanceAction extends Action {
 	private Talon right;
 	
 	private double distance;
-	double k = 1;
+	double k = 1/(2*Math.PI);
 	double error = 5;
 	double leftTarget = 0,
 			rightTarget = 0;
