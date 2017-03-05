@@ -1,6 +1,7 @@
 package org.usfirst.frc.team5530.robot.auton;
 
 import org.usfirst.frc.team5530.robot.FindLocation;
+import org.usfirst.frc.team5530.robot.Robot;
 import org.usfirst.frc.team5530.robot.actions.auton.Center;
 import org.usfirst.frc.team5530.robot.actions.auton.Left;
 import org.usfirst.frc.team5530.robot.actions.auton.Right;
@@ -47,11 +48,11 @@ public class AutonController extends Controller {
 		String locations = (String) locationChooser.getSelected();
 		switch(locations){
 		case left:
-			new Left();
+			execute(Robot.Left());
 		case right:
-			new Right();
+			execute(Robot.Right());
 		case center:
-			new Center();
+			execute(Robot.Center());
 		
 		}
 	}
