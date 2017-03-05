@@ -9,7 +9,7 @@ public class DriveVector extends SequentialActionSet {
 	public DriveVector(Vector2 vector) {
 		this.vector = vector;
 		add(new TurnToAngleAction(vector.direction));
-		add(new DriveDistanceAction(vector.magnitude));
+		add(new DriveDistance2Action(vector.magnitude, 5));
 	}
 	
 }
