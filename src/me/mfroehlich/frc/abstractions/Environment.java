@@ -1,6 +1,7 @@
 package me.mfroehlich.frc.abstractions;
 
 public interface Environment {
+	Gyro createGyro();
 	Servo createServo(int channel);
 	Talon createTalon(int channel);
 	DigitalSensor createDigitalSensor(int channel);

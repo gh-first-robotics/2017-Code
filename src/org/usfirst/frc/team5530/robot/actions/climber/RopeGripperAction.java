@@ -23,8 +23,8 @@ public class RopeGripperAction extends Action {
 	@Override
 	public void update() {
 		if (this.open) {
-			top.set(.5);
-			bottom.set(.5);
+			top.set(.85);
+			bottom.set(1);
 		} else {
 			top.set(0);
 			bottom.set(0);

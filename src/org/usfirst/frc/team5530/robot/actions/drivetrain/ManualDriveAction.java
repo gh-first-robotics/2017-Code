@@ -41,6 +41,8 @@ public class ManualDriveAction extends Action {
 		
 		this.left.set(-left);
 		this.right.set(right);
+		
+//		System.out.println(this.left.getEncoderPosition() + " " + this.right.getEncoderPosition());
 	}
 	
 	@Override

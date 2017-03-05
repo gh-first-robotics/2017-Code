@@ -33,6 +33,11 @@ public class PositionLateralSlideAction extends Action {
 	
 	@Override
 	protected void update() {
+		if (!LateralSlideSystem.isCalibrated) {
+			this.complete();
+			return;
+		}
+		
 		int current = slide.getEncoderPosition();
 		int delta = position - current;
 		int sign = delta > 0 ? -1 : 1;

@@ -106,7 +106,7 @@ public abstract class Action {
 	 * @param actions the actions to compose
 	 * @return the composed action
 	 */
-	public static Action inParallal(Action... actions) {
+	public static Action inParallel(Action... actions) {
 		return new ParallelActionSet(actions);
 	}
 

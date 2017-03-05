@@ -34,20 +34,24 @@ public class AlignSlideWithPegAction extends Action {
 		if (maximum) {
 			slide.set(0);
 			this.cancel();
+			System.out.println("Reached end of X");
 			return;
 		}
 		
 		if (detected.value()) {
 			slide.set(0);
 			this.complete();
+			System.out.println("Reached limit switch");
 			return;
 		}
 		
 		if (preDetected.value()) {
 			slide.set(-.7);
+			System.out.println("Reached break beam");
 			return;
 		}
-		
+
+		System.out.println("Searching...");
 		slide.set(-1);
 	}
 	

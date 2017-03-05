@@ -6,7 +6,7 @@ import me.mfroehlich.frc.actionloop.actions.Resource;
 
 public class LateralSlideSystem {
 	public static final double ticksPerInch = 560.992955437,
-							   maximumTicks = 7 * ticksPerInch;
+							   maximumTicks = 6 * ticksPerInch;
 	
 	private static Talon motorValue = Talon.create(5);
 	
