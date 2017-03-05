@@ -3,13 +3,19 @@ package me.mfroehlich.frc.actionloop.actions;
 import java.util.ArrayList;
 import java.util.List;
 
-class ParallelActionSet extends Action {
+public class ParallelActionSet extends Action {
 	private List<Action> actions = new ArrayList<>();
 	
-	public ParallelActionSet(Action[] group) {
+	protected ParallelActionSet() { }
+	
+	ParallelActionSet(Action[] group) {
 		for (Action action : group) {
-			this.actions.add(action);
+			this.add(action);
 		}
+	}
+	
+	protected void add(Action c) {
+		actions.add(c);
 	}
 
 	@Override

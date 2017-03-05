@@ -5,12 +5,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-class SequentialActionSet extends Action {
+public class SequentialActionSet extends Action {
 	private List<Action> actions = new ArrayList<>();
 	private Queue<Action> queue;
 	private Action current;
 	
-	public SequentialActionSet(Action[] commands) {
+	protected SequentialActionSet() { }
+	
+	SequentialActionSet(Action[] commands) {
 		for (Action c : commands) {
 			add(c);
 		}
