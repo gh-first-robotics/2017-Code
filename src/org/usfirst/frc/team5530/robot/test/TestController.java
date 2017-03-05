@@ -41,16 +41,16 @@ public class TestController extends Controller {
 	
 	@Override
 	public void start() {
-		test("Test peg break beam", new WaitForDigitalSensorAction(PegInterfaceSystem.breakBeam));
-		test("Test peg limit switch", new WaitForDigitalSensorAction(PegInterfaceSystem.limitSwitch));
+		test("Test peg break beam", new WaitForDigitalSensorAction(PegInterfaceSystem.breakBeam, true));
+		test("Test peg limit switch", new WaitForDigitalSensorAction(PegInterfaceSystem.limitSwitch, true));
 		
-		test("Test gear presence break beam", new WaitForDigitalSensorAction(GearChuteSystem.gearSensor));
-		test("Test gear alignment left break beam", new WaitForDigitalSensorAction(GearChuteSystem.leftSensor));
-		test("Test gear alignment middle break beam", new WaitForDigitalSensorAction(GearChuteSystem.middleSensor));
-		test("Test gear alignment right break beam", new WaitForDigitalSensorAction(GearChuteSystem.rightSensor));
+		test("Test gear presence break beam", new WaitForDigitalSensorAction(GearChuteSystem.gearSensor, true));
+		test("Test gear alignment left break beam", new WaitForDigitalSensorAction(GearChuteSystem.leftSensor, true));
+		test("Test gear alignment middle break beam", new WaitForDigitalSensorAction(GearChuteSystem.middleSensor, true));
+		test("Test gear alignment right break beam", new WaitForDigitalSensorAction(GearChuteSystem.rightSensor, true));
 		
-		test("Test axial (Y) home limit switch", new WaitForDigitalSensorAction(AxialSlideSystem.homeSwitch));
-		test("Test lateral (X) home limit switch", new WaitForDigitalSensorAction(LateralSlideSystem.homeSwitch));
+		test("Test axial (Y) home limit switch", new WaitForDigitalSensorAction(AxialSlideSystem.homeSwitch, true));
+		test("Test lateral (X) home limit switch", new WaitForDigitalSensorAction(LateralSlideSystem.homeSwitch, true));
 		
 		test("Open peg gripper", new PegGripperAction(Position.OPEN));
 		test("Half peg gripper", new PegGripperAction(Position.HALF));
