@@ -1,6 +1,6 @@
 package org.usfirst.frc.team5530.robot;
 
-import org.usfirst.frc.team5530.robot.auton.AutonController;
+import org.usfirst.frc.team5530.robot.autonomous.AutonomousController;
 import org.usfirst.frc.team5530.robot.teleop.TeleopController;
 import org.usfirst.frc.team5530.robot.test.TestController;
 
@@ -17,6 +17,6 @@ public class Robot extends ActionRobot {
 	public void init() {
 		setController(State.TEST, new TestController());
 		setController(State.OPERATOR, new TeleopController());
-		setController(State.AUTONOMOUS, new AutonController());
+		setController(State.AUTONOMOUS, new AutonomousController());
 	}
 }

@@ -1,4 +1,4 @@
-package org.usfirst.frc.team5530.robot.auton;
+package org.usfirst.frc.team5530.robot.autonomous;
 
 import org.usfirst.frc.team5530.robot.actions.LoadGear2Action;
 import org.usfirst.frc.team5530.robot.actions.UnloadGearAction;
@@ -8,7 +8,7 @@ import org.usfirst.frc.team5530.robot.actions.drivetrain.DriveDistanceAction;
 import me.mfroehlich.frc.actionloop.Controller;
 import me.mfroehlich.frc.actionloop.actions.Action;
 
-public class AutonController extends Controller {
+public class AutonomousController extends Controller {
 	@Override
 	protected void init() {
 		
