@@ -82,7 +82,7 @@ public abstract class Action {
 	 * Mark this action as complete.
 	 */
 	protected final void complete() {
-		if (state != State.RUNNING && state != State.ABORTING) {
+		if (state != State.RUNNING && state != State.ABORTING && state != State.STOPPING) {
 			throw new Error("Attempted to complete an action while not running");
 		}
 		
@@ -106,8 +106,8 @@ public abstract class Action {
 	 * @param actions the actions to compose
 	 * @return the composed action
 	 */
-	public static Action inParallel(Action... actions) {
-		return new ParallelActionSet(actions);
+	public static Action inParallel(String name, Action... actions) {
+		return new ParallelActionSet(name, actions);
 	}
 
 	/**
@@ -115,8 +115,8 @@ public abstract class Action {
 	 * @param actions the actions to compose
 	 * @return the composed action
 	 */
-	public static Action inSequence(Action... actions) {
-		return new SequentialActionSet(actions);
+	public static Action inSequence(String name, Action... actions) {
+		return new SequentialActionSet(name, actions);
 	}
 	
 	/**
@@ -125,8 +125,8 @@ public abstract class Action {
 	 * @param actions the actions to compose
 	 * @return the composed action
 	 */
-	public static Action inRace(boolean cancel, Action... actions) {
-		return new RaceActionSet(cancel, actions);
+	public static Action inRace(String name, boolean cancel, Action... actions) {
+		return new RaceActionSet(name, cancel, actions);
 	}
 
 	public void log(String string) {

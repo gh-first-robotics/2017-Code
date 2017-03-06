@@ -9,9 +9,9 @@ import org.usfirst.frc.team5530.robot.actions.gears.PegGripperAction.Position;
 
 import me.mfroehlich.frc.actionloop.actions.lib.ActionGroup;
 
-public class LoadGear2Action extends ActionGroup {
-	public LoadGear2Action() {
-		super("Load Gear Prt. 2");
+public class StartupAction extends ActionGroup {
+	public StartupAction() {
+		super("Startup");
 		
 		add(new ChutePanelAction(false));
 		add(new PegGripperAction(Position.OPEN));

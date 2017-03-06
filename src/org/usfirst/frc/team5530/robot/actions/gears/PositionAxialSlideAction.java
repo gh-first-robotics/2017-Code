@@ -49,7 +49,7 @@ public class PositionAxialSlideAction extends Action {
 		int sign = delta > 0 ? -1 : 1;
 		double value;
 		
-		System.out.println("Moving y: " + position + " " + current + " " + delta);
+//		System.out.println("Moving y: " + position + " " + current + " " + delta);
 		
 		if (rough) {
 			if (Math.abs(delta) < 350) {

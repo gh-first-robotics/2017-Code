@@ -16,7 +16,7 @@ public class Robot extends ActionRobot {
 	@Override
 	public void init() {
 		setController(State.TEST, new TestController());
-		setController(State.TELEOP, new TeleopController());
+		setController(State.OPERATOR, new TeleopController());
 		setController(State.AUTONOMOUS, new AutonController());
 	}
 }

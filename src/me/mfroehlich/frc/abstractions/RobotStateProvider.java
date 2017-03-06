@@ -7,7 +7,7 @@ public interface RobotStateProvider {
 		DISABLED,
 		
 		AUTONOMOUS,
-		TELEOP,
+		OPERATOR,
 		TEST
 	}
 }

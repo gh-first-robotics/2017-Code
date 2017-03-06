@@ -15,7 +15,7 @@ public class CompetitionRobot extends RobotBase implements RobotStateProvider {
 		if (isDisabled()) {
 			return State.DISABLED;
 		} else if (isOperatorControl()) {
-			return State.TELEOP;
+			return State.OPERATOR;
 		} else if (isAutonomous()) {
 			return State.AUTONOMOUS;
 		} else if (isTest()) {

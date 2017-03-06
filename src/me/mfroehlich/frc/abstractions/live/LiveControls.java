@@ -3,11 +3,11 @@ package me.mfroehlich.frc.abstractions.live;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.usfirst.frc.team5530.robot.teleop.ControlButton;
 import org.usfirst.frc.team5530.robot.teleop.Vector2;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import me.mfroehlich.frc.abstractions.Controls;
+import me.mfroehlich.frc.controls.ControlButton;
 import me.mfroehlich.frc.controls.ControlsState;
 
 class LiveControls implements Controls {

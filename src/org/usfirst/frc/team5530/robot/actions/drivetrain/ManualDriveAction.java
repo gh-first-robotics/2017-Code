@@ -14,9 +14,14 @@ public class ManualDriveAction extends Action {
 	private Talon right;
 	
 	private Vector2 value = new Vector2();
+	private int multiplier = 1;
 	
 	public void control(Vector2 v) {
 		this.value = v;
+	}
+	
+	public void reverse() {
+		multiplier = -multiplier;
 	}
 	
 	@Override
@@ -36,8 +41,8 @@ public class ManualDriveAction extends Action {
 		double left = -value.y - value.x;
 		double right = -value.y + value.x;
 		
-		left = Util.clamp(left, -1, 1);
-		right = Util.clamp(right, -1, 1);
+		left = multiplier * Util.clamp(left, -1, 1);
+		right = multiplier * Util.clamp(right, -1, 1);
 		
 		this.left.set(-left);
 		this.right.set(right);

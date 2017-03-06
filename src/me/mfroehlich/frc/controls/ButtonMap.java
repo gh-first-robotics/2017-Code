@@ -3,8 +3,6 @@ package me.mfroehlich.frc.controls;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.usfirst.frc.team5530.robot.teleop.ControlButton;
-
 import me.mfroehlich.frc.abstractions.Controls;
 import me.mfroehlich.frc.actionloop.Controller;
 import me.mfroehlich.frc.actionloop.actions.Action;
@@ -27,11 +25,11 @@ public class ButtonMap {
 		return new Button(stick, button, name, this);
 	}
 	
-	void onPressed(ControlButton control, Action action) {
+	void onPressed(Button control, Action action) {
 		onPressed.add(new Mapping(control, action));
 	}
 	
-	void whilePressed(ControlButton control, Action action) {
+	void whilePressed(Button control, Action action) {
 		whilePressed.add(new Mapping(control, action));
 	}
 	
@@ -40,13 +38,13 @@ public class ButtonMap {
 		state = controls.getState();
 		
 		for (Mapping mapping : onPressed) {
-			if (state.isNewlyPressed(mapping.button, lastState)) {
+			if (isNewlyPressed(mapping.button)) {
 				executor.execute(mapping.action);
 			}
 		}
 		
 		for (Mapping mapping : whilePressed) {
-			if (state.isNewlyPressed(mapping.button, lastState)) {
+			if (isNewlyPressed(mapping.button)) {
 				executor.execute(mapping.action);
 			} else if (state.isNewlyReleased(mapping.button, lastState)) {
 				mapping.action.cancel();
@@ -56,11 +54,19 @@ public class ButtonMap {
 		return state;
 	}
 	
+	public boolean isNewlyPressed(Button button) {
+		return state.isNewlyPressed(button, lastState);
+	}
+	
+	public boolean isNewlyReleased(Button button) {
+		return state.isNewlyReleased(button, lastState);
+	}
+	
 	private static class Mapping {
-		public final ControlButton button;
+		public final Button button;
 		public final Action action;
 		
-		public Mapping(ControlButton button, Action action) {
+		public Mapping(Button button, Action action) {
 			this.button = button;
 			this.action = action;
 		}

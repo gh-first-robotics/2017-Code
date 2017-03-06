@@ -5,14 +5,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-public class SequentialActionSet extends Action {
+import me.mfroehlich.frc.actionloop.actions.lib.PrintAction;
+
+class SequentialActionSet extends Action {
 	private List<Action> actions = new ArrayList<>();
 	private Queue<Action> queue;
 	private Action current;
 	
-	protected SequentialActionSet() { }
-	
-	SequentialActionSet(Action[] commands) {
+	SequentialActionSet(String name, Action[] commands) {
+		add(new PrintAction("Starting parallel action: " + name));
+		
 		for (Action c : commands) {
 			add(c);
 		}

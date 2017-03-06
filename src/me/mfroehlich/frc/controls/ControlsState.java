@@ -2,7 +2,6 @@ package me.mfroehlich.frc.controls;
 
 import java.util.Set;
 
-import org.usfirst.frc.team5530.robot.teleop.ControlButton;
 import org.usfirst.frc.team5530.robot.teleop.Vector2;
 
 public class ControlsState {
@@ -14,15 +13,15 @@ public class ControlsState {
 		this.buttons = buttons;
 	}
 	
-	public boolean isPressed(ControlButton button) {
-		return buttons.contains(button);
+	public boolean isPressed(Button button) {
+		return buttons.contains(new ControlButton(button.stick, button.button));
 	}
 	
-	public boolean isNewlyPressed(ControlButton button, ControlsState old) {
+	public boolean isNewlyPressed(Button button, ControlsState old) {
 		return isPressed(button) && (old == null || !old.isPressed(button));
 	}
 	
-	public boolean isNewlyReleased(ControlButton button, ControlsState old) {
+	public boolean isNewlyReleased(Button button, ControlsState old) {
 		return !isPressed(button) && old != null && old.isPressed(button);
 	}
 	

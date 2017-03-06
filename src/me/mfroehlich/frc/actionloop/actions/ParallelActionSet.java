@@ -3,15 +3,17 @@ package me.mfroehlich.frc.actionloop.actions;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ParallelActionSet extends Action {
+import me.mfroehlich.frc.actionloop.actions.lib.PrintAction;
+
+class ParallelActionSet extends Action {
 	private List<Action> actions = new ArrayList<>();
 	
-	protected ParallelActionSet() { }
-	
-	ParallelActionSet(Action[] group) {
+	ParallelActionSet(String name, Action[] group) {
+		this.add(new PrintAction("Starting action sequence: " + name));
 		for (Action action : group) {
 			this.add(action);
 		}
+		this.add(new PrintAction("Completed action sequence: " + name));
 	}
 	
 	protected void add(Action c) {

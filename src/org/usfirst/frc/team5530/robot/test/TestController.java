@@ -15,19 +15,19 @@ import org.usfirst.frc.team5530.robot.systems.AxialSlideSystem;
 import org.usfirst.frc.team5530.robot.systems.GearChuteSystem;
 import org.usfirst.frc.team5530.robot.systems.LateralSlideSystem;
 import org.usfirst.frc.team5530.robot.systems.PegInterfaceSystem;
-import org.usfirst.frc.team5530.robot.teleop.ControlButton;
 
 import me.mfroehlich.frc.abstractions.Controls;
 import me.mfroehlich.frc.actionloop.Controller;
 import me.mfroehlich.frc.actionloop.actions.Action;
 import me.mfroehlich.frc.actionloop.actions.lib.DelayAction;
-import me.mfroehlich.frc.controls.ControlsState;
+import me.mfroehlich.frc.controls.Button;
+import me.mfroehlich.frc.controls.ButtonMap;
 
 public class TestController extends Controller {
 	private Queue<Action> queue = new LinkedList<>();
-	private Controls controls = Controls.create(0);
-	private ControlsState state, lastState;
-	private ControlButton button = new ControlButton(1, 7);
+	
+	private ButtonMap controls = new ButtonMap(Controls.create(0), this);
+	private Button advance = controls.map(1, 7, "Advance");
 	
 	private Action last;
 	
@@ -66,7 +66,7 @@ public class TestController extends Controller {
 		
 		test("Align gear", new RotateGearAction());
 		
-		test("Climb for 1 second", Action.inRace(true,
+		test("Climb for 1 second", Action.inRace("Test climber", true,
 			new DelayAction(1000),
 			new ClimbAction(.5)
 		));
@@ -76,10 +76,9 @@ public class TestController extends Controller {
 	public void stop() { }
 	
 	public void tick() {
-		lastState = state;
-		state = controls.getState();
+		controls.update();
 		
-		if (state.isNewlyPressed(button, lastState)) {
+		if (advance.isNewlyPressed()) {
 			if (last != null && last.isRunning()) {
 				last.cancel();
 			} else {

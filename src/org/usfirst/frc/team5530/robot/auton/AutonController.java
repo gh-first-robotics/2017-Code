@@ -17,8 +17,8 @@ public class AutonController extends Controller {
 	@Override
 	public void start() {
 //		execute(new DriveDistance2Action(100));
-		execute(Action.inSequence(
-			Action.inParallel(
+		execute(Action.inSequence("Autonomous",
+			Action.inParallel("Autonomous align and move",
 				new RopeGripperAction(true),
 				new LoadGear2Action(),
 				new DriveDistanceAction(74)

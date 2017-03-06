@@ -7,34 +7,35 @@ import org.usfirst.frc.team5530.robot.actions.gears.PositionAxialSlideAction;
 import org.usfirst.frc.team5530.robot.actions.gears.RotateGearAction;
 import org.usfirst.frc.team5530.robot.actions.gears.PegGripperAction.Position;
 
-import me.mfroehlich.frc.actionloop.actions.Action;
-import me.mfroehlich.frc.actionloop.actions.SequentialActionSet;
+import me.mfroehlich.frc.actionloop.actions.lib.ActionGroup;
 import me.mfroehlich.frc.actionloop.actions.lib.DelayAction;
 
-public class UnloadGearAction extends SequentialActionSet {
+public class UnloadGearAction extends ActionGroup {
 	public UnloadGearAction() {
+		super("Unload Gear");
 		
 		add(new AlignSlideWithPegAction());
 		
-		add(Action.inParallel(
-			new ChutePanelAction(false),
-			new PegGripperAction(Position.CLOSED)
-		));
+		next();
 		
-		add(Action.inParallel(
-			new DelayAction(500),
-			new RotateGearAction()
-		));
+		add(new ChutePanelAction(false));
+		add(new PegGripperAction(Position.CLOSED));
+		
+		next();
+		
+		add(new DelayAction(500));
+		add(new RotateGearAction());
+
+		next();
 		
 		add(new PositionAxialSlideAction(5, true));
-		add(new PegGripperAction(Position.OPEN));
-		add(new PositionAxialSlideAction(8.5));
-	}
-	
-	@Override
-	protected void after() {
-		super.after();
 		
-		System.out.println("Unload complete");
+		next();
+		
+		add(new PegGripperAction(Position.OPEN));
+		
+		next();
+		
+		add(new PositionAxialSlideAction(8.5));
 	}
 }

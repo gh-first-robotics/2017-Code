@@ -1,24 +1,18 @@
 package org.usfirst.frc.team5530.robot.teleop;
 
+import org.usfirst.frc.team5530.robot.actions.LoadGear1Action;
 import org.usfirst.frc.team5530.robot.actions.LoadGear2Action;
+import org.usfirst.frc.team5530.robot.actions.QuickResetAction;
+import org.usfirst.frc.team5530.robot.actions.StartupAction;
 import org.usfirst.frc.team5530.robot.actions.UnloadGearAction;
 import org.usfirst.frc.team5530.robot.actions.climber.ClimbAction;
 import org.usfirst.frc.team5530.robot.actions.climber.ToggleRopeGripperAction;
 import org.usfirst.frc.team5530.robot.actions.drivetrain.ManualDriveAction;
-import org.usfirst.frc.team5530.robot.actions.gears.ChutePanelAction;
-import org.usfirst.frc.team5530.robot.actions.gears.PegGripperAction;
-import org.usfirst.frc.team5530.robot.actions.gears.PegGripperAction.Position;
 import org.usfirst.frc.team5530.robot.systems.AxialSlideSystem;
 import org.usfirst.frc.team5530.robot.systems.LateralSlideSystem;
-import org.usfirst.frc.team5530.robot.actions.gears.PositionAxialSlideAction;
-import org.usfirst.frc.team5530.robot.actions.gears.PositionLateralSlideAction;
-import org.usfirst.frc.team5530.robot.actions.gears.ResetAxialSlideAction;
-import org.usfirst.frc.team5530.robot.actions.gears.ResetLateralSlideAction;
-import org.usfirst.frc.team5530.robot.actions.gears.RotateGearAction;
 
 import me.mfroehlich.frc.abstractions.Controls;
 import me.mfroehlich.frc.actionloop.Controller;
-import me.mfroehlich.frc.actionloop.actions.Action;
 import me.mfroehlich.frc.controls.Button;
 import me.mfroehlich.frc.controls.Button.Binding;
 import me.mfroehlich.frc.controls.ButtonMap;
@@ -29,11 +23,14 @@ public class TeleopController extends Controller {
 	
 	private Button bStartup = control.map(1, 1, "Startup button");
 	private Button bReset = control.map(1, 2, "Reset button");
-	private Button bReceiveGear1 = control.map(2, 1, "Receive gear");
-	private Button bReceiveGear2 = control.map(2, 2, "Receive gear");
-	private Button bUnloadGear = control.map(1, 8, "Unload gear");
 	
 	private Button bClimbGrabber = control.map(1, 7, "Climb grab");
+	private Button bUnloadGear = control.map(1, 8, "Unload gear");
+	private Button bReverse = control.map(1, 12, "Reverse driving");
+	
+	private Button bReceiveGear1 = control.map(2, 1, "Receive gear prt. 1");
+	private Button bReceiveGear2 = control.map(2, 2, "Receive gear prt. 2");
+	
 	private Button bClimbSlow = control.map(2, 8, "Climb slow");
 	private Button bClimbFast = control.map(2, 7, "Climb fast");
 	
@@ -44,35 +41,9 @@ public class TeleopController extends Controller {
 		AxialSlideSystem.isCalibrated = false;
 		LateralSlideSystem.isCalibrated = false;
 		
-		bStartup.bind(Binding.ON_PRESS, Action.inSequence(
-			Action.inParallel(
-				new ResetAxialSlideAction(),
-				new ResetLateralSlideAction(),
-				new RotateGearAction()
-			),
-			Action.inParallel(
-				new PegGripperAction(Position.OPEN),
-				new ChutePanelAction(false)
-			)
-		));
-		
-		bReset.bind(Binding.ON_PRESS, Action.inSequence(
-			Action.inParallel(
-				new ResetAxialSlideAction(),
-				new ResetLateralSlideAction()
-			),
-			new ChutePanelAction(true)
-		));
-		
-		bReceiveGear1.bind(Binding.ON_PRESS, Action.inSequence(
-			new PegGripperAction(Position.HALF),
-			new ChutePanelAction(true),
-			Action.inParallel(
-				new PositionAxialSlideAction(6.5),
-				new PositionLateralSlideAction(3)
-			)
-		));
-		
+		bStartup.bind(Binding.ON_PRESS, new StartupAction());
+		bReset.bind(Binding.ON_PRESS, new QuickResetAction());
+		bReceiveGear1.bind(Binding.ON_PRESS, new LoadGear1Action());
 		bReceiveGear2.bind(Binding.ON_PRESS, new LoadGear2Action());
 		bUnloadGear.bind(Binding.ON_PRESS, new UnloadGearAction());
 		
@@ -93,6 +64,10 @@ public class TeleopController extends Controller {
 	@Override
 	public void tick() {
 		ControlsState state = control.update();
+		
+		if (bReverse.isNewlyPressed()) {
+			this.drive.reverse();
+		}
 		
 		this.drive.control(state.getStick(1));
 	}

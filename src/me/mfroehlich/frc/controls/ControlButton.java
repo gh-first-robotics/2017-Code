@@ -1,4 +1,4 @@
-package org.usfirst.frc.team5530.robot.teleop;
+package me.mfroehlich.frc.controls;
 
 public class ControlButton {
 	public final int stick;
@@ -8,15 +8,6 @@ public class ControlButton {
 		this.stick = stick;
 		this.button = button;
 	}
-	
-//	public static final ControlButton
-//		Startup = new ControlButton(1, 1),
-//		ReceiveGear = new ControlButton(1, 7),
-//		AlignGear = new ControlButton(1, 8),
-//		UnloadGear = new ControlButton(1, 9);
-//	
-//	public static final ControlButton
-//		Climb = new ControlButton(1, 12);
 	
 	@Override
 	public String toString() {
