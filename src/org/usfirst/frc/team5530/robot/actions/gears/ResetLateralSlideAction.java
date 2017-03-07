@@ -10,6 +10,10 @@ import me.mfroehlich.frc.actionloop.actions.ResourceScope;
 public class ResetLateralSlideAction extends Action {
 	private Talon slide;
 	
+	public ResetLateralSlideAction() {
+		super("Reset lateral slide");
+	}
+	
 	@Override
 	protected void init(ResourceScope scope) {
 		slide = scope.require(LateralSlideSystem.motor);

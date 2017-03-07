@@ -9,14 +9,13 @@ import me.mfroehlich.frc.actionloop.actions.Action;
 
 public abstract class ActionGroup extends Action {
 	private List<Queue<Action>> entries = new ArrayList<>();
-	private String name;
 	
 	private Queue<Queue<Action>> queue;
 	private Queue<Action> current;
 	
 	
 	protected ActionGroup(String name) {
-		this.name = name;
+		super(name);
 		this.next();
 	}
 	

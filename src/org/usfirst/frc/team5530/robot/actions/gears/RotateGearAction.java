@@ -9,6 +9,10 @@ import me.mfroehlich.frc.actionloop.actions.ResourceScope;
 public class RotateGearAction extends Action {
 	private Talon rotator;
 	
+	public RotateGearAction() {
+		super("Rotate gear");
+	}
+	
 	@Override
 	protected void init(ResourceScope scope) {
 		rotator = scope.require(GearChuteSystem.rotator);

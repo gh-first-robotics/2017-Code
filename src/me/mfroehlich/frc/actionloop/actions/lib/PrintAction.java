@@ -6,6 +6,7 @@ public class PrintAction extends Action {
 	private String message;
 	
 	public PrintAction(String message) {
+		super("Print '" + message + "'");
 		this.message = message;
 	}
 	

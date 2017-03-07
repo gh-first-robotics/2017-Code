@@ -10,7 +10,9 @@ class RaceActionSet extends Action {
 	private boolean cancel;
 	
 	RaceActionSet(String name, boolean cancel, Action[] group) {
-		this.actions.add(new PrintAction("Starting action race: " + name));
+		super(name);
+		
+		this.actions.add(new PrintAction("Starting action race: " + this.name));
 		
 		this.cancel = cancel;
 		for (Action action : group) {
@@ -44,6 +46,7 @@ class RaceActionSet extends Action {
 			}
 		}
 
+		System.out.println("Completed action race: " + this.name);
 		this.complete();
 	}
 	

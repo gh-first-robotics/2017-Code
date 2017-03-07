@@ -7,6 +7,7 @@ public class DelayAction extends Action {
 	private Thread thread;
 	
 	public DelayAction(int millis) {
+		super("Delay " + millis + " millis");
 		this.millis = millis;
 	}
 	

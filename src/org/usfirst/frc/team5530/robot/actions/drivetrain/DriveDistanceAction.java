@@ -26,10 +26,10 @@ public class DriveDistanceAction extends Action {
 	private double mainTime;
 	private double mainDistance;
 	
-	
 	private long startTime;
 	
 	public DriveDistanceAction(double distance) {
+		super("Drive about " + distance + " inches");
 		this.distance = distance;
 		
 		mainDistance = this.distance - (2 * rampDistance);

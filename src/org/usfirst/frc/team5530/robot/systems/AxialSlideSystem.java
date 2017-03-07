@@ -5,8 +5,8 @@ import me.mfroehlich.frc.abstractions.Talon;
 import me.mfroehlich.frc.actionloop.actions.Resource;
 
 public class AxialSlideSystem {
-	public static final double ticksPerInch = 560.992955437,
-			   				   maximumTicks = 8.5 * ticksPerInch;
+	public static final double ticksPerInch = 560.992955437;
+	public static final int maximumTicks = (int) (8.5 * ticksPerInch);
 	
 	private static Talon motorValue = Talon.create(6);
 	

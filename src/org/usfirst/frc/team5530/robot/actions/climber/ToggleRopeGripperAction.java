@@ -9,6 +9,10 @@ import me.mfroehlich.frc.actionloop.actions.ResourceScope;
 public class ToggleRopeGripperAction extends Action {
 	private Servo top, bottom;
 	
+	public ToggleRopeGripperAction() {
+		super("Toggle rope gripper");
+	}
+	
 	@Override
 	protected void init(ResourceScope scope) {
 		this.top = scope.require(ClimberSystem.topGripper);

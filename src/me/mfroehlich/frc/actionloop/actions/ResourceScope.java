@@ -5,10 +5,10 @@ import java.util.Set;
 
 public class ResourceScope {
 	private Set<Resource<?>> dependencies = new HashSet<>();
-	private Action scope;
+	private Action owner;
 	
 	public ResourceScope(Action scope) {
-		this.scope = scope;
+		this.owner = scope;
 	}
 	
 	public <T> T require(Resource<T> t) {
@@ -31,7 +31,7 @@ public class ResourceScope {
 	}
 	
 	void cancel() {
-		System.err.println("ERROR: ABORTING ACTION" + scope.getClass().getSimpleName());
-		scope.cancel();
+		System.err.println("ERROR: ABORTING ACTION" + owner.getClass().getSimpleName());
+		owner.cancel();
 	}
 }

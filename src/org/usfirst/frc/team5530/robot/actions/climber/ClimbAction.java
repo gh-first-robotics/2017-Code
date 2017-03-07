@@ -11,6 +11,7 @@ public class ClimbAction extends Action {
 	private double power;
 	
 	public ClimbAction(double power) {
+		super("Climb at " + (power * 100) + "% power");
 		this.power = Math.max(power, 0);
 	}
 	

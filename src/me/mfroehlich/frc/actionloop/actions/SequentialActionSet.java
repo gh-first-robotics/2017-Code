@@ -13,11 +13,15 @@ class SequentialActionSet extends Action {
 	private Action current;
 	
 	SequentialActionSet(String name, Action[] commands) {
-		add(new PrintAction("Starting parallel action: " + name));
+		super(name);
+		
+		add(new PrintAction("Starting action sequence: " + this.name));
 		
 		for (Action c : commands) {
 			add(c);
 		}
+		
+		add(new PrintAction("Completedd action sequence: " + this.name));
 	}
 	
 	protected void add(Action c) {

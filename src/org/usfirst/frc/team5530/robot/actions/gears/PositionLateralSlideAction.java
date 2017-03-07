@@ -12,7 +12,13 @@ public class PositionLateralSlideAction extends Action {
 	private int position;
 	
 	public PositionLateralSlideAction(double pos) {
+		super("Position lateral slide to " + pos + " inches");
 		this.position = (int) Math.floor(pos * LateralSlideSystem.ticksPerInch);
+		
+		if (this.position > LateralSlideSystem.maximumTicks) {
+			System.err.println("Positioning axial slide past maximum: " + pos);
+			this.position = LateralSlideSystem.maximumTicks;
+		}
 	}
 	
 	@Override

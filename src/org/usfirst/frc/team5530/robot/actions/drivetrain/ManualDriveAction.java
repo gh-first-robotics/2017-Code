@@ -16,6 +16,10 @@ public class ManualDriveAction extends Action {
 	private Vector2 value = new Vector2();
 	private int multiplier = 1;
 	
+	public ManualDriveAction() {
+		super("Manual drive");
+	}
+	
 	public void control(Vector2 v) {
 		this.value = v;
 	}

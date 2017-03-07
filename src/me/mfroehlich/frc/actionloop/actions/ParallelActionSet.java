@@ -9,11 +9,13 @@ class ParallelActionSet extends Action {
 	private List<Action> actions = new ArrayList<>();
 	
 	ParallelActionSet(String name, Action[] group) {
-		this.add(new PrintAction("Starting action sequence: " + name));
+		super(name);
+		
+		this.add(new PrintAction("Starting parallel action: " + this.name));
+		
 		for (Action action : group) {
 			this.add(action);
 		}
-		this.add(new PrintAction("Completed action sequence: " + name));
 	}
 	
 	protected void add(Action c) {
@@ -34,7 +36,8 @@ class ParallelActionSet extends Action {
 				return;
 			}
 		}
-
+		
+		System.out.println("Completed parallel action: " + this.name);
 		this.complete();
 	}
 	

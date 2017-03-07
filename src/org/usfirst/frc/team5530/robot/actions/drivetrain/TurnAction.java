@@ -2,6 +2,8 @@ package org.usfirst.frc.team5530.robot.actions.drivetrain;
 
 import org.usfirst.frc.team5530.robot.systems.DriveTrainSystem;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.wpilibj.PIDController;
 import me.mfroehlich.frc.abstractions.Talon;
 import me.mfroehlich.frc.actionloop.actions.Action;
@@ -17,6 +19,7 @@ public class TurnAction extends Action {
 	private PIDController pid;
 	
 	public TurnAction(double angle) {
+		super("Turn " + angle + " degree");
 		targetAngle = DriveTrainSystem.gyro.getAngle() + angle;
 	}
 	
@@ -25,7 +28,7 @@ public class TurnAction extends Action {
 		left = scope.require(DriveTrainSystem.left);
 		right = scope.require(DriveTrainSystem.right);
 		
-		pid = new PIDController(0.03, 0, 0, DriveTrainSystem.gyro.getAHRS(), v -> this.rate = v);
+		pid = new PIDController(0.03, 0, 0, (AHRS) DriveTrainSystem.gyro.getAHRS(), v -> this.rate = v);
 		pid.setInputRange(-180, 180);
 		pid.setOutputRange(-1, 1);
 		pid.setAbsoluteTolerance(4);

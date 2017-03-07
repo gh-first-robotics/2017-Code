@@ -5,6 +5,8 @@ import me.mfroehlich.frc.abstractions.Talon;
 import me.mfroehlich.frc.actionloop.actions.Resource;
 
 public class DriveTrainSystem {
+	public static final double ticksPerInch = 94.444;
+	
 	private static Talon leftValue = Talon.create(1);
 	private static Talon left2 = Talon.create(0);
 	

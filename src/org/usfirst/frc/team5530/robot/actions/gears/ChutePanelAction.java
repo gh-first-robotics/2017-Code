@@ -11,6 +11,7 @@ public class ChutePanelAction extends Action {
 	private boolean open;
 	
 	public ChutePanelAction(boolean open) {
+		super((open ? "Open" : "Close") + " gear chute");
 		this.open = open;
 	}
 	

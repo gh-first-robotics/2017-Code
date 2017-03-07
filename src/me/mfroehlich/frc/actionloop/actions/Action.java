@@ -12,12 +12,18 @@ public abstract class Action {
 		ABORTING
 	}
 	
-	public Event onCompleted = new Event();
+	public final Event stateChanged = new Event();
+	public final Event onCompleted = new Event();
+	public final String name;
 	
 	State state = State.UNINITIALIZED;
 	ResourceScope scope = new ResourceScope(this);
 	
 	private ActionContext context;
+	
+	protected Action(String name) {
+		this.name = name;
+	}
 	
 	/**
 	 * Cancels this action.
@@ -26,10 +32,12 @@ public abstract class Action {
 		switch (state) {
 		case STARTING:
 			state = State.IDLE;
+			stateChanged.emit();
 			return;
 			
 		case RUNNING:
 			state = State.ABORTING;
+			stateChanged.emit();
 			return;
 			
 		default: return;
@@ -39,6 +47,8 @@ public abstract class Action {
 	public final boolean isRunning() {
 		return state == State.STARTING || state == State.RUNNING;
 	}
+	
+	public State getState() { return this.state; }
 	
 	/**
 	 * Initializes this action. This must only be called once, before it is executed
@@ -50,6 +60,7 @@ public abstract class Action {
 		
 		this.init(scope);
 		this.state = State.IDLE;
+		stateChanged.emit();
 	}
 
 	/**
@@ -87,6 +98,7 @@ public abstract class Action {
 		}
 		
 		state = State.STOPPING;
+		stateChanged.emit();
 	}
 
 	/**
@@ -128,8 +140,8 @@ public abstract class Action {
 	public static Action inRace(String name, boolean cancel, Action... actions) {
 		return new RaceActionSet(name, cancel, actions);
 	}
-
+	
 	public void log(String string) {
-//		System.out.println(getClass().getSimpleName() + ": " + string);
+//		System.out.println(getName() + ": " + string);
 	}
 }

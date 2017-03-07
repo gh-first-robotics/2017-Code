@@ -18,6 +18,22 @@ public class Util {
 		return v;
 	}
 	
+	/**
+	 * Calculates the minimum value out of any number of values
+	 * @param a the first value
+	 * @param all all the rest
+	 * @return the minimum value
+	 */
+	public static double min(double a, double... all) {
+		double min = a;
+		
+		for (int i = 0; i < all.length; i++) {
+			min = Math.min(min, all[i]);
+		}
+		
+		return min;
+	}
+	
 //	private static Timer timer = new Timer("Delay timer");
 //	/**
 //	 * Schedules a callback to be triggered after a delay

@@ -13,6 +13,10 @@ public class AlignSlideWithPegAction extends Action {
 	private Observer detected;
 	private Observer preDetected;
 	
+	public AlignSlideWithPegAction() {
+		super("Align slide with peg");
+	}
+	
 	@Override
 	public void init(ResourceScope scope) {
 		this.slide = scope.require(LateralSlideSystem.motor);
@@ -23,12 +27,22 @@ public class AlignSlideWithPegAction extends Action {
 	
 	@Override
 	protected void before() {
+		if (!LateralSlideSystem.isCalibrated) {
+			System.err.println("Lateral slide system is not calibrated. Aborting peg alignment...");
+			this.complete();
+			return;
+		}
+		
 		detected.reset();
 		preDetected.reset();
 	}
 	
 	@Override
 	public void update() {
+		if (!LateralSlideSystem.isCalibrated) {
+			return;
+		}
+		
 		boolean maximum = slide.getEncoderPosition() >= LateralSlideSystem.maximumTicks;
 		
 		if (maximum) {

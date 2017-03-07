@@ -11,6 +11,7 @@ public class PegGripperAction extends Action {
 	private Position open;
 	
 	public PegGripperAction(Position open) {
+		super(open.name() + " peg gripper");
 		this.open = open;
 	}
 	

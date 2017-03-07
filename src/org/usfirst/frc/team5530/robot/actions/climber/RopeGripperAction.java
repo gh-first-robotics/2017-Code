@@ -11,6 +11,7 @@ public class RopeGripperAction extends Action {
 	private boolean open;
 	
 	public RopeGripperAction(boolean open) {
+		super((open ? "Open" : "Close") + " rope gripper");
 		this.open = open;
 	}
 	
@@ -35,5 +36,4 @@ public class RopeGripperAction extends Action {
 	
 	@Override
 	protected void abort() { }
-
 }

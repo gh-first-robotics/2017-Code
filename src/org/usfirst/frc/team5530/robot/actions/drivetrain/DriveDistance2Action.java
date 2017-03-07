@@ -13,8 +13,9 @@ public class DriveDistance2Action extends Action {
 	
 	private int distance;
 	
-	public DriveDistance2Action(int distance) {
-		this.distance = distance;
+	public DriveDistance2Action(int encoderTicks) {
+		super("Drive2 " + encoderTicks + " encoder ticks?");
+		this.distance = encoderTicks;
 	}
 	
 	@Override

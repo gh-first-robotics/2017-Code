@@ -10,6 +10,10 @@ import me.mfroehlich.frc.actionloop.actions.ResourceScope;
 public class ResetAxialSlideAction extends Action {
 	private Talon slide;
 	
+	public ResetAxialSlideAction() {
+		super("Reset axial slide");
+	}
+	
 	@Override
 	protected void init(ResourceScope scope) {
 		slide = scope.require(AxialSlideSystem.motor);

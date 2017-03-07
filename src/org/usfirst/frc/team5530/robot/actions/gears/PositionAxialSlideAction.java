@@ -17,8 +17,14 @@ public class PositionAxialSlideAction extends Action {
 	}
 	
 	public PositionAxialSlideAction(double pos, boolean rough) {
+		super((rough ? "Roughly position" : "Position") + " axial slide to " + pos + " inches");
 		this.position = (int) Math.floor(pos * AxialSlideSystem.ticksPerInch);
 		this.rough = rough;
+		
+		if (this.position > AxialSlideSystem.maximumTicks) {
+			System.err.println("Positioning axial slide past maximum: " + pos);
+			this.position = AxialSlideSystem.maximumTicks;
+		}
 	}
 	
 	@Override

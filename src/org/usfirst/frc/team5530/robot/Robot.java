@@ -1,5 +1,10 @@
 package org.usfirst.frc.team5530.robot;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.usfirst.frc.team5530.robot.autonomous.AutonomousController;
 import org.usfirst.frc.team5530.robot.teleop.TeleopController;
 import org.usfirst.frc.team5530.robot.test.TestController;
@@ -18,5 +23,14 @@ public class Robot extends ActionRobot {
 		setController(State.TEST, new TestController());
 		setController(State.OPERATOR, new TeleopController());
 		setController(State.AUTONOMOUS, new AutonomousController());
+	}
+	
+	public static void log(String name, String value) {
+		try {
+			Path path = Paths.get(name + ".log");
+			Files.write(path, value.getBytes());
+		} catch (IOException x) {
+			x.printStackTrace();
+		}
 	}
 }

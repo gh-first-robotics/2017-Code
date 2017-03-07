@@ -26,6 +26,7 @@ public class ActionContext {
 		}
 		
 		action.state = State.STARTING;
+		action.stateChanged.emit();
 		
 		synchronized (mutex) {
 			executing.add(action);
@@ -47,10 +48,16 @@ public class ActionContext {
 				action.log("starting");
 				if (action.scope.lock()) {
 					action.state = State.RUNNING;
+					action.stateChanged.emit();
 					
 					action.before();
-					action.update();
-					action.log("started");
+					
+					if (action.isRunning()) {
+						action.update();
+						action.log("started");
+					}
+				} else {
+					System.err.println(action.name + " Failed to acquire lock");
 				}
 				break;
 				
@@ -63,6 +70,7 @@ public class ActionContext {
 				action.after();
 				action.scope.release();
 				action.state = State.IDLE;
+				action.stateChanged.emit();
 				action.onCompleted.emit();
 				executing.remove(action);
 				action.log("stopped");
@@ -73,9 +81,10 @@ public class ActionContext {
 				action.abort();
 				action.scope.release();
 				action.state = State.IDLE;
+				action.stateChanged.emit();
 				action.onCompleted.emit();
 				executing.remove(action);
-				action.log("stopped");
+				action.log("aborted");
 				break;
 				
 			case IDLE:
