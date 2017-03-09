@@ -42,7 +42,7 @@ public class DriveDistance2Action extends Action {
 
 	@Override
 	public void update() {
-		if (Math.abs(left.getEncoderPosition()-leftTarget)<error && (Math.abs(right.getEncoderPosition()-rightTarget)<error)){
+		if (Math.abs(left.getPosition()-leftTarget)<error && (Math.abs(right.getPosition()-rightTarget)<error)){
 			left.set(0);
 			right.set(0);
 			complete();

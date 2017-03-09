@@ -43,7 +43,7 @@ public class DriveDistanceAction extends Action {
 
 	@Override
 	public void update() {
-		if (Math.abs(left.getEncoderPosition()-leftTarget)<error && (Math.abs(right.getEncoderPosition()-rightTarget)<error)){
+		if (Math.abs(left.getPosition()-leftTarget)<error && (Math.abs(right.getPosition()-rightTarget)<error)){
 			left.control(ControlMode.POWER);
 			right.control(ControlMode.POWER);
 			left.set(0);
