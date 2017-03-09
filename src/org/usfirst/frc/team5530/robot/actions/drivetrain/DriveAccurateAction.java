@@ -37,20 +37,18 @@ public class DriveAccurateAction extends Action {
 		long millis = System.currentTimeMillis() - startTime;
 		double rampUp = (millis / 1000.0) * acceleration;
 		
-		int factor = inverted ? -1 : 1;
-		int error = Math.abs(factor * talon.getEncoderPosition() - distance);
+		int sign = inverted ? -1 : 1;
+		int error = sign * talon.getEncoderPosition() - distance;
 		
-		if (error < allowableError) {
+		if (Math.abs(error) < allowableError) {
 			talon.set(0);
 			return true;
 		}
 		
-		double rampDown = error * deceleration;
+		double rampDown = Math.abs(error) * deceleration;
 		double value = Util.min(rampUp, speedLimit, rampDown);
 		
-		double invert = talon.getEncoderPosition() > distance ? -1 : 1;
-		
-		talon.set(invert * factor * value);
+		talon.set(Math.signum(error) * sign * value);
 		
 		System.out.println(inverted + ": " + error);
 		return false;
