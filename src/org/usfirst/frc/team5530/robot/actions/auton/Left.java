@@ -25,7 +25,7 @@ public class Left extends SequentialActionSet {
 		add(new DelayAction(2000));
 		add(new DriveDistanceAction(-1*backUpFromGearPlacement));
 		add(new DriveToLocation(waypoint1));
-		add(new DriveToLocation(endAt));			
+		add(new DriveToLocation(endAt));				
 	}
 
 }

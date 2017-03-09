@@ -5,6 +5,7 @@ import org.usfirst.frc.team5530.robot.actions.drivetrain.DriveToLocation;
 import org.usfirst.frc.team5530.robot.actions.drivetrain.TurnToAngleAction;
 import org.usfirst.frc.team5530.robot.actions.gears.UnloadGear;
 import org.usfirst.frc.team5530.robot.auton.AutonController;
+import org.usfirst.frc.team5530.robot.systems.DriveTrainSystem;
 import org.usfirst.frc.team5530.robot.systems.GearChuteSystem;
 import org.usfirst.frc.team5530.robot.teleop.TeleopController;
 import org.usfirst.frc.team5530.robot.teleop.Vector2;
@@ -25,6 +26,7 @@ public class Robot extends ActionRobot {
 
 	@Override
 	public void init() {
+		DriveTrainSystem.init();
 		setController(State.TEST, new TestController());
 		setController(State.TELEOP, new TeleopController());
 		setController(State.AUTONOMOUS, new AutonController());

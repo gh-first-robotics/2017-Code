@@ -14,7 +14,7 @@ public class DriveDistanceAction extends Action {
 	private Talon right;
 	
 	private double distance;
-	double k = 1/(2*Math.PI);
+	double k = (40 * 5/3) / (2 * Math.PI *2); //copied from old code
 	double error = 5;
 	double leftTarget = 0,
 			rightTarget = 0;
@@ -34,10 +34,10 @@ public class DriveDistanceAction extends Action {
 		left.control(ControlMode.POSITION);
 		right.control(ControlMode.POSITION);
 		
-		leftTarget = distance + left.getEncoderPosition();
+		leftTarget = -distance + left.getPosition();
 		left.set(leftTarget);
 		
-		rightTarget = distance + right.getEncoderPosition();
+		rightTarget = distance + right.getPosition();
 		right.set(rightTarget);
 	}
 

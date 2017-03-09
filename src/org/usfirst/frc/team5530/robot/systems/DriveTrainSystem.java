@@ -1,6 +1,9 @@
 package org.usfirst.frc.team5530.robot.systems;
 
 import me.mfroehlich.frc.abstractions.Talon;
+
+import com.ctre.CANTalon.FeedbackDevice;
+
 import me.mfroehlich.frc.abstractions.Gyro;
 import me.mfroehlich.frc.actionloop.actions.Resource;
 
@@ -10,6 +13,27 @@ public class DriveTrainSystem {
 	
 	private static Talon rightValue = Talon.create(2);
 	private static Talon right2 = Talon.create(3);
+	
+	static int allowableError = 5;
+	public static void init(){
+		
+		System.out.println("Drivetrain init called");
+		
+		leftValue.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+		leftValue.configEncoderCodesPerRev(4);
+		
+		rightValue.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+		rightValue.configEncoderCodesPerRev(4);
+		
+		leftValue.setPID(0.1, 0.00001, 0.0);
+		leftValue.setPosition(0);
+		
+		rightValue.setPID(0.1, 0.00001, 0.0);
+		rightValue.setPosition(0);
+		
+		leftValue.setAllowableClosedLoopErr(allowableError);
+		rightValue.setAllowableClosedLoopErr(allowableError);
+	}
 	
 	public static Gyro gyro = Gyro.create();
 	
@@ -26,5 +50,12 @@ public class DriveTrainSystem {
 	}
 	public static double rightEncPosition(){
 		return rightValue.getEncoderPosition();
+	}
+	
+	public static double leftPosition(){
+		return leftValue.getPosition();
+	}
+	public static double rightPosition(){
+		return rightValue.getPosition();
 	}
 }

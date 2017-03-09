@@ -1,5 +1,6 @@
 package org.usfirst.frc.team5530.robot.actions.auton;
 
+import org.usfirst.frc.team5530.robot.actions.drivetrain.DriveDistanceAction;
 import org.usfirst.frc.team5530.robot.actions.drivetrain.DriveToLocation;
 import org.usfirst.frc.team5530.robot.actions.gears.UnloadGear;
 import org.usfirst.frc.team5530.robot.systems.GearChuteSystem;
@@ -18,11 +19,13 @@ public class Center extends SequentialActionSet {
 	Vector2 endAt = new Vector2(7,5);
 	
 	public Center() {
-		add(new DriveToLocation(firstPoint));
+		
+		add(new DriveDistanceAction(5*12)); //robot should drive forward 5 feet
+		//add(new DriveToLocation(firstPoint));
 		//add(new DriveToLocation(placeGearAt));
-		add(new UnloadGear());
-		add(new WaitForDigitalSensorAction(GearChuteSystem.gearSensor, false));
-		add(new DelayAction(2000));
+		//add(new UnloadGear());
+		//add(new WaitForDigitalSensorAction(GearChuteSystem.gearSensor, false));
+		//add(new DelayAction(2000));
 		//add(new DriveDistanceAction(-1*backUpFromGearPlacement));
 		//add(new DriveToLocation(waypoint1));
 		//add(new DriveToLocation(endAt));	

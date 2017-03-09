@@ -1,6 +1,7 @@
 package me.mfroehlich.frc.abstractions.live;
 
 import com.ctre.CANTalon;
+import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
 
 import me.mfroehlich.frc.abstractions.Talon;
@@ -50,5 +51,41 @@ class LiveTalon implements Talon {
 	@Override
 	public void setEncoderPosition(int value) {
 		talon.setEncPosition(0);
+	}
+
+	@Override
+	public void setSetpoint(double value) {
+		talon.setSetpoint(value);
+	}
+
+	@Override
+	public void setFeedbackDevice(FeedbackDevice device) {
+		talon.setFeedbackDevice(device);
+	}
+
+	@Override
+	public void configEncoderCodesPerRev(int codesPerRev) {
+		talon.configEncoderCodesPerRev(codesPerRev);
+		
+	}
+
+	@Override
+	public void setPID(double P, double I, double D) {
+		talon.setPID(P, I, D);
+	}
+
+	@Override
+	public void setPosition(double position) {
+		talon.setPosition(position);	
+	}
+
+	@Override
+	public void setAllowableClosedLoopErr(int err) {
+		talon.setAllowableClosedLoopErr(err);
+	}
+
+	@Override
+	public double getPosition() {
+		return talon.getPosition();
 	}
 }

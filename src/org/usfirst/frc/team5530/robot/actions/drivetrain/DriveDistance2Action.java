@@ -15,7 +15,7 @@ public class DriveDistance2Action extends Action {
 	
 	private double distance;
 	private double speed;
-	double k = 1/(2*Math.PI);
+	double k = (40 * 5/3) / (2 * Math.PI *2); //copied from old code
 	double error = 5;
 	double leftTarget = 0,
 			rightTarget = 0;
@@ -24,7 +24,7 @@ public class DriveDistance2Action extends Action {
 		//distance and speed must have the same sign
 		this.distance = k * distance;
 		this.speed = k * speed;
-		leftTarget = distance + left.getEncoderPosition();
+		leftTarget = -distance + left.getEncoderPosition();
 		rightTarget = distance + right.getEncoderPosition();
 	}
 	
@@ -48,7 +48,7 @@ public class DriveDistance2Action extends Action {
 			complete();
 		}
 		else{
-			left.set(speed);
+			left.set(-speed);
 			right.set(speed);
 		}
 	}
