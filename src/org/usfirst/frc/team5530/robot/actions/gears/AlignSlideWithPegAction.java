@@ -4,9 +4,9 @@ import org.usfirst.frc.team5530.robot.systems.LateralSlideSystem;
 import org.usfirst.frc.team5530.robot.systems.PegInterfaceSystem;
 
 import me.mfroehlich.frc.abstractions.DigitalSensor.Observer;
+import me.mfroehlich.frc.abstractions.Talon;
 import me.mfroehlich.frc.actionloop.actions.Action;
 import me.mfroehlich.frc.actionloop.actions.ResourceScope;
-import me.mfroehlich.frc.abstractions.Talon;
 
 public class AlignSlideWithPegAction extends Action {
 	private Talon slide;

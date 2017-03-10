@@ -16,17 +16,16 @@ public class ActionContext {
 	 * @param action the action
 	 */
 	public void execute(Action action) {
-		if (action.state == State.UNINITIALIZED) {
+		if (action.getState() == State.UNINITIALIZED) {
 			action.initialize(this);
 		}
 		
-		if (action.state != State.IDLE) {
-			System.err.println("Attempted to start action in invalid state: " + action.state);
+		if (action.getState() != State.IDLE) {
+			System.err.println("Attempted to start action in invalid state: " + action.getState());
 			return;
 		}
 		
-		action.state = State.STARTING;
-		action.stateChanged.emit();
+		action.setState(State.STARTING);
 		
 		synchronized (mutex) {
 			executing.add(action);
@@ -43,12 +42,11 @@ public class ActionContext {
 		}
 		
 		for (Action action : todo) {
-			switch (action.state) {
+			switch (action.getState()) {
 			case STARTING:
 				action.log("starting");
 				if (action.scope.lock()) {
-					action.state = State.RUNNING;
-					action.stateChanged.emit();
+					action.setState(State.RUNNING);
 					
 					action.before();
 					
@@ -69,8 +67,7 @@ public class ActionContext {
 				action.log("stopping");
 				action.after();
 				action.scope.release();
-				action.state = State.IDLE;
-				action.stateChanged.emit();
+				action.setState(State.IDLE);
 				action.onCompleted.emit();
 				executing.remove(action);
 				action.log("stopped");
@@ -80,8 +77,7 @@ public class ActionContext {
 				action.log("aborting");
 				action.abort();
 				action.scope.release();
-				action.state = State.IDLE;
-				action.stateChanged.emit();
+				action.setState(State.IDLE);
 				action.onCompleted.emit();
 				executing.remove(action);
 				action.log("aborted");
@@ -92,7 +88,7 @@ public class ActionContext {
 				break;
 				
 			default:
-				System.err.println("Invalid action state: " + action.state);
+				System.err.println("Invalid action state: " + action.getState());
 				break;
 			}
 		}

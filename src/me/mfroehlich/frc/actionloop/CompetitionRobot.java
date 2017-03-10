@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.hal.FRCNetComm.tInstances;
 import edu.wpi.first.wpilibj.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.wpilibj.hal.HAL;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import me.mfroehlich.frc.abstractions.RobotStateProvider;
 
 public class CompetitionRobot extends RobotBase implements RobotStateProvider {
@@ -34,7 +33,7 @@ public class CompetitionRobot extends RobotBase implements RobotStateProvider {
 		robot.init();
 		
 		HAL.observeUserProgramStarting();
-		LiveWindow.setEnabled(true);
+//		LiveWindow.setEnabled(false);
 		
 		robot.run();
 	}

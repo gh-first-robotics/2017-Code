@@ -2,9 +2,9 @@ package org.usfirst.frc.team5530.robot.actions;
 
 import org.usfirst.frc.team5530.robot.actions.gears.ChutePanelAction;
 import org.usfirst.frc.team5530.robot.actions.gears.PegGripperAction;
+import org.usfirst.frc.team5530.robot.actions.gears.PegGripperAction.Position;
 import org.usfirst.frc.team5530.robot.actions.gears.PositionAxialSlideAction;
 import org.usfirst.frc.team5530.robot.actions.gears.PositionLateralSlideAction;
-import org.usfirst.frc.team5530.robot.actions.gears.PegGripperAction.Position;
 
 import me.mfroehlich.frc.actionloop.actions.lib.ActionGroup;
 

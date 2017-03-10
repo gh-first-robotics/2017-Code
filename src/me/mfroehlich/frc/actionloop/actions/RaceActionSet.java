@@ -35,6 +35,8 @@ class RaceActionSet extends Action {
 			if (!action.isRunning()) {
 				complete = true;
 				break;
+			} else {
+				System.out.println("Race completed: " + action.name);
 			}
 		}
 		

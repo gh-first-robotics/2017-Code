@@ -3,6 +3,7 @@ package org.usfirst.frc.team5530.robot.actions.drivetrain;
 import org.usfirst.frc.team5530.robot.Util;
 import org.usfirst.frc.team5530.robot.systems.DriveTrainSystem;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import me.mfroehlich.frc.abstractions.Talon;
 import me.mfroehlich.frc.abstractions.Talon.ControlMode;
 import me.mfroehlich.frc.actionloop.actions.Action;
@@ -12,11 +13,12 @@ public class TurnAction extends Action {
 	private Talon left;
 	private Talon right;
 	
+	private final double angle;
 	private double targetAngle;
 	
 	public TurnAction(double angle) {
 		super("Turn to " + angle + " degree");
-		targetAngle = DriveTrainSystem.gyro.getAngle() + angle;
+		this.angle = angle;
 	}
 	
 	@Override
@@ -29,13 +31,18 @@ public class TurnAction extends Action {
 	protected void before() {
 		left.control(ControlMode.POWER);
 		right.control(ControlMode.POWER);
+
+		targetAngle = DriveTrainSystem.gyro.getAngle() + angle;
 	}
 
 	@Override
 	protected void update() {
 		System.out.println(DriveTrainSystem.gyro.getAngle() + " " + targetAngle);
 		
-		double error = targetAngle - DriveTrainSystem.gyro.getAngle();
+		double error = (targetAngle - DriveTrainSystem.gyro.getAngle()) % 360;
+		if (error > 180) {
+			error = error - 360;
+		}
 		
 		if (Math.abs(error) < 5) {
 			left.set(0);
@@ -47,10 +54,12 @@ public class TurnAction extends Action {
 		double rampDown = Math.abs(error * .02);
 		double maxSpeed = .5;
 		
-		double speed = Util.min(maxSpeed, rampDown) * Math.signum(error);
+		double speed = Util.min(maxSpeed, rampDown) * Math.signum(error) * -1;
 		
 		left.set(speed);
 		right.set(speed);
+		
+		SmartDashboard.putNumber("Turning: ", speed);
 	}
 	
 	@Override

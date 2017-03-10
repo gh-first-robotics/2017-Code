@@ -9,18 +9,20 @@ import me.mfroehlich.frc.abstractions.Talon;
 import me.mfroehlich.frc.actionloop.actions.Action;
 import me.mfroehlich.frc.actionloop.actions.ResourceScope;
 
-public class TurnAction2 extends Action {
+public class Turn2Action extends Action {
 	private Talon left;
 	private Talon right;
+	
+	private final double angle;
+	private PIDController pid;
 	
 	private double targetAngle;
 	private double rate;
 	
-	private PIDController pid;
-	
-	public TurnAction2(double angle) {
+	public Turn2Action(double angle) {
 		super("Turn to " + angle + " degree");
-		targetAngle = DriveTrainSystem.gyro.getAngle() + angle;
+		
+		this.angle = angle;
 	}
 	
 	@Override
@@ -41,6 +43,8 @@ public class TurnAction2 extends Action {
 //		right.control(ControlMode.SPEED);
 				
 		pid.reset();
+
+		targetAngle = DriveTrainSystem.gyro.getAngle() + angle;
 	}
 
 	@Override

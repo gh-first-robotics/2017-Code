@@ -9,14 +9,14 @@ import me.mfroehlich.frc.abstractions.Talon.ControlMode;
 import me.mfroehlich.frc.actionloop.actions.Action;
 import me.mfroehlich.frc.actionloop.actions.ResourceScope;
 
-public class ManualDriveAction extends Action {
+public class ManualDriveSpeedAction extends Action {
 	private Talon left;
 	private Talon right;
 	
 	private Vector2 value = new Vector2();
-	private int multiplier = 1;
+	private int multiplier = 1500;
 	
-	public ManualDriveAction() {
+	public ManualDriveSpeedAction() {
 		super("Manual drive");
 	}
 	
@@ -36,8 +36,8 @@ public class ManualDriveAction extends Action {
 	
 	@Override
 	protected void before() {
-		left.control(ControlMode.POWER);
-		right.control(ControlMode.POWER);
+		left.control(ControlMode.SPEED);
+		right.control(ControlMode.SPEED);
 	}
 
 	@Override
@@ -50,6 +50,9 @@ public class ManualDriveAction extends Action {
 		
 		this.left.set(-left);
 		this.right.set(right);
+		
+//		System.out.println("Driving: " + left + " " + right);
+//		System.out.println(this.left.getEncoderPosition() + " " + this.right.getEncoderPosition());
 	}
 	
 	@Override

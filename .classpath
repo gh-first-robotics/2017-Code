@@ -8,6 +8,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="USERLIBS_DIR/navx_frc.jar"/>
 	<classpathentry kind="var" path="USERLIBS_DIR/TalonSRXLibJava.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Max/Documents/workspace/2017-Code/build/jars/java_websocket.jar"/>
+	<classpathentry kind="var" path="USERLIBS_DIR/java_websocket.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

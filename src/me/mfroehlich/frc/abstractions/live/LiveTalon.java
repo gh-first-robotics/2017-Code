@@ -4,17 +4,38 @@ import com.ctre.CANTalon;
 import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
 
+import edu.wpi.first.wpilibj.Timer;
 import me.mfroehlich.frc.abstractions.Talon;
 
 class LiveTalon implements Talon {
 	private CANTalon talon;
 	
-	public LiveTalon(int channel) {
+	public LiveTalon(int channel, int ticksPerRevolution, EncoderType type) {
 		talon = new CANTalon(channel);
-		talon.configEncoderCodesPerRev(1);
-		talon.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		
 		talon.setPID(0.1, 0, 0);
+		
+		this.feedback(ticksPerRevolution, type);
+		
+		talon.configNominalOutputVoltage(0, -0);
+		talon.configPeakOutputVoltage(12, -12);
+	}
+	
+	@Override
+	public void feedback(int ticksPerRevolution, EncoderType type) {
+		switch (type) {
+		case NONE: break;
+			
+		case QUADRATURE:
+			talon.configEncoderCodesPerRev(ticksPerRevolution);
+			talon.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+			break;
+			
+		case MAG_RELATIVE:
+			talon.configEncoderCodesPerRev(ticksPerRevolution);
+			talon.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+			break;
+		}
 	}
 
 	@Override
@@ -54,5 +75,16 @@ class LiveTalon implements Talon {
 	@Override
 	public void setEncoderPosition(int value) {
 		talon.setEncPosition(value);
+	}
+	
+	@Override
+	public void debug() {
+		new Thread(() -> {
+			while (true) {
+				System.out.println(talon.getDeviceID() + ": " + talon.getEncVelocity());
+				
+				Timer.delay(.5);
+			}
+		}).start();
 	}
 }

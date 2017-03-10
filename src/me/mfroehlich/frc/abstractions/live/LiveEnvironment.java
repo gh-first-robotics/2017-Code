@@ -6,6 +6,7 @@ import me.mfroehlich.frc.abstractions.Environment;
 import me.mfroehlich.frc.abstractions.Gyro;
 import me.mfroehlich.frc.abstractions.Servo;
 import me.mfroehlich.frc.abstractions.Talon;
+import me.mfroehlich.frc.abstractions.Talon.EncoderType;
 
 public class LiveEnvironment implements Environment {
 	@Override
@@ -14,8 +15,8 @@ public class LiveEnvironment implements Environment {
 	}
 	
 	@Override
-	public Talon createTalon(int channel) {
-		return new LiveTalon(channel);
+	public Talon createTalon(int channel, int ticksPerRevolution, EncoderType encoder) {
+		return new LiveTalon(channel, ticksPerRevolution, encoder);
 	}
 
 	@Override

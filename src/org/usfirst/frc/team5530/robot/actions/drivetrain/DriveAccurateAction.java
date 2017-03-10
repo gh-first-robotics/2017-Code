@@ -10,9 +10,9 @@ import me.mfroehlich.frc.actionloop.actions.ResourceScope;
 
 public class DriveAccurateAction extends Action {
 	private static final int allowableError = 100;
-	private static final double speedLimit = 0.3;     // power
-	private static final double acceleration = 0.5;   // power per second
-	private static final double deceleration = .0003; // power per encoder tick
+	private static final double speedLimit = 500;     // rpm?
+	private static final double acceleration = 500;   // rpm? per second
+	private static final double deceleration = .5; // rpm? per encoder tick
 	
 	private Talon left;
 	private Talon right;
@@ -30,7 +30,6 @@ public class DriveAccurateAction extends Action {
 	protected void init(ResourceScope scope) {
 		left = scope.require(DriveTrainSystem.left);
 		right = scope.require(DriveTrainSystem.right);
-		
 	}
 	
 	private boolean update(Talon talon, boolean inverted) {
@@ -48,16 +47,15 @@ public class DriveAccurateAction extends Action {
 		double rampDown = Math.abs(error) * deceleration;
 		double value = Util.min(rampUp, speedLimit, rampDown);
 		
-		talon.set(Math.signum(error) * sign * value);
+		talon.set(sign * value);
 		
-		System.out.println(inverted + ": " + error);
 		return false;
 	}
 	
 	@Override
 	protected void before() {
-		left.control(ControlMode.POWER);
-		right.control(ControlMode.POWER);
+		left.control(ControlMode.SPEED);
+		right.control(ControlMode.SPEED);
 		
 		left.setEncoderPosition(0);
 		right.setEncoderPosition(0);
@@ -71,6 +69,8 @@ public class DriveAccurateAction extends Action {
 		
 		done &= update(left, true);
 		done &= update(right, false);
+		
+		System.out.println((-left.getEncoderPosition() - distance) + ", " + (right.getEncoderPosition() - distance));
 		
 		if (done) {
 			this.complete();

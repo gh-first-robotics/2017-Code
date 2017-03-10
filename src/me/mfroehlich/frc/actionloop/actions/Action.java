@@ -16,7 +16,7 @@ public abstract class Action {
 	public final Event onCompleted = new Event();
 	public final String name;
 	
-	State state = State.UNINITIALIZED;
+	private State state = State.UNINITIALIZED;
 	ResourceScope scope = new ResourceScope(this);
 	
 	private ActionContext context;
@@ -49,6 +49,10 @@ public abstract class Action {
 	}
 	
 	public State getState() { return this.state; }
+	public void setState(State value) {
+		this.state = value;
+		this.stateChanged.emit();
+	}
 	
 	/**
 	 * Initializes this action. This must only be called once, before it is executed

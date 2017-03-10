@@ -1,16 +1,12 @@
 package me.mfroehlich.frc.actionloop;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.usfirst.frc.team5530.robot.Robot;
 
 import me.mfroehlich.frc.abstractions.RobotStateProvider;
 import me.mfroehlich.frc.abstractions.RobotStateProvider.State;
 import me.mfroehlich.frc.actionloop.actions.Action;
 import me.mfroehlich.frc.actionloop.actions.ActionContext;
-import me.mfroehlich.frc.actionloop.test.MyWebSocketServer;
 
 public abstract class ActionRobot {
 	private Map<State, Controller> controllers = new HashMap<>();
@@ -23,12 +19,12 @@ public abstract class ActionRobot {
 	protected ActionRobot(RobotStateProvider provider) {
 		this.provider = provider;
 
-		try {
-			MyWebSocketServer server = new MyWebSocketServer(this.actions, 5800);
-			server.start();
-		} catch (IOException e) {
-			Robot.log("server-testing", e.toString());
-		}
+//		try {
+//			MyWebSocketServer server = new MyWebSocketServer(this.actions, 5800);
+//			server.start();
+//		} catch (IOException e) {
+//			Robot.log("server-testing", e.toString());
+//		}
 	}
 	
 	public abstract void init();
