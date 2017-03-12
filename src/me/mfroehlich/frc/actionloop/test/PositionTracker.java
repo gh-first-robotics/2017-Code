@@ -5,7 +5,9 @@ import java.io.PrintWriter;
 import org.usfirst.frc.team5530.robot.systems.DriveTrainSystem;
 import org.usfirst.frc.team5530.robot.teleop.Vector2;
 
+import me.mfroehlich.frc.abstractions.Environment;
 import me.mfroehlich.frc.abstractions.Talon;
+import me.mfroehlich.frc.abstractions.live.LiveEnvironment;
 import me.mfroehlich.frc.events.Event;
 
 public class PositionTracker {
@@ -37,7 +39,9 @@ public class PositionTracker {
 		rightEncoder = right.getEncoderPosition();
 		
 		try {
-			this.writer = new PrintWriter("/home/lvuser/positions.txt");
+			if (Environment.is(LiveEnvironment.class)) {
+				this.writer = new PrintWriter("/home/lvuser/positions.txt");
+			}
 		} catch (Throwable x) {
 			x.printStackTrace();
 		}
@@ -81,8 +85,10 @@ public class PositionTracker {
 			this.leftEncoder = newLeftEncoder;
 			this.rightEncoder = newRightEncoder;
 			
-			writer.write(ratio + ": " + this.position.x + " " + this.position.y + " " + this.angle + "\n");
-			writer.flush();
+			if (writer != null) {
+				writer.write(ratio + ": " + this.position.x + " " + this.position.y + " " + this.angle + "\n");
+				writer.flush();
+			}
 			this.moved.emit();
 		} catch (Throwable x) {
 			x.printStackTrace();

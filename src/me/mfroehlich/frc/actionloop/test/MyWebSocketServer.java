@@ -27,6 +27,11 @@ import org.usfirst.frc.team5530.robot.actions.gears.RotateGearAction;
 import org.usfirst.frc.team5530.robot.systems.DriveTrainSystem;
 import org.usfirst.frc.team5530.robot.teleop.Vector2;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import me.mfroehlich.frc.actionloop.actions.Action;
 import me.mfroehlich.frc.actionloop.actions.ActionContext;
 
 public class MyWebSocketServer extends WebSocketServer {
@@ -72,43 +77,53 @@ public class MyWebSocketServer extends WebSocketServer {
 		entries.add(new WebInterfaceEntry("Axial slide", new ResetAxialSlideAction()));
 		
 		for (WebInterfaceEntry entry : entries) {
-			entry.action.stateChanged.listen(() -> update(entry));
+			entry.action.stateChanged.listen(() -> sendEntry(entry));
 		}
 		
-		DriveTrainSystem.position.moved.listen(this::updatePosition);
+		DriveTrainSystem.position.moved.listen(this::sendPosition);
+		context.executingChanged.listen(this::sendExecuting);
 	}
 	
-	private void updatePosition() {
+	private void sendExecuting() {
+		JsonArray list = new JsonArray();
+		
+		for (Action action : context.getExecuting()) {
+			JsonObject json = new JsonObject();
+			json.addProperty("name", action.name);
+			json.addProperty("state", action.getState().name());
+			list.add(json);
+		}
+		
+		send("executing", list);
+	}
+	
+	private void sendPosition() {
 		Vector2 pos = DriveTrainSystem.position.getPosition();
 		double angle = DriveTrainSystem.position.getAngle();
-
-		StringBuilder str = new StringBuilder("{ ");
-		str.append("\"type\": \"position\", ");
-		str.append("\"x\": " + pos.x + ", ");
-		str.append("\"y\": " + pos.y + ", ");
-		str.append("\"angle\": " + angle);
-		str.append(" }");
 		
-		send(str.toString());
+		JsonObject json = new JsonObject();
+		json.addProperty("angle", angle);
+		json.addProperty("x", pos.x);
+		json.addProperty("y", pos.y);
+		send("position", json);
 	}
 	
-	private String stringify(WebInterfaceEntry entry) {
-		StringBuilder str = new StringBuilder("{ ");
-		str.append("\"type\": \"action\", ");
-		str.append("\"index\": " + entries.indexOf(entry) + ", ");
-		str.append("\"category\": \"" + entry.category + "\", ");
-		str.append("\"state\": \"" + entry.action.getState().name() + "\", ");
-		str.append("\"name\": \"" + entry.action.name + "\"");
-		str.append(" }");
-		return str.toString();
+	private void sendEntry(WebInterfaceEntry entry) {
+		JsonObject json = new JsonObject();
+		json.addProperty("index", entries.indexOf(entry));
+		json.addProperty("category", entry.category);
+		json.addProperty("state", entry.action.getState().name());
+		json.addProperty("name", entry.action.name);
+		send("action", json);
 	}
 	
-	private void update(WebInterfaceEntry action) {
-		String str = stringify(action);
-		send(str);
-	}
-	
-	private void send(String str) {
+	private void send(String type, JsonElement json) {
+		JsonObject packet = new JsonObject();
+		packet.addProperty("type", type);
+		packet.add("data", json);
+		
+		String str = packet.toString();
+			
 		for (WebSocket conn : sockets) {
 			conn.send(str);
 		}
@@ -119,8 +134,11 @@ public class MyWebSocketServer extends WebSocketServer {
 		this.sockets.add(conn);
 		
 		for (WebInterfaceEntry action : entries) {
-			update(action);
+			sendEntry(action);
 		}
+		
+		sendPosition();
+		sendExecuting();
 	}
 
 	@Override

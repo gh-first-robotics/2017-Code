@@ -7,7 +7,8 @@
 	<classpathentry kind="var" path="cscore" sourcepath="cscore.sources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="USERLIBS_DIR/navx_frc.jar"/>
-	<classpathentry kind="var" path="USERLIBS_DIR/TalonSRXLibJava.jar"/>
+	<classpathentry kind="var" path="USERLIBS_DIR/CTRLib.jar"/>
 	<classpathentry kind="var" path="USERLIBS_DIR/java_websocket.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Max/wpilib/user/java/lib/gson-2.8.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

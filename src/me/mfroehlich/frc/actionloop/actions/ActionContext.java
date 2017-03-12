@@ -6,10 +6,18 @@ import java.util.List;
 import java.util.Set;
 
 import me.mfroehlich.frc.actionloop.actions.Action.State;
+import me.mfroehlich.frc.events.Event;
 
 public class ActionContext {
 	private Object mutex = new Object();
 	private Set<Action> executing = new HashSet<>();
+	
+	public final Event executingChanged = new Event();
+	public List<Action> getExecuting() {
+		synchronized (mutex) {
+			return new LinkedList<>(executing);
+		}
+	}
 	
 	/**
 	 * Start execution of an action.
@@ -30,16 +38,14 @@ public class ActionContext {
 		synchronized (mutex) {
 			executing.add(action);
 		}
+		executingChanged.emit();
 	}
 	
 	/**
 	 * Must be called consistently during execution of this context. This is the main event loop.
 	 */
 	public void tick() {
-		List<Action> todo;
-		synchronized (mutex) {
-			todo = new LinkedList<>(executing);
-		}
+		List<Action> todo = getExecuting();
 		
 		for (Action action : todo) {
 			switch (action.getState()) {
@@ -70,6 +76,7 @@ public class ActionContext {
 				action.setState(State.IDLE);
 				action.onCompleted.emit();
 				executing.remove(action);
+				executingChanged.emit();
 				action.log("stopped");
 				break;
 				
@@ -80,11 +87,13 @@ public class ActionContext {
 				action.setState(State.IDLE);
 				action.onCompleted.emit();
 				executing.remove(action);
+				executingChanged.emit();
 				action.log("aborted");
 				break;
 				
 			case IDLE:
 				executing.remove(action);
+				executingChanged.emit();
 				break;
 				
 			default:
