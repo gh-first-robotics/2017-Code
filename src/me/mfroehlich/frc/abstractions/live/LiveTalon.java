@@ -21,8 +21,7 @@ class LiveTalon implements Talon {
 		talon.configPeakOutputVoltage(12, -12);
 	}
 	
-	@Override
-	public void feedback(int ticksPerRevolution, EncoderType type) {
+	private void feedback(int ticksPerRevolution, EncoderType type) {
 		switch (type) {
 		case NONE: break;
 			

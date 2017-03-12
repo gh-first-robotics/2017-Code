@@ -15,14 +15,12 @@ public class DelayAction extends Action {
 	@Override
 	protected void before() {
 		delayEnd = System.currentTimeMillis() + this.millis;
-		System.out.println("Starting delay of " + this.millis + " at " + System.currentTimeMillis());
 	}
 	
 	@Override
 	protected void update() {
 		if (System.currentTimeMillis() > delayEnd) {
 			this.complete();
-			System.out.println("Completed delay of " + this.millis + " at " + System.currentTimeMillis());
 		}
 	}
 

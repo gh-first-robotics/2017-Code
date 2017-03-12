@@ -15,4 +15,8 @@ public interface Environment {
 	public static void set(Environment impl) {
 		EnvironmentManager.current = impl;
 	}
+	
+	public static boolean is(Class<? extends Environment> check) {
+		return check.isInstance(EnvironmentManager.current);
+	}
 }

@@ -4,6 +4,7 @@ import me.mfroehlich.frc.abstractions.Gyro;
 import me.mfroehlich.frc.abstractions.Talon;
 import me.mfroehlich.frc.abstractions.Talon.EncoderType;
 import me.mfroehlich.frc.actionloop.actions.Resource;
+import me.mfroehlich.frc.actionloop.test.PositionTracker;
 
 public class DriveTrainSystem {
 	// 1024 / 4PI   (ticks/rev) / (inches/rev)
@@ -16,6 +17,7 @@ public class DriveTrainSystem {
 	private static Talon right2 = Talon.create(3);
 	
 	public static Gyro gyro = Gyro.create();
+	public static PositionTracker position = new PositionTracker(leftValue, rightValue);
 	
 	public static final Resource<Talon> left = new Resource<>(leftValue);
 	public static final Resource<Talon> right = new Resource<>(rightValue);

@@ -48,20 +48,20 @@ public class TestController extends Controller {
 	
 	@Override
 	public void start() {
-//		test("Wait 2sec, close peg gripper", Action.inSequence("TEST",
-//			new DelayAction(2000),
-//			new PrintAction("HI"),
-//			new PegGripperAction(Position.CLOSED)
-//		));
-//		
-//		test("Wait 2sec, close peg gripper", Action.inSequence("TEST2",
-//			Action.inRace("TEST", true,
-//				new ClimbAction(.1),
-//				new DelayAction(2000)
-//			),
-//			new PrintAction("DONE TEST2")
-//		));
-//		
+		test("Wait 2sec, close peg gripper", Action.inSequence("TEST",
+			new DelayAction(2000),
+			new PrintAction("HI"),
+			new PegGripperAction(Position.CLOSED)
+		));
+		
+		test("Wait 2sec, close peg gripper", Action.inSequence("TEST2",
+			Action.inRace("TEST", true,
+				new ClimbAction(.1),
+				new DelayAction(2000)
+			),
+			new PrintAction("DONE TEST2")
+		));
+		
 //		test("Turn 90 (PID)", new TurnAction(90));
 //		test("Turn 90", new Turn2Action(90));
 //		

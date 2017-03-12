@@ -9,11 +9,6 @@ public class Vector2 {
 	public Vector2() {
 		this(0, 0);
 	}
-	
-	@Override
-	public String toString() {
-		return "(" + this.x + ", " + this.y + ")";
-	}
 
 	/**
 	 * Constructs a vector, Note: {@link Vector2} is immutable
@@ -26,6 +21,11 @@ public class Vector2 {
 	public Vector2(double x, double y) {
 		this.x = x;
 		this.y = y;
+	}
+	
+	@Override
+	public String toString() {
+		return "(" + this.x + ", " + this.y + ")";
 	}
 
 	/**
@@ -67,5 +67,17 @@ public class Vector2 {
 	 */
 	public double magnitude() {
 		return Math.sqrt(x * x + y * y);
+	}
+	
+	/**
+	 * Rotates this vector
+	 * @param angle the angle to rotate by (radians)
+	 * @return the rotated vector
+	 */
+	public Vector2 rotate(double angle) {
+		double sin = Math.sin(angle);
+		double cos = Math.cos(angle);
+		
+		return new Vector2(cos * this.x - sin * this.y, sin * this.x + cos * this.y);
 	}
 }

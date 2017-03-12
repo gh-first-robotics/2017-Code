@@ -7,13 +7,13 @@ import me.mfroehlich.frc.abstractions.Talon.ControlMode;
 import me.mfroehlich.frc.actionloop.actions.Action;
 import me.mfroehlich.frc.actionloop.actions.ResourceScope;
 
-public class DriveDistance2Action extends Action {
+public class DriveClosedLoopAction extends Action {
 	private Talon left;
 	private Talon right;
 	
 	private int distance;
 	
-	public DriveDistance2Action(int encoderTicks) {
+	public DriveClosedLoopAction(int encoderTicks) {
 		super("Drive2 " + encoderTicks + " encoder ticks?");
 		this.distance = encoderTicks;
 	}

@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.usfirst.frc.team5530.robot.autonomous.AutonomousController;
+import org.usfirst.frc.team5530.robot.systems.DriveTrainSystem;
 import org.usfirst.frc.team5530.robot.teleop.TeleopController;
 import org.usfirst.frc.team5530.robot.test.TestController;
 
@@ -20,6 +21,8 @@ public class Robot extends ActionRobot {
 
 	@Override
 	public void init() {
+		this.tick.listen(DriveTrainSystem.position::tick);
+		
 		setController(State.TEST, new TestController());
 		setController(State.OPERATOR, new TeleopController());
 		setController(State.AUTONOMOUS, new AutonomousController());
@@ -27,7 +30,7 @@ public class Robot extends ActionRobot {
 	
 	public static void log(String name, String value) {
 		try {
-			Path path = Paths.get(name + ".log");
+			Path path = Paths.get("/home/lvuser/logs/" + name + ".log");
 			Files.write(path, value.getBytes());
 		} catch (IOException x) {
 			x.printStackTrace();

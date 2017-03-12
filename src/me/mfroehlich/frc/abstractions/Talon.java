@@ -2,7 +2,6 @@ package me.mfroehlich.frc.abstractions;
 
 public interface Talon {
 	public void control(ControlMode mode);
-	public void feedback(int ticksPerRevolution, EncoderType type);
 	
 	public void follow(Talon other);
 	

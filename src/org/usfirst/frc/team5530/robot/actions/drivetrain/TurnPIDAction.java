@@ -9,7 +9,7 @@ import me.mfroehlich.frc.abstractions.Talon;
 import me.mfroehlich.frc.actionloop.actions.Action;
 import me.mfroehlich.frc.actionloop.actions.ResourceScope;
 
-public class Turn2Action extends Action {
+public class TurnPIDAction extends Action {
 	private Talon left;
 	private Talon right;
 	
@@ -19,7 +19,7 @@ public class Turn2Action extends Action {
 	private double targetAngle;
 	private double rate;
 	
-	public Turn2Action(double angle) {
+	public TurnPIDAction(double angle) {
 		super("Turn to " + angle + " degree");
 		
 		this.angle = angle;

@@ -4,8 +4,10 @@ import org.usfirst.frc.team5530.robot.Util;
 import org.usfirst.frc.team5530.robot.systems.DriveTrainSystem;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import me.mfroehlich.frc.abstractions.Environment;
 import me.mfroehlich.frc.abstractions.Talon;
 import me.mfroehlich.frc.abstractions.Talon.ControlMode;
+import me.mfroehlich.frc.abstractions.live.LiveEnvironment;
 import me.mfroehlich.frc.actionloop.actions.Action;
 import me.mfroehlich.frc.actionloop.actions.ResourceScope;
 
@@ -58,8 +60,10 @@ public class TurnAction extends Action {
 		
 		left.set(speed);
 		right.set(speed);
-		
-		SmartDashboard.putNumber("Turning: ", speed);
+
+		if (Environment.is(LiveEnvironment.class)) {
+			SmartDashboard.putNumber("Turning: ", speed);
+		}
 	}
 	
 	@Override
