@@ -4,7 +4,6 @@ import me.mfroehlich.frc.abstractions.Gyro;
 import me.mfroehlich.frc.abstractions.Talon;
 import me.mfroehlich.frc.abstractions.Talon.EncoderType;
 import me.mfroehlich.frc.actionloop.actions.Resource;
-import me.mfroehlich.frc.actionloop.test.PositionTracker;
 
 public class DriveTrainSystem {
 	// 1024 / 4PI   (ticks/rev) / (inches/rev)

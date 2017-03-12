@@ -1,17 +1,14 @@
 package me.mfroehlich.frc.actionloop;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.usfirst.frc.team5530.robot.Robot;
 
 import me.mfroehlich.frc.abstractions.RobotStateProvider;
 import me.mfroehlich.frc.abstractions.RobotStateProvider.State;
 import me.mfroehlich.frc.actionloop.actions.Action;
 import me.mfroehlich.frc.actionloop.actions.ActionContext;
-import me.mfroehlich.frc.actionloop.test.MyWebSocketServer;
 import me.mfroehlich.frc.events.Event;
+import me.mfroehlich.frc.web.WebInterface;
 
 public abstract class ActionRobot {
 	public final Event tick = new Event();
@@ -26,13 +23,7 @@ public abstract class ActionRobot {
 	protected ActionRobot(RobotStateProvider provider) {
 		this.provider = provider;
 
-		try {
-			MyWebSocketServer server = new MyWebSocketServer(this.actions, 5800);
-			server.start();
-			System.out.println("Started WS server on port: " + server.getPort());
-		} catch (IOException e) {
-			Robot.log("server-testing", e.toString());
-		}
+		WebInterface.start(actions, 5800, 5801);
 	}
 	
 	public abstract void init();

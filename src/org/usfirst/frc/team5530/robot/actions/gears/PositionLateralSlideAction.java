@@ -49,7 +49,7 @@ public class PositionLateralSlideAction extends Action {
 		int sign = delta > 0 ? -1 : 1;
 		double value;
 		
-		System.out.println("Moving x: " + position + " " + current + " " + delta);
+//		System.out.println("Moving x: " + position + " " + current + " " + delta);
 		
 		if (Math.abs(delta) < 20) {
 			slide.set(0);

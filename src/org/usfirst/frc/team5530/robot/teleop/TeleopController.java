@@ -54,8 +54,6 @@ public class TeleopController extends Controller {
 	
 	@Override
 	public void start() {
-		System.out.println("Drive action");
-	
 		drive = new ManualDriveAction();
 		
 		execute(drive);

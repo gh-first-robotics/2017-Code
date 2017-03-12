@@ -1,4 +1,4 @@
-package me.mfroehlich.frc.actionloop.test;
+package me.mfroehlich.frc.web;
 
 import me.mfroehlich.frc.actionloop.actions.Action;
 

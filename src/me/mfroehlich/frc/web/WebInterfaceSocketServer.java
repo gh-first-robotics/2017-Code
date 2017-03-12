@@ -1,4 +1,4 @@
-package me.mfroehlich.frc.actionloop.test;
+package me.mfroehlich.frc.web;
 
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
@@ -34,13 +34,13 @@ import com.google.gson.JsonObject;
 import me.mfroehlich.frc.actionloop.actions.Action;
 import me.mfroehlich.frc.actionloop.actions.ActionContext;
 
-public class MyWebSocketServer extends WebSocketServer {
+public class WebInterfaceSocketServer extends WebSocketServer {
 	private List<WebInterfaceEntry> entries = new ArrayList<>();
 	private Set<WebSocket> sockets = new HashSet<>();
 	
 	private ActionContext context;
 	
-	public MyWebSocketServer(ActionContext context, int port) throws UnknownHostException {
+	public WebInterfaceSocketServer(ActionContext context, int port) throws UnknownHostException {
 		super(new InetSocketAddress(port));
 		
 		this.context = context;
