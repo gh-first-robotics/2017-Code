@@ -12,6 +12,10 @@ public class WebInterfaceHttpHandler implements HttpHandler {
 	public void handle(HttpExchange http) throws IOException {
 		String path = http.getRequestURI().getPath();
 		
+		if (path.endsWith("/")) {
+			path += "index.html";
+		}
+		
 		try (InputStream src = WebInterfaceHttpHandler.class.getResourceAsStream("files" + path)) {
 			if (src == null) {
 				http.sendResponseHeaders(404, 0);
