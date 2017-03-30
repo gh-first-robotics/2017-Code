@@ -48,7 +48,7 @@ public class TeleopController extends Controller {
 		bUnloadGear.bind(Binding.ON_PRESS, new UnloadGearAction());
 		
 		bClimbSlow.bind(Binding.WHILE_PRESSED, new ClimbAction(.3));
-		bClimbFast.bind(Binding.WHILE_PRESSED, new ClimbAction(.7));
+		bClimbFast.bind(Binding.WHILE_PRESSED, new ClimbAction(.9));
 		bClimbGrabber.bind(Binding.ON_PRESS, new ToggleRopeGripperAction());
 	}
 	

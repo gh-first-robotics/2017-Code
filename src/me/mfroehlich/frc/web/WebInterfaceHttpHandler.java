@@ -16,6 +16,7 @@ public class WebInterfaceHttpHandler implements HttpHandler {
 			path += "index.html";
 		}
 		
+		System.out.println(path);
 		try (InputStream src = WebInterfaceHttpHandler.class.getResourceAsStream("files" + path)) {
 			if (src == null) {
 				http.sendResponseHeaders(404, 0);

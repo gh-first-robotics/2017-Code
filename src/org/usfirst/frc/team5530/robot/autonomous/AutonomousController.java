@@ -1,6 +1,5 @@
 package org.usfirst.frc.team5530.robot.autonomous;
 
-import org.usfirst.frc.team5530.robot.actions.UnloadGearAction;
 import org.usfirst.frc.team5530.robot.actions.drivetrain.DriveDistanceAction;
 import org.usfirst.frc.team5530.robot.actions.drivetrain.TurnAction;
 
@@ -38,8 +37,8 @@ public class AutonomousController extends Controller {
 				new DriveDistanceAction(82.5)
 			),
 			new TurnAction(-60),
-			new DriveDistanceAction(48.5),
-			new UnloadGearAction()
+			new DriveDistanceAction(48.5)
+//			new UnloadGearAction()
 		));
 		
 		chooser.addObject("Drive forward, turn 60, drive forward, place gear (Left)", Action.inSequence("Autonomous",
@@ -48,11 +47,12 @@ public class AutonomousController extends Controller {
 				new DriveDistanceAction(91.5)
 			),
 			new TurnAction(60),
-			new DriveDistanceAction(25.5),
-			new UnloadGearAction()
+			new DriveDistanceAction(25.5)
+//			new UnloadGearAction()
 		));
 		
 		if (Environment.is(LiveEnvironment.class)) {
+			System.out.println("Sending chooser");
 			SmartDashboard.putData("Autonomous Sequence", chooser);
 		}
 	}

@@ -39,14 +39,12 @@ public class TurnAction extends Action {
 
 	@Override
 	protected void update() {
-		System.out.println(DriveTrainSystem.gyro.getAngle() + " " + targetAngle);
-		
 		double error = (targetAngle - DriveTrainSystem.gyro.getAngle()) % 360;
 		if (error > 180) {
 			error = error - 360;
 		}
 		
-		if (Math.abs(error) < 5) {
+		if (Math.abs(error) < 1) {
 			left.set(0);
 			right.set(0);
 			this.complete();
@@ -54,12 +52,14 @@ public class TurnAction extends Action {
 		}
 		
 		double rampDown = Math.abs(error * .02);
-		double maxSpeed = .5;
+		double maxSpeed = .4;
 		
 		double speed = Util.min(maxSpeed, rampDown) * Math.signum(error) * -1;
 		
-		left.set(speed);
-		right.set(speed);
+		left.set(-speed);
+		right.set(-speed);
+
+		System.out.println(DriveTrainSystem.gyro.getAngle() + " " + targetAngle + " " + speed);
 
 		if (Environment.is(LiveEnvironment.class)) {
 			SmartDashboard.putNumber("Turning: ", speed);

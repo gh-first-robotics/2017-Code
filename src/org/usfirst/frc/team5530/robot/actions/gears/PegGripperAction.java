@@ -24,7 +24,7 @@ public class PegGripperAction extends Action {
 	public void update() {
 		switch (open) {
 		case OPEN:
-			gripper.set(.02);
+			gripper.set(0);
 			break;
 			
 		case HALF:
